@@ -1,0 +1,17 @@
+# Netlify build configuration
+# Docs: https://docs.netlify.com/frameworks/next-js/overview/
+# Uses the OpenNext adapter automatically — no plugin needed.
+
+[build]
+  command   = "npm run build"
+  publish   = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Redirect HTTP → HTTPS (Netlify handles this for custom domains)
+[[redirects]]
+  from   = "http://scaleyourbusiness.com/*"
+  to     = "https://scaleyourbusiness.com/:splat"
+  status = 301
+  force  = true
