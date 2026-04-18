@@ -43,9 +43,12 @@ export default function Hero() {
         >
           <motion.h1
             variants={itemVariants}
-            className="text-4xl md:text-5xl lg:text-[4rem] font-bold text-contrast tracking-tight mb-6 leading-[1.15] text-balance max-w-4xl mx-auto"
+            // Cambiamos a text-3xl en móvil, y quitamos text-balance
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-bold text-contrast tracking-tight mb-6 leading-[1.15] max-w-4xl mx-auto px-4"
           >
-            La mayoría de los dueños no tienen un problema de tiempo.
+            <span className="block mb-1">
+              La mayoría de los dueños no tienen un problema de tiempo.
+            </span>
             <span className="block text-secondary">
               Tienen un problema de arquitectura.
             </span>
