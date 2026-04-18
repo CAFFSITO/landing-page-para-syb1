@@ -14,3 +14,11 @@ Reglas:
 
 Estructura de carpetas:
 /app /components/landing /components/ui /lib /types
+
+Ya instalado: @supabase/supabase-js y @supabase/ssr
+
+Variables de entorno ya configuradas en .env.local:
+
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY

@@ -17,11 +17,15 @@
 :root {
   --background: #F9F7FF;
   --foreground: #2D2D2D;
+  --card-bg: #FFFFFF;
+  --border-color: rgba(59,30,99,0.15);
 }
 
 .dark {
   --background: #0D0618;
   --foreground: #FFFFFF;
+  --card-bg: #1C0D35;
+  --border-color: rgba(157,92,192,0.25);
 }
 
 body {
