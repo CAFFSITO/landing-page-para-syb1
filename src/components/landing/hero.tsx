@@ -19,10 +19,10 @@ export default function Hero() {
 
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
-    show: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.8, ease: "easeOut" } 
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: "easeOut" }
     },
   };
 
@@ -46,7 +46,7 @@ export default function Hero() {
             className="text-4xl md:text-5xl lg:text-[4rem] font-bold text-contrast tracking-tight mb-6 leading-[1.15]"
           >
             La mayoría de los dueños no tienen un problema de tiempo. <br className="hidden lg:block" />
-            <span className="text-secondary">Tienen un problema de Arquitectura.</span>
+            <span className="text-secondary">Tienen un problema de&nbsp;Arquitectura.</span>
           </motion.h1>
 
           <motion.p
