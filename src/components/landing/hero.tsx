@@ -43,8 +43,7 @@ export default function Hero() {
         >
           <motion.h1
             variants={itemVariants}
-            // Cambiamos a text-3xl en móvil, y quitamos text-balance
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-bold text-contrast tracking-tight mb-6 leading-[1.15] max-w-4xl mx-auto px-4"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-bold text-contrast tracking-tight mb-6 leading-[1.15] max-w-[95%] lg:max-w-6xl mx-auto px-4"
           >
             <span className="block mb-1">
               La mayoría de los dueños no tienen un problema de tiempo.
