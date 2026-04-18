@@ -43,10 +43,10 @@ export default function Hero() {
         >
           <motion.h1
             variants={itemVariants}
-            className="text-4xl md:text-5xl lg:text-[4rem] font-bold text-contrast tracking-tight mb-6 leading-[1.15]"
+            className="text-4xl md:text-5xl lg:text-[4rem] font-bold text-contrast tracking-tight mb-6 leading-[1.15] text-balance max-w-4xl mx-auto"
           >
-            La mayoría de los dueños no tienen un problema de tiempo.{""}
-            <span className="text-secondary block">
+            La mayoría de los dueños no tienen un problema de tiempo.
+            <span className="block text-secondary">
               Tienen un problema de arquitectura.
             </span>
           </motion.h1>
