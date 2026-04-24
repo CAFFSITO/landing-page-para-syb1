@@ -9,6 +9,7 @@ import ModalPDF from "@/components/lobby/ModalPDF";
 import ModalVideo from "@/components/lobby/ModalVideo";
 import ModalReporte from "@/components/lobby/ModalReporte";
 import ModalAgenda from "@/components/lobby/ModalAgenda";
+import ModalArchivo from "@/components/lobby/ModalArchivo";
 import type { Socio, Entregable, Reunion, Reporte, Lectura } from "@/types";
 
 type PhaseTreeProps = {
@@ -26,6 +27,7 @@ type ModalState =
   | { tipo: "video"; entregable: Entregable }
   | { tipo: "reporte"; entregable: Entregable; item: Reporte | Reunion }
   | { tipo: "agenda"; entregable: Entregable; reunion: Reunion }
+  | { tipo: "archivo"; entregable: Entregable }
   | null;
 
 const FASES = [1, 2, 3] as const;
@@ -96,6 +98,12 @@ export default function PhaseTree({
   }
 
   function handleOpen(entregable: Entregable) {
+    // Tipos distintos a pdf con archivo subido → visor genérico
+    if (entregable.storage_path && entregable.tipo !== "pdf") {
+      setModalState({ tipo: "archivo", entregable });
+      return;
+    }
+
     switch (entregable.tipo) {
       case "pdf":
         setModalState({ tipo: "pdf", entregable });
@@ -298,6 +306,13 @@ export default function PhaseTree({
           isOpen
           onClose={cerrarModal}
           reunion={modalState.reunion}
+        />
+      )}
+      {modalState?.tipo === "archivo" && (
+        <ModalArchivo
+          isOpen
+          onClose={cerrarModal}
+          entregable={modalState.entregable}
         />
       )}
     </div>
