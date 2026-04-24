@@ -30,6 +30,18 @@ export default async function Home({ searchParams }: HomeProps) {
     if (socio) {
       redirect(`/login?token=${token}`);
     }
+
+    // Si no es un socio, probamos contra admin_users
+    const { data: adminUser } = await supabase
+      .from("admin_users")
+      .select("user_id")
+      .eq("token", token)
+      .eq("activo", true)
+      .single();
+
+    if (adminUser) {
+      redirect(`/admin/login?token=${token}`);
+    }
   }
 
   return (
