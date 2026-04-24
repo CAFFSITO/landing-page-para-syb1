@@ -147,7 +147,7 @@ export default function LoginForm() {
             <input
               id="token"
               type="password"
-              autoComplete="current-password"
+              autoComplete="off"
               required
               value={token}
               onChange={(e) => setToken(e.target.value)}

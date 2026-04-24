@@ -5,11 +5,7 @@ import { adminLoginWithToken } from "@/app/actions/admin-auth";
 
 const initialState = { error: null };
 
-type AdminLoginFormProps = {
-  defaultToken?: string | null;
-};
-
-export default function AdminLoginForm({ defaultToken }: AdminLoginFormProps) {
+export default function AdminLoginForm() {
   const [state, formAction, isPending] = useActionState(
     adminLoginWithToken,
     initialState
@@ -130,7 +126,6 @@ export default function AdminLoginForm({ defaultToken }: AdminLoginFormProps) {
               type="password"
               autoComplete="off"
               required
-              defaultValue={defaultToken ?? ""}
               style={inputStyle}
               onFocus={(e) => {
                 e.currentTarget.style.borderColor = "#9D5CC0";

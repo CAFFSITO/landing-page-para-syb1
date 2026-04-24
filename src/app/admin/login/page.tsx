@@ -2,11 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AdminLoginForm from "@/components/admin/AdminLoginForm";
 
-type PageProps = {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
-
-export default async function AdminLoginPage({ searchParams }: PageProps) {
+export default async function AdminLoginPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -16,8 +12,5 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
     redirect("/admin");
   }
 
-  const params = await searchParams;
-  const token = typeof params.token === "string" ? params.token : null;
-
-  return <AdminLoginForm defaultToken={token} />;
+  return <AdminLoginForm />;
 }

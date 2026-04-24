@@ -1,5 +1,5 @@
 import LoginForm from "@/components/landing/login-form";
 
-export default function LoginPage() {
+export default function SociosLoginPage() {
   return <LoginForm />;
 }
