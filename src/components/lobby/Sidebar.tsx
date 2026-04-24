@@ -6,6 +6,8 @@ import { Moon, Sun, Menu, X } from "lucide-react";
 import { signOut } from "@/app/actions/auth";
 import type { Socio } from "@/types";
 import type { TabActiva } from "@/components/lobby/LobbyTabs";
+import Image from "next/image";
+import logoSYB from "@/app/SYB RECUPERADO.png";
 
 type SidebarProps = {
   socio: Socio;
@@ -38,17 +40,7 @@ function SidebarContent({
           marginBottom: "32px",
         }}
       >
-        <svg
-          width="40"
-          height="36"
-          viewBox="0 0 56 50"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-label="Logo SYB"
-        >
-          <polygon points="28,2 54,48 2,48" fill="#9D5CC0" />
-          <polygon points="28,14 44,42 12,42" fill="#1C0D35" />
-        </svg>
+        <Image src={logoSYB} alt="Logo SYB" width={56} height={56} style={{ objectFit: "contain" }} />
         <span
           style={{
             fontFamily: "Merriweather, Georgia, serif",
