@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 import { adminLoginWithToken } from "@/app/actions/admin-auth";
+import Image from "next/image";
+import logoSYB from "@/app/SYB RECUPERADO.png";
 
 const initialState = { error: null };
 
@@ -30,17 +32,7 @@ export default function AdminLoginForm() {
       className="flex flex-col items-center justify-center px-4"
     >
       <div className="mb-8 flex flex-col items-center gap-2">
-        <svg
-          width="56"
-          height="50"
-          viewBox="0 0 56 50"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-label="Logo SYB"
-        >
-          <polygon points="28,2 54,48 2,48" fill="#9D5CC0" />
-          <polygon points="28,14 44,42 12,42" fill="#1C0D35" />
-        </svg>
+        <Image src={logoSYB} alt="Logo SYB" width={96} height={96} style={{ objectFit: "contain" }} />
         <span
           style={{
             fontFamily: "Merriweather, Georgia, serif",

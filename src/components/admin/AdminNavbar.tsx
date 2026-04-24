@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
 import { signOut } from "@/app/actions/auth";
+import Image from "next/image";
+import logoSYB from "@/app/SYB RECUPERADO.png";
 
 export default function AdminNavbar() {
   const [isDark, setIsDark] = useState(true);
@@ -38,17 +40,7 @@ export default function AdminNavbar() {
     >
       {/* Logo + título */}
       <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1 }}>
-        <svg
-          width="28"
-          height="25"
-          viewBox="0 0 56 50"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <polygon points="28,2 54,48 2,48" fill="#9D5CC0" />
-          <polygon points="28,14 44,42 12,42" fill="#1C0D35" />
-        </svg>
+        <Image src={logoSYB} alt="Logo SYB" width={36} height={36} style={{ objectFit: "contain" }} />
         <span
           style={{
             fontFamily: "Merriweather, Georgia, serif",
