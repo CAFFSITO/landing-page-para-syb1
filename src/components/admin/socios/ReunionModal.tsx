@@ -13,6 +13,8 @@ interface Props {
   socioId: string;
   editTarget: Reunion | null;
   onSaved: (r: Reunion) => void;
+  defaultFecha?: string;
+  defaultFase?: 1 | 2 | 3;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -88,7 +90,7 @@ function toDatetimeLocal(iso?: string): string {
   }
 }
 
-export default function ReunionModal({ isOpen, onClose, socioId, editTarget, onSaved }: Props) {
+export default function ReunionModal({ isOpen, onClose, socioId, editTarget, onSaved, defaultFecha, defaultFase }: Props) {
   const [fase, setFase] = useState<1 | 2 | 3>(1);
   const [numero, setNumero] = useState(1);
   const [nombre, setNombre] = useState('');
@@ -111,17 +113,17 @@ export default function ReunionModal({ isOpen, onClose, socioId, editTarget, onS
       setGrabacionUrl(editTarget.grabacion_url ?? '');
       setNotas(editTarget.notas ?? '');
     } else {
-      setFase(1);
+      setFase(defaultFase ?? 1);
       setNumero(1);
       setNombre('');
-      setFecha('');
+      setFecha(defaultFecha ? toDatetimeLocal(defaultFecha) : '');
       setCompletada(false);
       setAgendaUrl('');
       setGrabacionUrl('');
       setNotas('');
     }
     setPreview(false);
-  }, [editTarget, isOpen]);
+  }, [editTarget, isOpen, defaultFecha, defaultFase]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

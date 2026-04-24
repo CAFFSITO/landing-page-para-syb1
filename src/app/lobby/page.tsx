@@ -4,6 +4,7 @@ import ProgressBar from "@/components/lobby/ProgressBar";
 import LobbyShell from "@/app/lobby/LobbyShell";
 import ProgramaRoadmap from "@/components/lobby/ProgramaRoadmap";
 import PhaseTree from "@/components/lobby/PhaseTree";
+import CalendarioReuniones from "@/components/lobby/CalendarioReuniones";
 import type { Socio, Entregable, Reunion, Reporte, Lectura } from "@/types";
 
 export default async function LobbyPage() {
@@ -106,6 +107,7 @@ export default async function LobbyPage() {
             lecturas={lecturas ?? []}
           />
         }
+        reunionesContent={<CalendarioReuniones reuniones={reuniones ?? []} />}
       />
     </>
   );
