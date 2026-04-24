@@ -40,7 +40,7 @@ function SidebarContent({
           marginBottom: "32px",
         }}
       >
-        <Image src={logoSYB} alt="Logo SYB" width={56} height={56} style={{ objectFit: "contain" }} />
+        <Image src={logoSYB} alt="Logo SYB" width={80} height={80} style={{ objectFit: "contain" }} />
         <span
           style={{
             fontFamily: "Merriweather, Georgia, serif",
