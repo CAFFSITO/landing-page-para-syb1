@@ -6,6 +6,7 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { deleteReunionAction } from '@/app/actions/reuniones-admin';
 import AdminModal from '@/components/admin/socios/AdminModal';
 import ReunionModal from '@/components/admin/socios/ReunionModal';
+import CalendarioFase from '@/components/admin/socios/CalendarioFase';
 import type { Reunion } from '@/types';
 
 interface Props {
@@ -28,15 +29,37 @@ export function TabReuniones({ socioId, reuniones }: Props) {
   const [editTarget, setEditTarget] = useState<Reunion | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Reunion | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [defaultFecha, setDefaultFecha] = useState<string | undefined>();
+  const [defaultFase, setDefaultFase] = useState<1 | 2 | 3 | undefined>();
+  const [calVisible, setCalVisible] = useState<Record<1 | 2 | 3, boolean>>({ 1: false, 2: false, 3: false });
 
-  function openNew() {
+  function openNew(fase?: 1 | 2 | 3) {
     setEditTarget(null);
+    setDefaultFecha(undefined);
+    setDefaultFase(fase);
     setModalOpen(true);
   }
 
   function openEdit(r: Reunion) {
     setEditTarget(r);
+    setDefaultFecha(undefined);
+    setDefaultFase(undefined);
     setModalOpen(true);
+  }
+
+  function openFromCalendario(isoFecha: string, rs: Reunion[], fase: 1 | 2 | 3) {
+    if (rs.length > 0) {
+      openEdit(rs[0]);
+    } else {
+      setEditTarget(null);
+      setDefaultFecha(isoFecha);
+      setDefaultFase(fase);
+      setModalOpen(true);
+    }
+  }
+
+  function toggleCalendario(fase: 1 | 2 | 3) {
+    setCalVisible(prev => ({ ...prev, [fase]: !prev[fase] }));
   }
 
   function handleSaved(saved: Reunion) {
@@ -73,12 +96,20 @@ export function TabReuniones({ socioId, reuniones }: Props) {
               <span style={{ fontFamily: 'Merriweather, Georgia, serif', fontWeight: 700, fontSize: '0.875rem', color: 'rgba(157,92,192,0.8)' }}>
                 Fase {fase}
               </span>
-              <button
-                onClick={openNew}
-                style={{ background: 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(157,92,192,0.8)', borderRadius: '6px', padding: '4px 12px', fontSize: '0.8rem', cursor: 'pointer' }}
-              >
-                + Registrar reunión
-              </button>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  onClick={() => toggleCalendario(fase)}
+                  style={{ background: calVisible[fase] ? 'rgba(157,92,192,0.15)' : 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(157,92,192,0.8)', borderRadius: '6px', padding: '4px 12px', fontSize: '0.8rem', cursor: 'pointer' }}
+                >
+                  {calVisible[fase] ? 'Ocultar calendario' : 'Ver calendario'}
+                </button>
+                <button
+                  onClick={() => openNew(fase)}
+                  style={{ background: 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(157,92,192,0.8)', borderRadius: '6px', padding: '4px 12px', fontSize: '0.8rem', cursor: 'pointer' }}
+                >
+                  + Registrar reunión
+                </button>
+              </div>
             </div>
             {faseItems.length === 0 ? (
               <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.8rem', padding: '8px 0', margin: 0 }}>
@@ -142,16 +173,26 @@ export function TabReuniones({ socioId, reuniones }: Props) {
                 </div>
               ))
             )}
+
+            {calVisible[fase] && (
+              <CalendarioFase
+                fase={fase}
+                reuniones={faseItems}
+                onDiaClick={(isoFecha, rs) => openFromCalendario(isoFecha, rs, fase)}
+              />
+            )}
           </div>
         );
       })}
 
       <ReunionModal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => { setModalOpen(false); setDefaultFecha(undefined); setDefaultFase(undefined); }}
         socioId={socioId}
         editTarget={editTarget}
         onSaved={handleSaved}
+        defaultFecha={defaultFecha}
+        defaultFase={defaultFase}
       />
 
       <AdminModal

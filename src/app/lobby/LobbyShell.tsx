@@ -9,12 +9,14 @@ type LobbyShellProps = {
   socio: Socio;
   programaContent: React.ReactNode;
   progresoContent: React.ReactNode;
+  reunionesContent: React.ReactNode;
 };
 
 export default function LobbyShell({
   socio,
   programaContent,
   progresoContent,
+  reunionesContent,
 }: LobbyShellProps) {
   const storageKey = `syb_lobby_tab_${socio.id}`;
 
@@ -23,7 +25,7 @@ export default function LobbyShell({
 
   useEffect(() => {
     const saved = localStorage.getItem(storageKey) as TabActiva | null;
-    if (saved === "programa" || saved === "progreso") {
+    if (saved === "programa" || saved === "progreso" || saved === "reuniones") {
       setTabActiva(saved);
     }
   }, [storageKey]);
@@ -47,6 +49,7 @@ export default function LobbyShell({
           onTabChange={setTabActiva}
           programaContent={programaContent}
           progresoContent={progresoContent}
+          reunionesContent={reunionesContent}
         />
       </main>
     </div>

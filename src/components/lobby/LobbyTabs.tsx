@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-export type TabActiva = "programa" | "progreso";
+export type TabActiva = "programa" | "progreso" | "reuniones";
 
 type LobbyTabsProps = {
   socioId: string;
@@ -11,11 +11,13 @@ type LobbyTabsProps = {
   onTabChange: (tab: TabActiva) => void;
   programaContent: React.ReactNode;
   progresoContent: React.ReactNode;
+  reunionesContent: React.ReactNode;
 };
 
 const TABS: { key: TabActiva; label: string }[] = [
   { key: "programa", label: "Mi programa" },
   { key: "progreso", label: "Mi progreso" },
+  { key: "reuniones", label: "Reuniones" },
 ];
 
 export default function LobbyTabs({
@@ -24,6 +26,7 @@ export default function LobbyTabs({
   onTabChange,
   programaContent,
   progresoContent,
+  reunionesContent,
 }: LobbyTabsProps) {
   const storageKey = `syb_lobby_tab_${socioId}`;
 
@@ -35,6 +38,7 @@ export default function LobbyTabs({
   const content: Record<TabActiva, React.ReactNode> = {
     programa: programaContent,
     progreso: progresoContent,
+    reuniones: reunionesContent,
   };
 
   return (
