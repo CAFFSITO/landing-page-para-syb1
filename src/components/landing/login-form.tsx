@@ -4,14 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-type LoginFormProps = {
-  token: string;
-};
-
-export default function LoginForm({ token: _token }: LoginFormProps) {
+export default function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,7 +19,7 @@ export default function LoginForm({ token: _token }: LoginFormProps) {
     const supabase = createClient();
     const { error: authError } = await supabase.auth.signInWithPassword({
       email,
-      password,
+      password: token,
     });
 
     if (authError) {
@@ -140,21 +136,21 @@ export default function LoginForm({ token: _token }: LoginFormProps) {
             />
           </div>
 
-          {/* Campo Contraseña */}
+          {/* Campo Token */}
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             <label
-              htmlFor="password"
+              htmlFor="token"
               style={{ fontSize: "0.875rem", color: "#c4b8d4", fontWeight: 500 }}
             >
-              Contraseña
+              Token
             </label>
             <input
-              id="password"
+              id="token"
               type="password"
               autoComplete="current-password"
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
               style={inputStyle}
               onFocus={(e) => {
                 e.currentTarget.style.borderColor = "#9D5CC0";
