@@ -16,14 +16,7 @@ function slugify(str: string) {
     .replace(/[^a-z0-9-]/g, '')
 }
 
-function generatePassword(): string {
-  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  const values = new Uint8Array(12)
-  crypto.getRandomValues(values)
-  return Array.from(values)
-    .map((v) => charset[v % charset.length])
-    .join('')
-}
+
 
 function inputStyle(focused: boolean): React.CSSProperties {
   return {
@@ -53,7 +46,6 @@ type ModalData = {
   socioId: string
   token: string
   email: string
-  password: string
 }
 
 export default function NuevoSocioPage() {
@@ -63,7 +55,6 @@ export default function NuevoSocioPage() {
   const [email, setEmail] = useState('')
   const [empresa, setEmpresa] = useState('')
   const [token, setToken] = useState('')
-  const [password, setPassword] = useState('')
   const [notas, setNotas] = useState('')
   const [loading, setLoading] = useState(false)
   const [modalData, setModalData] = useState<ModalData | null>(null)
@@ -92,9 +83,6 @@ export default function NuevoSocioPage() {
     setToken(val)
   }
 
-  function handleGeneratePassword() {
-    setPassword(generatePassword())
-  }
 
   function validate(): boolean {
     const errs: Record<string, string> = {}
@@ -105,11 +93,6 @@ export default function NuevoSocioPage() {
       errs.email = 'El email no es válido.'
     }
     if (!token.trim()) errs.token = 'El token es requerido.'
-    if (!password.trim()) {
-      errs.password = 'La contraseña es requerida.'
-    } else if (password.length < 8) {
-      errs.password = 'La contraseña debe tener al menos 8 caracteres.'
-    }
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
@@ -123,7 +106,6 @@ export default function NuevoSocioPage() {
       email,
       empresa: empresa || undefined,
       token,
-      password,
       notas_admin: notas || undefined,
     })
     if (!result.ok) {
@@ -131,7 +113,7 @@ export default function NuevoSocioPage() {
       setLoading(false)
       return
     }
-    setModalData({ socioId: result.socioId, token, email, password })
+    setModalData({ socioId: result.socioId, token, email })
     setLoading(false)
   }
 
@@ -143,9 +125,9 @@ export default function NuevoSocioPage() {
   function copyAll() {
     if (!modalData) return
     const text = [
-      `Link de acceso: ${SITE_URL}/?token=${modalData.token}`,
+      `Link de acceso: ${SITE_URL}/login`,
       `Email: ${modalData.email}`,
-      `Contraseña: ${modalData.password}`,
+      `Token: ${modalData.token}`,
     ].join('\n')
     navigator.clipboard.writeText(text)
     toast.success('Copiado')
@@ -265,40 +247,7 @@ export default function NuevoSocioPage() {
                   <FieldError msg={errors.token} />
                 </div>
 
-                <div>
-                  <label
-                    style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}
-                  >
-                    Contraseña *
-                  </label>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <input
-                      type="text"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      onFocus={() => setFocused('password')}
-                      onBlur={() => setFocused(null)}
-                      style={{ ...inputStyle(focused === 'password'), fontFamily: 'monospace', flex: 1 }}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleGeneratePassword}
-                      style={{
-                        backgroundColor: 'transparent',
-                        border: '1px solid rgba(157,92,192,0.3)',
-                        color: '#9D5CC0',
-                        borderRadius: '8px',
-                        padding: '10px 14px',
-                        fontSize: '0.8rem',
-                        cursor: 'pointer',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      Generar
-                    </button>
-                  </div>
-                  <FieldError msg={errors.password} />
-                </div>
+
 
                 <div>
                   <label
@@ -387,10 +336,10 @@ export default function NuevoSocioPage() {
               {[
                 {
                   label: 'Link de acceso',
-                  value: `${SITE_URL}/?token=${modalData.token}`,
+                  value: `${SITE_URL}/login`,
                 },
                 { label: 'Email', value: modalData.email },
-                { label: 'Contraseña', value: modalData.password },
+                { label: 'Token', value: modalData.token },
               ].map(({ label, value }) => (
                 <div key={label}>
                   <div

@@ -74,7 +74,6 @@ export async function updateFasesAction(
 type CreateSocioPayload = {
   nombre: string;
   email: string;
-  password: string;
   empresa?: string;
   token: string;
   notas_admin?: string;
@@ -89,11 +88,11 @@ export async function createSocioAction(
 ): Promise<CreateSocioResult> {
   const supabase = createAdminClient();
 
-  // 1. Crear usuario en Supabase Auth
+  // 1. Crear usuario en Supabase Auth usando el token como contraseña
   const { data: authData, error: authError } =
     await supabase.auth.admin.createUser({
       email: payload.email,
-      password: payload.password,
+      password: payload.token,
       email_confirm: true,
       user_metadata: { role: "socio" },
     });
