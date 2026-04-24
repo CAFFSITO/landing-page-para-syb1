@@ -45,6 +45,14 @@ const labelStyle: React.CSSProperties = {
 const TIPOS: EntregableTipo[] = ['pdf', 'video', 'reporte', 'registro_reunion', 'agenda'];
 const ESTADOS: EntregableEstado[] = ['pendiente', 'enviado', 'rechazado'];
 
+const ACCEPT_POR_TIPO: Record<EntregableTipo, string> = {
+  pdf: '.pdf,application/pdf',
+  video: '.mp4,.webm,.mov,.avi,video/*',
+  reporte: '.pdf,.docx,.xlsx,.pptx,application/pdf',
+  registro_reunion: '.mp4,.webm,.mov,.pdf,video/*',
+  agenda: '.pdf,.docx,.txt,application/pdf',
+};
+
 export default function EntregableModal({ isOpen, onClose, socioId, fase, editTarget, onSaved, defaultOrden }: Props) {
   const [faseVal, setFaseVal] = useState<1 | 2 | 3>(fase);
   const [tipo, setTipo] = useState<EntregableTipo>('pdf');
@@ -200,20 +208,23 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
           </select>
         </div>
         <div style={fieldStyle}>
-          <label style={labelStyle}>URL</label>
+          <label style={labelStyle}>URL (Vimeo, Drive, etc.)</label>
           <input style={inputStyle} type="text" placeholder="https://..." value={url} onChange={e => setUrl(e.target.value)} />
         </div>
-        {tipo === 'pdf' && (
-          <div style={fieldStyle}>
-            <label style={labelStyle}>Archivo PDF</label>
-            <input
-              style={{ ...inputStyle, padding: '8px 14px' }}
-              type="file"
-              accept=".pdf,application/pdf"
-              onChange={handleFile}
-            />
-          </div>
-        )}
+        <div style={fieldStyle}>
+          <label style={labelStyle}>Archivo {fileName ? `— ${fileName}` : editTarget?.storage_path ? `— ${editTarget.storage_path.split('/').pop()}` : ''}</label>
+          <input
+            style={{ ...inputStyle, padding: '8px 14px', cursor: 'pointer' }}
+            type="file"
+            accept={ACCEPT_POR_TIPO[tipo]}
+            onChange={handleFile}
+          />
+          {editTarget?.storage_path && !fileName && (
+            <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: 'rgba(157,92,192,0.6)' }}>
+              Archivo actual guardado. Subí uno nuevo para reemplazarlo.
+            </p>
+          )}
+        </div>
         <div style={fieldStyle}>
           <label style={labelStyle}>Orden *</label>
           <input style={inputStyle} type="number" min={1} value={orden} onChange={e => setOrden(Number(e.target.value))} />
