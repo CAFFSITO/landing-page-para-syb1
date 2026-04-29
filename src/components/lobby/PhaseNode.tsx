@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 type PhaseNodeProps = {
   estado: "completada" | "activa" | "pendiente";
@@ -15,6 +15,8 @@ export default function PhaseNode({ estado, faseNum }: PhaseNodeProps) {
     return (
       <div
         style={{
+          position: "relative",
+          zIndex: 2,
           width: SIZE,
           height: SIZE,
           borderRadius: "50%",
@@ -25,7 +27,7 @@ export default function PhaseNode({ estado, faseNum }: PhaseNodeProps) {
           flexShrink: 0,
         }}
       >
-        <Check size={16} color="#FFFFFF" strokeWidth={3} />
+        <CheckCircle2 size={18} color="#FFFFFF" strokeWidth={2} />
       </div>
     );
   }
@@ -36,6 +38,8 @@ export default function PhaseNode({ estado, faseNum }: PhaseNodeProps) {
         animate={{ scale: [1, 1.15, 1] }}
         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
         style={{
+          position: "relative",
+          zIndex: 2,
           width: SIZE,
           height: SIZE,
           borderRadius: "50%",
@@ -65,6 +69,8 @@ export default function PhaseNode({ estado, faseNum }: PhaseNodeProps) {
   return (
     <div
       style={{
+        position: "relative",
+        zIndex: 2,
         width: SIZE,
         height: SIZE,
         borderRadius: "50%",
