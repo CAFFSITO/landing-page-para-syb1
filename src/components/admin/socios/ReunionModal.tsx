@@ -99,7 +99,6 @@ export default function ReunionModal({ isOpen, onClose, socioId, editTarget, onS
   const [agendaUrl, setAgendaUrl] = useState('');
   const [grabacionUrl, setGrabacionUrl] = useState('');
   const [notas, setNotas] = useState('');
-  const [preview, setPreview] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -122,7 +121,6 @@ export default function ReunionModal({ isOpen, onClose, socioId, editTarget, onS
       setGrabacionUrl('');
       setNotas('');
     }
-    setPreview(false);
   }, [editTarget, isOpen, defaultFecha, defaultFase]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -230,56 +228,36 @@ export default function ReunionModal({ isOpen, onClose, socioId, editTarget, onS
           <input style={inputStyle} type="text" placeholder="https://..." value={grabacionUrl} onChange={e => setGrabacionUrl(e.target.value)} />
         </div>
         <div style={fieldStyle}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-            <label style={labelStyle}>Notas / Registro</label>
-            <div style={{ display: 'flex', gap: '6px' }}>
-              {(['Editar', 'Preview'] as const).map(mode => (
-                <button
-                  key={mode}
-                  type="button"
-                  onClick={() => setPreview(mode === 'Preview')}
-                  style={{
-                    background: (preview ? mode === 'Preview' : mode === 'Editar') ? 'rgba(157,92,192,0.15)' : 'transparent',
-                    color: (preview ? mode === 'Preview' : mode === 'Editar') ? '#9D5CC0' : 'rgba(255,255,255,0.4)',
-                    border: 'none',
-                    borderRadius: '6px',
-                    padding: '3px 10px',
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {mode}
-                </button>
-              ))}
-            </div>
+          <label style={labelStyle}>Notas / Registro</label>
+          <textarea
+            style={{
+              ...inputStyle,
+              resize: 'vertical',
+              fontFamily: 'monospace',
+            }}
+            rows={6}
+            value={notas}
+            onChange={e => setNotas(e.target.value)}
+          />
+          <div style={{ display: 'flex', alignItems: 'center', margin: '16px 0 8px 0' }}>
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(157,92,192,0.2)' }} />
+            <span style={{ margin: '0 12px', fontSize: '0.75rem', color: 'rgba(157,92,192,0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Vista previa</span>
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(157,92,192,0.2)' }} />
           </div>
-          {preview ? (
-            <div
-              style={{
-                minHeight: '160px',
-                backgroundColor: '#0D0618',
-                border: '1px solid rgba(157,92,192,0.25)',
-                borderRadius: '8px',
-                padding: '10px 14px',
-                color: 'rgba(255,255,255,0.85)',
-                fontSize: '0.875rem',
-                lineHeight: 1.6,
-              }}
-            >
-              <ReactMarkdown>{notas || '*Sin contenido*'}</ReactMarkdown>
-            </div>
-          ) : (
-            <textarea
-              style={{
-                ...inputStyle,
-                resize: 'vertical',
-                fontFamily: 'monospace',
-              }}
-              rows={8}
-              value={notas}
-              onChange={e => setNotas(e.target.value)}
-            />
-          )}
+          <div
+            style={{
+              minHeight: '100px',
+              backgroundColor: 'rgba(13,6,24,0.5)',
+              border: '1px solid rgba(157,92,192,0.15)',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              color: 'rgba(255,255,255,0.85)',
+              fontSize: '0.875rem',
+              lineHeight: 1.6,
+            }}
+          >
+            <ReactMarkdown>{notas || '*Sin contenido*'}</ReactMarkdown>
+          </div>
         </div>
       </form>
     </AdminModal>
