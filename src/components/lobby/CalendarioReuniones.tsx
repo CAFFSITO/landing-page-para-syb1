@@ -62,6 +62,7 @@ export default function CalendarioReuniones({ reuniones }: Props) {
   }
 
   const hoy = new Date();
+  const hoyISO = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
   const reunionesSeleccionadas = diaSeleccionado ? (porDia.get(diaSeleccionado) ?? []) : [];
 
   return (
@@ -194,27 +195,36 @@ export default function CalendarioReuniones({ reuniones }: Props) {
                     anio === hoy.getFullYear() &&
                     mes === hoy.getMonth() &&
                     dia === hoy.getDate();
+                  const esPasado = !esHoy && clave < hoyISO;
                   const esSel = diaSeleccionado === clave;
 
                   return (
                     <button
                       key={clave}
-                      onClick={() =>
-                        tieneReuniones
-                          ? setDiaSeleccionado(esSel ? null : clave)
+                      onClick={() => {
+                        if (esPasado) return;
+                        if (tieneReuniones) setDiaSeleccionado(esSel ? null : clave);
+                      }}
+                      title={
+                        esPasado
+                          ? undefined
+                          : tieneReuniones
+                          ? rs.map((r) => r.nombre).join(" · ")
                           : undefined
                       }
-                      title={tieneReuniones ? rs.map((r) => r.nombre).join(" · ") : undefined}
                       style={{
                         position: "relative",
                         fontSize: "0.6rem",
-                        color: tieneReuniones
+                        color: esPasado
+                          ? "rgba(255,255,255,0.25)"
+                          : tieneReuniones
                           ? "#FFFFFF"
                           : esHoy
                           ? "#9D5CC0"
                           : "rgba(255,255,255,0.4)",
                         textAlign: "center",
                         padding: "3px 1px",
+                        opacity: esPasado ? 0.35 : 1,
                         background: esSel
                           ? "rgba(157,92,192,0.25)"
                           : esHoy
@@ -226,13 +236,13 @@ export default function CalendarioReuniones({ reuniones }: Props) {
                           ? "1px solid rgba(157,92,192,0.3)"
                           : "1px solid transparent",
                         borderRadius: "3px",
-                        cursor: tieneReuniones ? "pointer" : "default",
-                        fontWeight: tieneReuniones ? 700 : 400,
+                        cursor: esPasado ? "default" : tieneReuniones ? "pointer" : "default",
+                        fontWeight: (!esPasado && tieneReuniones) ? 700 : 400,
                         lineHeight: "1.6",
                       }}
                     >
                       {dia}
-                      {tieneReuniones && (
+                      {tieneReuniones && !esPasado && (
                         <span
                           style={{
                             position: "absolute",
