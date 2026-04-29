@@ -79,7 +79,7 @@ export default function ProgressBar({
           textShadow: "0 1px 4px rgba(0,0,0,0.6)",
         }}
       >
-        FASE {faseActual} · {progressPct}% completado
+        Fase {faseActual} · {progressPct}% del programa
       </span>
     </div>
   );

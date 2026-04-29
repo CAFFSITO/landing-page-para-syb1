@@ -48,6 +48,7 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
   }
 
   const hoy = new Date();
+  const hoyISO = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
 
   return (
     <div
@@ -139,6 +140,7 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
                     anio === hoy.getFullYear() &&
                     mes === hoy.getMonth() &&
                     dia === hoy.getDate();
+                  const esPasado = !esHoy && clave < hoyISO;
 
                   return (
                     <button
@@ -155,23 +157,26 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
                       style={{
                         position: "relative",
                         fontSize: "0.6rem",
-                        color: tieneReuniones
+                        color: esPasado
+                          ? "rgba(255,255,255,0.05)"
+                          : tieneReuniones
                           ? "#FFFFFF"
                           : esHoy
                           ? "#9D5CC0"
                           : "rgba(255,255,255,0.45)",
                         textAlign: "center",
                         padding: "3px 1px",
+                        opacity: esPasado ? 0.05 : 1,
                         background: esHoy ? "rgba(157,92,192,0.15)" : "none",
                         border: esHoy ? "1px solid rgba(157,92,192,0.3)" : "1px solid transparent",
                         borderRadius: "3px",
                         cursor: "pointer",
-                        fontWeight: tieneReuniones ? 700 : 400,
+                        fontWeight: (!esPasado && tieneReuniones) ? 700 : 400,
                         lineHeight: "1.6",
                       }}
                     >
                       {dia}
-                      {tieneReuniones && (
+                      {tieneReuniones && !esPasado && (
                         <span
                           style={{
                             position: "absolute",
