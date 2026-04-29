@@ -158,7 +158,7 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
                         position: "relative",
                         fontSize: "0.6rem",
                         color: esPasado
-                          ? "rgba(255,255,255,0.12)"
+                          ? "rgba(255,255,255,0.05)"
                           : tieneReuniones
                           ? "#FFFFFF"
                           : esHoy
@@ -166,7 +166,7 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
                           : "rgba(255,255,255,0.45)",
                         textAlign: "center",
                         padding: "3px 1px",
-                        opacity: esPasado ? 0.12 : 1,
+                        opacity: esPasado ? 0.05 : 1,
                         background: esHoy ? "rgba(157,92,192,0.15)" : "none",
                         border: esHoy ? "1px solid rgba(157,92,192,0.3)" : "1px solid transparent",
                         borderRadius: "3px",
