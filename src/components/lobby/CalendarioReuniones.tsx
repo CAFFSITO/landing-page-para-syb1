@@ -126,10 +126,10 @@ export default function CalendarioReuniones({ reuniones }: Props) {
         style={{
           position: "relative",
           fontSize: "0.6rem",
-          color: esPasado ? "rgba(255,255,255,0.05)" : tiene ? "#FFFFFF" : esHoy ? "#9D5CC0" : "rgba(255,255,255,0.4)",
+          color: esPasado ? "rgba(255,255,255,0.3)" : "#FFFFFF",
           textAlign: "center",
           padding: "3px 1px",
-          opacity: esPasado ? 0.05 : 1,
+          opacity: 1,
           background: esSel ? "rgba(157,92,192,0.3)" : esHoy ? "rgba(157,92,192,0.2)" : "none",
           border: esSel ? "1px solid #9D5CC0" : esHoy ? "1px solid rgba(157,92,192,0.55)" : "1px solid transparent",
           borderRadius: "3px",
@@ -193,10 +193,10 @@ export default function CalendarioReuniones({ reuniones }: Props) {
               style={{
                 position: "relative",
                 fontSize: "0.8rem",
-                color: esPasado ? "rgba(255,255,255,0.05)" : tiene ? "#FFFFFF" : esHoy ? "#9D5CC0" : "rgba(255,255,255,0.5)",
+                color: esPasado ? "rgba(255,255,255,0.3)" : "#FFFFFF",
                 textAlign: "center",
                 padding: "8px 4px",
-                opacity: esPasado ? 0.05 : 1,
+                opacity: 1,
                 background: esSel ? "rgba(157,92,192,0.3)" : esHoy ? "rgba(157,92,192,0.2)" : tiene && !esPasado ? "rgba(157,92,192,0.08)" : "none",
                 border: esSel ? "1px solid #9D5CC0" : esHoy ? "1px solid rgba(157,92,192,0.55)" : "1px solid transparent",
                 borderRadius: "6px",
@@ -362,7 +362,7 @@ export default function CalendarioReuniones({ reuniones }: Props) {
                       borderRadius: "8px",
                       border: esSel ? "1px solid #9D5CC0" : esHoy ? "1px solid rgba(157,92,192,0.55)" : "1px solid rgba(157,92,192,0.1)",
                       background: esSel ? "rgba(157,92,192,0.25)" : esHoy ? "rgba(157,92,192,0.15)" : tiene && !esPasado ? "rgba(157,92,192,0.06)" : "none",
-                      opacity: esPasado ? 0.05 : 1,
+                      opacity: 1,
                       cursor: !esPasado && tiene ? "pointer" : "default",
                       transition: "background 0.15s",
                     }}
@@ -370,7 +370,7 @@ export default function CalendarioReuniones({ reuniones }: Props) {
                     <span style={{ fontSize: "0.6rem", fontWeight: 600, color: esHoy ? "#9D5CC0" : "rgba(157,92,192,0.5)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
                       {DIAS[i]}
                     </span>
-                    <span style={{ fontSize: "1.1rem", fontWeight: 700, color: esHoy ? "#C084FC" : tiene && !esPasado ? "#FFFFFF" : "rgba(255,255,255,0.45)" }}>
+                    <span style={{ fontSize: "1.1rem", fontWeight: 700, color: esPasado ? "rgba(255,255,255,0.3)" : "#FFFFFF" }}>
                       {d.getDate()}
                     </span>
                     {tiene && !esPasado && (
