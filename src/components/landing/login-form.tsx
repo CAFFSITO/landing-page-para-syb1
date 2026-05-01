@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { loginSocioWithToken } from "@/app/actions/auth";
 import Image from "next/image";
 import logoSYB from "@/app/SYB RECUPERADO.png";
 
@@ -18,14 +18,10 @@ export default function LoginForm() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password: token,
-    });
+    const result = await loginSocioWithToken(email, token);
 
-    if (authError) {
-      setError("Credenciales incorrectas. Intentá de nuevo.");
+    if (result.error) {
+      setError(result.error);
       setLoading(false);
       return;
     }

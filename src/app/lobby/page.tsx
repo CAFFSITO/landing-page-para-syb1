@@ -19,13 +19,13 @@ export default async function LobbyPage() {
     redirect("/");
   }
 
-  // Obtener datos del socio vinculado al usuario autenticado
+  // Obtener datos del socio vinculado al usuario autenticado (ahora por email)
   const { data: socio } = await supabase
     .from("socios")
     .select(
       "id, nombre, empresa, fase_actual, fase_1_done, fase_2_done, fase_3_done, email, token, activo, created_at"
     )
-    .eq("id", user.id)
+    .eq("email", user.email)
     .single<Socio>();
 
   if (!socio) {
