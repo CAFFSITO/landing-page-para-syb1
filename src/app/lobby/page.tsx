@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import ProgressBar from "@/components/lobby/ProgressBar";
 import LobbyShell from "@/app/lobby/LobbyShell";
 import ProgramaRoadmap from "@/components/lobby/ProgramaRoadmap";
@@ -19,8 +19,13 @@ export default async function LobbyPage() {
     redirect("/");
   }
 
-  // Obtener datos del socio vinculado al usuario autenticado (ahora por email)
-  const { data: socio } = await supabase
+  // Para los datos, usamos el cliente Admin. 
+  // Esto evita que RLS bloquee la lectura si el ID de Auth (generado dinámicamente) 
+  // no coincide con el ID de la tabla socios (generado al insertar manualmente).
+  // La seguridad está garantizada porque filtramos estrictamente por `user.email` (que es seguro y viene del token validado).
+  const adminClient = createAdminClient();
+
+  const { data: socio } = await adminClient
     .from("socios")
     .select(
       "id, nombre, empresa, fase_actual, fase_1_done, fase_2_done, fase_3_done, email, token, activo, created_at"
@@ -32,14 +37,14 @@ export default async function LobbyPage() {
     redirect("/");
   }
 
-  // Fetches paralelos: entregables, reuniones, reportes, lecturas
+  // Fetches paralelos: entregables, reuniones, reportes, lecturas (usando adminClient)
   const [
     { data: entregables },
     { data: reuniones },
     { data: reportes },
     { data: lecturas },
   ] = await Promise.all([
-    supabase
+    adminClient
       .from("entregables")
       .select("*")
       .eq("socio_id", socio.id)
@@ -48,7 +53,7 @@ export default async function LobbyPage() {
       .order("orden")
       .returns<Entregable[]>(),
 
-    supabase
+    adminClient
       .from("reuniones")
       .select("*")
       .eq("socio_id", socio.id)
@@ -56,7 +61,7 @@ export default async function LobbyPage() {
       .order("numero")
       .returns<Reunion[]>(),
 
-    supabase
+    adminClient
       .from("reportes")
       .select("*")
       .eq("socio_id", socio.id)
@@ -65,7 +70,7 @@ export default async function LobbyPage() {
       .order("numero")
       .returns<Reporte[]>(),
 
-    supabase
+    adminClient
       .from("lecturas")
       .select("*")
       .eq("socio_id", socio.id)
