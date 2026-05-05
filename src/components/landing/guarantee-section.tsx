@@ -1,119 +1,81 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
-import { Shield, CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
+import { ShieldCheck } from "lucide-react";
 
-const conditions = [
-  "Completaste las 3 fases del programa",
-  "Tu equipo usó el sistema al menos 28 días",
-  "Participaste de las reuniones de seguimiento",
-  "Los procesos acordados no mejoraron métricas",
-];
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: "easeOut" },
-  },
-};
+const spring = { type: "spring" as const, stiffness: 80, damping: 18 };
 
 export default function GuaranteeSection() {
   return (
     <section
       id="garantia"
-      className="relative w-full py-24 md:py-32"
-      style={{
-        background: "linear-gradient(180deg, #3B1E63 0%, #1A0A2E 100%)",
-      }}
+      className="relative w-full py-24 md:py-32 overflow-hidden"
+      style={{ background: "linear-gradient(180deg, #1A0A2E 0%, #0D0618 100%)" }}
     >
-      <div className="max-w-4xl mx-auto px-6">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          className="text-center"
+      {/* Ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[260px] bg-primary/25 rounded-full blur-[100px] pointer-events-none" />
+
+      <div className="relative z-10 max-w-4xl mx-auto px-6">
+
+        {/* Eyebrow */}
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={spring}
+          className="text-xs font-bold uppercase tracking-[0.28em] text-secondary mb-8"
         >
-          {/* Shield icon */}
-          <motion.div variants={itemVariants} className="flex justify-center mb-6">
-            <Shield className="w-14 h-14 text-secondary" />
-          </motion.div>
+          Sin riesgo
+        </motion.p>
 
-          {/* Overline */}
-          <motion.p
-            variants={itemVariants}
-            className="text-sm font-bold uppercase tracking-[0.25em] text-secondary mb-4"
-          >
-            Sin Riesgo
-          </motion.p>
+        {/* Divider top */}
+        <motion.div
+          initial={{ scaleX: 0, originX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ ...spring, delay: 0.05 }}
+          className="w-full h-px bg-white/[0.08] mb-10"
+        />
 
-          {/* Heading */}
-          <motion.h2
-            variants={itemVariants}
-            className="text-3xl md:text-[2.25rem] font-bold text-contrast leading-[1.2] mb-12"
-          >
-            No queremos tu dinero si no transformamos tu negocio.
-          </motion.h2>
+        {/* Main block */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ ...spring, delay: 0.1 }}
+          className="relative rounded-2xl border border-white/[0.07] bg-white/[0.03] backdrop-blur-xl px-8 md:px-12 py-10 md:py-14 overflow-hidden"
+          style={{
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 40px rgba(0,0,0,0.35)",
+          }}
+        >
+          {/* Inner corner glow */}
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-secondary/10 rounded-full blur-[56px] pointer-events-none" />
 
-          {/* Options side by side */}
-          <motion.div
-            variants={itemVariants}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12"
-          >
-            {/* Option A */}
-            <div className="rounded-xl border border-[rgba(157,92,192,0.25)] bg-[#1C0D35]/60 p-6 md:p-8 text-left">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-secondary/80 mb-2">
-                Opción A
-              </p>
-              <h3 className="text-xl font-bold text-contrast mb-3">Retirada</h3>
-              <p className="text-contrast/70 text-sm leading-relaxed">
-                Si después de 28 días el sistema no cumple lo acordado, te
-                devolvemos el 100% de tu inversión. Sin preguntas, sin letras
-                chicas.
+          <div className="relative z-10 flex flex-col gap-6">
+            <div className="flex items-start gap-4">
+              <ShieldCheck className="w-6 h-6 text-secondary shrink-0 mt-1" />
+              <p className="text-xl md:text-2xl font-bold text-contrast leading-[1.4]">
+                Si el sistema no cumple lo acordado, te devolvemos el 100% de tu inversión o seguimos trabajando sin costo adicional hasta alcanzar los resultados prometidos.
               </p>
             </div>
 
-            {/* Option B */}
-            <div className="rounded-xl border border-[rgba(157,92,192,0.25)] bg-[#1C0D35]/60 p-6 md:p-8 text-left">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-secondary/80 mb-2">
-                Opción B
-              </p>
-              <h3 className="text-xl font-bold text-contrast mb-3">Compromiso</h3>
-              <p className="text-contrast/70 text-sm leading-relaxed">
-                Si no estás satisfecho pero confiás en el proceso, seguimos
-                trabajando sin costo adicional hasta alcanzar los resultados
-                prometidos.
-              </p>
-            </div>
-          </motion.div>
+            <div className="h-px w-full bg-white/[0.07]" />
 
-          {/* Conditions */}
-          <motion.ul
-            variants={containerVariants}
-            className="space-y-3 text-left max-w-lg mx-auto"
-          >
-            {conditions.map((condition) => (
-              <motion.li
-                key={condition}
-                variants={itemVariants}
-                className="flex items-start gap-3 text-contrast/80 text-sm md:text-base"
-              >
-                <CheckCircle2 className="w-5 h-5 text-success mt-0.5 shrink-0" />
-                {condition}
-              </motion.li>
-            ))}
-          </motion.ul>
+            <p className="text-sm text-contrast/50 leading-relaxed max-w-2xl">
+              Construimos para que funcione. Pero si después de 28 días de uso activo el sistema no alcanzó lo que acordamos, vos elegís cómo querés proceder. Sin letra chica, sin demoras.
+            </p>
+          </div>
         </motion.div>
+
+        {/* Divider bottom */}
+        <motion.div
+          initial={{ scaleX: 0, originX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ ...spring, delay: 0.25 }}
+          className="w-full h-px bg-white/[0.08] mt-10"
+        />
+
       </div>
     </section>
   );

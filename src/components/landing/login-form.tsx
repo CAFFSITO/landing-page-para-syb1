@@ -2,9 +2,21 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { loginSocioWithToken } from "@/app/actions/auth";
 import Image from "next/image";
 import logoSYB from "@/app/SYB RECUPERADO.png";
+
+const spring = { type: "spring" as const, stiffness: 80, damping: 18 };
+
+function SkeletonBar({ width = "100%" }: { width?: string }) {
+  return (
+    <div
+      className="h-3 rounded-full bg-[rgba(157,92,192,0.15)] animate-pulse"
+      style={{ width }}
+    />
+  );
+}
 
 export default function LoginForm() {
   const router = useRouter();
@@ -12,6 +24,7 @@ export default function LoginForm() {
   const [token, setToken] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shake, setShake] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -23,86 +36,51 @@ export default function LoginForm() {
     if (result.error) {
       setError(result.error);
       setLoading(false);
+      setShake(true);
+      setTimeout(() => setShake(false), 600);
       return;
     }
 
     router.push("/lobby");
   }
 
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    backgroundColor: "#0F0720",
-    border: "1.5px solid rgba(157,92,192,0.4)",
-    borderRadius: "6px",
-    padding: "12px 16px",
-    color: "#FFFFFF",
-    fontSize: "1rem",
-    outline: "none",
-    boxSizing: "border-box",
-    fontFamily: "inherit",
-  };
-
   return (
-    <div
-      style={{ backgroundColor: "#0D0618", minHeight: "100vh" }}
-      className="flex flex-col items-center justify-center px-4"
-    >
-      {/* Logo SYB */}
+    <div className="min-h-[100dvh] flex flex-col items-center justify-center px-4 bg-[#0D0618]">
+
+      {/* Logo */}
       <div className="mb-8 flex flex-col items-center gap-2">
-        <Image src={logoSYB} alt="Logo SYB" width={96} height={96} style={{ objectFit: "contain" }} />
-        <span
-          style={{
-            fontFamily: "Merriweather, Georgia, serif",
-            fontWeight: 700,
-            fontSize: "1.25rem",
-            color: "#FFFFFF",
-            letterSpacing: "0.12em",
-          }}
-        >
-          SYB
-        </span>
+        <Image
+          src={logoSYB}
+          alt="Logo Scale Your Business"
+          width={88}
+          height={88}
+          style={{ objectFit: "contain" }}
+        />
+        <div className="flex flex-col items-center leading-none mt-1">
+          <span className="text-lg font-bold text-contrast tracking-[0.1em]">SYB</span>
+          <span className="text-[10px] text-contrast/30 tracking-[0.18em] uppercase mt-0.5">
+            Scale Your Business
+          </span>
+        </div>
       </div>
 
-      {/* Card de login */}
-      <div
-        style={{
-          backgroundColor: "#1C0D35",
-          border: "1px solid rgba(157,92,192,0.25)",
-          borderRadius: "12px",
-          padding: "32px",
-          width: "100%",
-          maxWidth: "400px",
-          boxShadow: "0 2px 20px rgba(59,30,99,0.15)",
-        }}
+      {/* Card */}
+      <motion.div
+        animate={shake ? { x: [0, -8, 8, -5, 5, -2, 2, 0] } : { x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-[400px] rounded-2xl border border-[rgba(157,92,192,0.2)] bg-[#1C0D35] p-8"
+        style={{ boxShadow: "0 8px 40px rgba(0,0,0,0.4)" }}
       >
-        <h1
-          style={{
-            fontFamily: "Merriweather, Georgia, serif",
-            fontWeight: 700,
-            fontSize: "1.5rem",
-            color: "#FFFFFF",
-            marginBottom: "8px",
-          }}
-        >
-          Iniciá sesión
-        </h1>
-        <p
-          style={{
-            fontSize: "0.875rem",
-            color: "rgba(157,92,192,0.6)",
-            marginBottom: "28px",
-          }}
-        >
+        <h1 className="text-xl font-bold text-contrast mb-1">Iniciá sesión</h1>
+        <p className="text-sm text-secondary/50 mb-7">
           Usá las credenciales que te enviamos
         </p>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {/* Campo Email */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <label
-              htmlFor="email"
-              style={{ fontSize: "0.875rem", color: "#c4b8d4", fontWeight: 500 }}
-            >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+
+          {/* Email */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email" className="text-sm font-medium text-contrast/60">
               Email
             </label>
             <input
@@ -112,23 +90,15 @@ export default function LoginForm() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={inputStyle}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "#9D5CC0";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "rgba(157,92,192,0.4)";
-              }}
+              className="w-full rounded-md border-[1.5px] border-[rgba(157,92,192,0.35)] bg-[#0F0720] px-4 py-3 text-sm text-contrast placeholder:text-contrast/25 outline-none focus:border-secondary transition-colors duration-200"
+              placeholder="tu@email.com"
             />
           </div>
 
-          {/* Campo Token */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <label
-              htmlFor="token"
-              style={{ fontSize: "0.875rem", color: "#c4b8d4", fontWeight: 500 }}
-            >
-              Token
+          {/* Token */}
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="token" className="text-sm font-medium text-contrast/60">
+              Token de acceso
             </label>
             <input
               id="token"
@@ -137,60 +107,48 @@ export default function LoginForm() {
               required
               value={token}
               onChange={(e) => setToken(e.target.value)}
-              style={inputStyle}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "#9D5CC0";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "rgba(157,92,192,0.4)";
-              }}
+              className="w-full rounded-md border-[1.5px] border-[rgba(157,92,192,0.35)] bg-[#0F0720] px-4 py-3 text-sm text-contrast placeholder:text-contrast/25 outline-none focus:border-secondary transition-colors duration-200"
+              placeholder="••••••••"
             />
           </div>
 
-          {/* Botón submit */}
+          {/* Error */}
+          <AnimatePresence>
+            {error && (
+              <motion.p
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={spring}
+                className="text-sm text-danger text-center"
+              >
+                {error}
+              </motion.p>
+            )}
+          </AnimatePresence>
+
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
+            className="w-full py-3.5 rounded-md font-bold text-sm text-contrast transition-all duration-200 active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed"
             style={{
-              width: "100%",
-              padding: "14px",
               background: loading
-                ? "rgba(157,92,192,0.5)"
+                ? "rgba(157,92,192,0.4)"
                 : "linear-gradient(135deg, #3B1E63, #9D5CC0)",
-              color: "#FFFFFF",
-              fontFamily: "Merriweather, Georgia, serif",
-              fontWeight: 700,
-              fontSize: "1rem",
-              borderRadius: "6px",
-              border: "none",
-              cursor: loading ? "not-allowed" : "pointer",
-              transition: "filter 200ms ease",
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) e.currentTarget.style.filter = "brightness(1.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.filter = "brightness(1)";
             }}
           >
-            {loading ? "Iniciando sesión..." : "Ingresar"}
+            {loading ? (
+              <div className="flex flex-col gap-2 items-center py-0.5">
+                <SkeletonBar width="60%" />
+                <SkeletonBar width="40%" />
+              </div>
+            ) : (
+              "Ingresar"
+            )}
           </button>
-
-          {/* Mensaje de error */}
-          {error && (
-            <p
-              style={{
-                color: "#EF4444",
-                fontSize: "0.875rem",
-                textAlign: "center",
-                margin: 0,
-              }}
-            >
-              {error}
-            </p>
-          )}
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }
