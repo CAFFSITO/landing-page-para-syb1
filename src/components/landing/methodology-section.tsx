@@ -26,7 +26,7 @@ const phases: Phase[] = [
     label: "Fase dos",
     title: "Diseñamos los sistemas y soluciones que tu negocio necesita ",
     description:
-      "Diseñamos el sistema ideal para tu negocio y lo construimos de forma iterativa. Cada entrega se valida con vos antes de avanzar. Nada se automatiza sin que el diseño esté definido.",
+      "Diseñamos el sistema ideal para tu negocio y lo construimos de forma iterativa. Cada entrega se valida con vos antes de avanzar.",
     result: "Sistema diseñado para operar y escalar sin depender de vos.",
     duration: "Semanas 3 — 6",
   },

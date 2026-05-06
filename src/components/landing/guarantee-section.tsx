@@ -62,7 +62,7 @@ export default function GuaranteeSection() {
             <div className="h-px w-full bg-white/[0.07]" />
 
             <p className="text-sm text-contrast/50 leading-relaxed max-w-2xl">
-              Construimos para que funcione. Pero si después de 28 días de uso activo el sistema no alcanzó lo que acordamos, vos elegís cómo querés proceder. Sin letra chica, sin demoras.
+              Construimos para que funcione. Pero si después de 28 días de uso activo el sistema no alcanzó lo que acordamos, vos elegís cómo querés proceder.
             </p>
           </div>
         </motion.div>

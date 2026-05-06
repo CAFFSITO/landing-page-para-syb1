@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import logoSYB from "@/app/SYB RECUPERADO.png";
 
 const CAL_URL = process.env.NEXT_PUBLIC_CAL_URL ?? "#";
 
@@ -36,13 +38,14 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex flex-col leading-none group">
-          <span className="text-xl font-bold text-contrast tracking-tight group-hover:text-secondary transition-colors duration-200">
-            SYB
-          </span>
-          <span className="text-[10px] font-normal text-contrast/35 tracking-[0.2em] uppercase">
-            Scale Your Business
-          </span>
+        <Link href="/" className="flex items-center">
+          <Image
+            src={logoSYB}
+            alt="Scale Your Business"
+            height={48}
+            className="w-auto object-contain"
+            priority
+          />
         </Link>
 
         {/* Desktop nav links */}

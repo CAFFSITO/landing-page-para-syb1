@@ -33,9 +33,6 @@ export default function ProblemSection() {
           <p className="text-base text-contrast/55 leading-relaxed mb-4 max-w-sm">
             No es falta de esfuerzo ni de herramientas. Es que el sistema que sostiene tu negocio se construyó sobre la marcha, decisión por decisión, sin un diseño de fondo.
           </p>
-          <p className="text-base text-contrast/55 leading-relaxed max-w-sm">
-            Y ese sistema tiene un techo. Ese techo sos vos.
-          </p>
         </motion.div>
 
         {/* Right: symptoms as editorial list */}
