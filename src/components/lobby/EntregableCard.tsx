@@ -200,7 +200,7 @@ export default function EntregableCard({
                   backgroundColor: versionBg,
                 }}
               >
-                {esObsoleto ? "Obsoleto" : "Vigente"}
+                {esObsoleto ? "Rechazado" : "Aceptado"}
               </span>
             )}
           </div>

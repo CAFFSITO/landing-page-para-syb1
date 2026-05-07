@@ -92,7 +92,7 @@ function SortableEntregableRow({
       </span>
       {/* Dot de versión */}
       <span
-        title={entregable.version_estado === 'obsoleto' ? 'Obsoleto' : 'Vigente'}
+        title={entregable.version_estado === 'obsoleto' ? 'Rechazado' : 'Aceptado'}
         style={{
           flexShrink: 0,
           width: 8,

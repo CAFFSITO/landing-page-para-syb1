@@ -275,7 +275,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
                   backgroundColor: v === 'vigente' ? '#22c55e' : '#ef4444',
                   flexShrink: 0,
                 }} />
-                {v === 'vigente' ? 'Vigente' : 'Obsoleto'}
+                {v === 'vigente' ? 'Aceptado' : 'Rechazado'}
               </button>
             ))}
           </div>
