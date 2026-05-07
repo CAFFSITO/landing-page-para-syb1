@@ -30,37 +30,31 @@ export default function AdminNavbar() {
         top: 0,
         zIndex: 50,
         height: "56px",
-        backgroundColor: "#120825",
-        borderBottom: "1px solid rgba(157,92,192,0.2)",
+        backgroundColor: "var(--background-soft)",
+        borderBottom: "1px solid var(--hairline)",
         display: "flex",
         alignItems: "center",
         paddingInline: "24px",
         gap: "12px",
       }}
     >
-      {/* Logo + título */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1 }}>
-        <Image src={logoSYB} alt="Logo SYB" width={36} height={36} style={{ objectFit: "contain" }} />
+      <div style={{ display: "flex", alignItems: "center", gap: "14px", flex: 1 }}>
+        <Image
+          src={logoSYB}
+          alt="Scale Your Business"
+          height={32}
+          style={{ width: "auto", objectFit: "contain" }}
+          priority
+        />
         <span
           style={{
-            fontFamily: "Merriweather, Georgia, serif",
-            fontWeight: 700,
-            fontSize: "0.95rem",
-            color: "#FFFFFF",
-            letterSpacing: "0.06em",
-          }}
-        >
-          SYB
-        </span>
-        <span
-          style={{
-            fontSize: "0.75rem",
-            color: "rgba(157,92,192,0.7)",
-            paddingLeft: "8px",
-            borderLeft: "1px solid rgba(157,92,192,0.3)",
-            marginLeft: "4px",
-            fontFamily: "inherit",
-            letterSpacing: "0.1em",
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.65rem",
+            fontWeight: 500,
+            color: "var(--foreground-subtle)",
+            paddingLeft: "12px",
+            borderLeft: "1px solid var(--hairline)",
+            letterSpacing: "0.18em",
             textTransform: "uppercase",
           }}
         >
@@ -68,7 +62,6 @@ export default function AdminNavbar() {
         </span>
       </div>
 
-      {/* Toggle tema */}
       <button
         onClick={toggleTheme}
         aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
@@ -78,56 +71,21 @@ export default function AdminNavbar() {
           gap: "6px",
           background: "none",
           border: "none",
-          color: "rgba(255,255,255,0.5)",
+          color: "var(--foreground-muted)",
           cursor: "pointer",
           fontSize: "0.8rem",
-          fontFamily: "inherit",
-          padding: "6px 8px",
-          borderRadius: "6px",
+          fontFamily: "var(--font-sans)",
+          padding: "6px 10px",
+          borderRadius: "var(--radius-sm)",
           transition: "color 150ms ease, background 150ms ease",
         }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = "#FFFFFF";
-          e.currentTarget.style.background = "rgba(157,92,192,0.1)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = "rgba(255,255,255,0.5)";
-          e.currentTarget.style.background = "none";
-        }}
       >
-        {isDark ? <Sun size={16} /> : <Moon size={16} />}
+        {isDark ? <Sun size={15} strokeWidth={1.5} /> : <Moon size={15} strokeWidth={1.5} />}
         <span className="hidden sm:inline">{isDark ? "Modo claro" : "Modo oscuro"}</span>
       </button>
 
-      {/* Logout */}
       <form action={signOut}>
-        <button
-          type="submit"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            background: "none",
-            border: "1px solid rgba(157,92,192,0.3)",
-            color: "#9D5CC0",
-            cursor: "pointer",
-            fontSize: "0.8rem",
-            fontFamily: "inherit",
-            padding: "6px 12px",
-            borderRadius: "6px",
-            transition: "color 150ms ease, border-color 150ms ease, background 150ms ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = "#FFFFFF";
-            e.currentTarget.style.borderColor = "#9D5CC0";
-            e.currentTarget.style.background = "rgba(157,92,192,0.15)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = "#9D5CC0";
-            e.currentTarget.style.borderColor = "rgba(157,92,192,0.3)";
-            e.currentTarget.style.background = "none";
-          }}
-        >
+        <button type="submit" className="syb-btn-ghost" style={{ padding: "6px 14px", fontSize: "0.8rem" }}>
           Cerrar sesión
         </button>
       </form>

@@ -16,27 +16,28 @@ function slugify(str: string) {
     .replace(/[^a-z0-9-]/g, '')
 }
 
-
-
-function inputStyle(focused: boolean): React.CSSProperties {
-  return {
-    width: '100%',
-    backgroundColor: '#0D0618',
-    border: focused ? '1px solid #9D5CC0' : '1px solid rgba(157,92,192,0.25)',
-    color: '#FFFFFF',
-    borderRadius: '8px',
-    padding: '10px 14px',
-    fontSize: '0.875rem',
-    outline: 'none',
-    boxSizing: 'border-box',
-    transition: 'border-color 0.15s',
-  }
+const labelStyle: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontSize: '0.65rem',
+  fontWeight: 500,
+  color: 'var(--foreground-subtle)',
+  textTransform: 'uppercase',
+  letterSpacing: '0.18em',
+  display: 'block',
+  marginBottom: '8px',
 }
 
 function FieldError({ msg }: { msg?: string }) {
   if (!msg) return null
   return (
-    <span style={{ color: '#ef4444', fontSize: '0.75rem', marginTop: '4px', display: 'block' }}>
+    <span
+      style={{
+        color: 'var(--color-danger)',
+        fontSize: '0.78rem',
+        marginTop: '6px',
+        display: 'block',
+      }}
+    >
       {msg}
     </span>
   )
@@ -58,9 +59,7 @@ export default function NuevoSocioPage() {
   const [notas, setNotas] = useState('')
   const [loading, setLoading] = useState(false)
   const [modalData, setModalData] = useState<ModalData | null>(null)
-
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [focused, setFocused] = useState<string | null>(null)
 
   const tokenManuallyEdited = useRef(false)
   const randomSuffix = useRef<number | null>(null)
@@ -82,7 +81,6 @@ export default function NuevoSocioPage() {
     tokenManuallyEdited.current = true
     setToken(val)
   }
-
 
   function validate(): boolean {
     const errs: Record<string, string> = {}
@@ -135,163 +133,133 @@ export default function NuevoSocioPage() {
 
   return (
     <>
-      <div
-        style={{
-          minHeight: '100vh',
-          backgroundColor: '#0D0618',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '40px 16px',
-        }}
-      >
-        <div style={{ width: '100%', maxWidth: '540px' }}>
-          <Link
-            href="/admin/socios"
+      <div style={{ maxWidth: '560px' }}>
+        <Link
+          href="/admin/socios"
+          style={{
+            color: 'var(--foreground-muted)',
+            textDecoration: 'none',
+            fontFamily: 'var(--font-sans)',
+            fontSize: '0.85rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            marginBottom: '24px',
+          }}
+        >
+          ← Socios
+        </Link>
+
+        <header style={{ marginBottom: '36px' }}>
+          <p
             style={{
-              color: 'rgba(157,92,192,0.7)',
-              textDecoration: 'none',
-              fontSize: '0.875rem',
-              display: 'inline-block',
-              marginBottom: '16px',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.7rem',
+              fontWeight: 500,
+              textTransform: 'uppercase',
+              letterSpacing: '0.22em',
+              color: 'var(--foreground-subtle)',
+              margin: '0 0 12px 0',
             }}
           >
-            ← Volver
-          </Link>
-          <div
+            Panel Admin
+          </p>
+          <h1
             style={{
-              backgroundColor: '#1C0D35',
-              border: '1px solid rgba(157,92,192,0.2)',
-              borderRadius: '12px',
-              padding: '40px',
+              fontFamily: 'var(--font-serif)',
+              fontWeight: 700,
+              color: 'var(--foreground)',
+              fontSize: '2rem',
+              margin: 0,
+              letterSpacing: '-0.015em',
             }}
           >
-            <h1
-              style={{
-                fontFamily: 'Merriweather, Georgia, serif',
-                color: '#FFFFFF',
-                fontSize: '1.5rem',
-                margin: '0 0 28px 0',
-              }}
-            >
-              Nuevo socio
-            </h1>
+            Nuevo socio
+          </h1>
+        </header>
 
-            <form onSubmit={handleSubmit} noValidate>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                <div>
-                  <label
-                    style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}
-                  >
-                    Nombre *
-                  </label>
-                  <input
-                    type="text"
-                    value={nombre}
-                    onChange={(e) => setNombre(e.target.value)}
-                    onFocus={() => setFocused('nombre')}
-                    onBlur={() => setFocused(null)}
-                    style={inputStyle(focused === 'nombre')}
-                  />
-                  <FieldError msg={errors.nombre} />
-                </div>
-
-                <div>
-                  <label
-                    style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}
-                  >
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    onFocus={() => setFocused('email')}
-                    onBlur={() => setFocused(null)}
-                    style={inputStyle(focused === 'email')}
-                  />
-                  <FieldError msg={errors.email} />
-                </div>
-
-                <div>
-                  <label
-                    style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}
-                  >
-                    Empresa
-                  </label>
-                  <input
-                    type="text"
-                    value={empresa}
-                    onChange={(e) => setEmpresa(e.target.value)}
-                    onFocus={() => setFocused('empresa')}
-                    onBlur={() => setFocused(null)}
-                    style={inputStyle(focused === 'empresa')}
-                  />
-                </div>
-
-                <div>
-                  <label
-                    style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}
-                  >
-                    Token *
-                  </label>
-                  <input
-                    type="text"
-                    value={token}
-                    onChange={(e) => handleTokenChange(e.target.value)}
-                    onFocus={() => setFocused('token')}
-                    onBlur={() => setFocused(null)}
-                    style={{ ...inputStyle(focused === 'token'), fontFamily: 'monospace' }}
-                  />
-                  <FieldError msg={errors.token} />
-                </div>
-
-
-
-                <div>
-                  <label
-                    style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}
-                  >
-                    Notas internas
-                  </label>
-                  <textarea
-                    value={notas}
-                    onChange={(e) => setNotas(e.target.value)}
-                    onFocus={() => setFocused('notas')}
-                    onBlur={() => setFocused(null)}
-                    rows={3}
-                    style={{
-                      ...inputStyle(focused === 'notas'),
-                      resize: 'vertical',
-                      fontFamily: 'inherit',
-                    }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  style={{
-                    width: '100%',
-                    background: 'linear-gradient(135deg, #3B1E63, #9D5CC0)',
-                    color: '#FFFFFF',
-                    padding: '12px',
-                    borderRadius: '8px',
-                    fontSize: '0.875rem',
-                    fontFamily: 'Merriweather, Georgia, serif',
-                    fontWeight: 700,
-                    border: 'none',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    opacity: loading ? 0.7 : 1,
-                    marginTop: '8px',
-                  }}
-                >
-                  {loading ? 'Creando...' : 'Crear socio'}
-                </button>
+        <div
+          style={{
+            backgroundColor: 'var(--surface-1)',
+            border: '1px solid var(--hairline)',
+            borderRadius: 'var(--radius-md)',
+            padding: '36px 32px',
+          }}
+        >
+          <form onSubmit={handleSubmit} noValidate>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div>
+                <label style={labelStyle}>Nombre *</label>
+                <input
+                  type="text"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  className="syb-input"
+                />
+                <FieldError msg={errors.nombre} />
               </div>
-            </form>
-          </div>
+
+              <div>
+                <label style={labelStyle}>Email *</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="syb-input"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                />
+                <FieldError msg={errors.email} />
+              </div>
+
+              <div>
+                <label style={labelStyle}>Empresa</label>
+                <input
+                  type="text"
+                  value={empresa}
+                  onChange={(e) => setEmpresa(e.target.value)}
+                  className="syb-input"
+                />
+              </div>
+
+              <div>
+                <label style={labelStyle}>Token *</label>
+                <input
+                  type="text"
+                  value={token}
+                  onChange={(e) => handleTokenChange(e.target.value)}
+                  className="syb-input"
+                  style={{ fontFamily: 'var(--font-mono)' }}
+                />
+                <FieldError msg={errors.token} />
+              </div>
+
+              <div>
+                <label style={labelStyle}>Notas internas</label>
+                <textarea
+                  value={notas}
+                  onChange={(e) => setNotas(e.target.value)}
+                  rows={4}
+                  className="syb-input"
+                  style={{ resize: 'vertical' }}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="syb-btn-primary"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  marginTop: '8px',
+                  opacity: loading ? 0.7 : 1,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {loading ? 'Creando…' : 'Crear socio'}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
@@ -300,7 +268,8 @@ export default function NuevoSocioPage() {
           style={{
             position: 'fixed',
             inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.75)',
+            backgroundColor: 'rgba(13,6,24,0.55)',
+            backdropFilter: 'blur(6px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -310,55 +279,72 @@ export default function NuevoSocioPage() {
         >
           <div
             style={{
-              backgroundColor: '#1C0D35',
-              border: '1px solid rgba(157,92,192,0.3)',
-              borderRadius: '12px',
-              padding: '36px',
+              backgroundColor: 'var(--surface-1)',
+              border: '1px solid var(--hairline)',
+              borderRadius: 'var(--radius-md)',
+              padding: '32px',
               width: '100%',
               maxWidth: '480px',
+              boxShadow: 'var(--shadow-elevated)',
             }}
           >
-            <h2
+            <p
               style={{
-                fontFamily: 'Merriweather, Georgia, serif',
-                color: '#FFFFFF',
-                fontSize: '1.25rem',
-                margin: '0 0 8px 0',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.65rem',
+                fontWeight: 500,
+                textTransform: 'uppercase',
+                letterSpacing: '0.18em',
+                color: 'var(--foreground-subtle)',
+                margin: '0 0 10px 0',
               }}
             >
-              Socio creado exitosamente
+              Listo
+            </p>
+            <h2
+              style={{
+                fontFamily: 'var(--font-serif)',
+                fontWeight: 700,
+                color: 'var(--foreground)',
+                fontSize: '1.35rem',
+                margin: '0 0 6px 0',
+                letterSpacing: '-0.01em',
+              }}
+            >
+              Socio creado
             </h2>
-            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.875rem', margin: '0 0 24px 0' }}>
-              Guardá estos datos — la contraseña no se puede recuperar.
+            <p
+              style={{
+                color: 'var(--foreground-muted)',
+                fontSize: '0.875rem',
+                margin: '0 0 24px 0',
+                lineHeight: 1.6,
+              }}
+            >
+              Guardá estos datos. La contraseña no se puede recuperar.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               {[
-                {
-                  label: 'Link de acceso',
-                  value: `${SITE_URL}/login`,
-                },
+                { label: 'Link de acceso', value: `${SITE_URL}/login` },
                 { label: 'Email', value: modalData.email },
                 { label: 'Token', value: modalData.token },
-              ].map(({ label, value }) => (
-                <div key={label}>
-                  <div
-                    style={{
-                      color: 'rgba(157,92,192,0.7)',
-                      fontSize: '0.65rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
-                      marginBottom: '4px',
-                    }}
-                  >
-                    {label}
-                  </div>
+              ].map(({ label, value }, idx, arr) => (
+                <div
+                  key={label}
+                  style={{
+                    padding: '14px 0',
+                    borderTop: idx === 0 ? 'none' : '1px solid var(--hairline)',
+                    borderBottom: idx === arr.length - 1 ? '1px solid var(--hairline)' : 'none',
+                  }}
+                >
+                  <div style={labelStyle}>{label}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span
                       style={{
-                        fontFamily: 'monospace',
-                        fontSize: '0.8rem',
-                        color: '#FFFFFF',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.82rem',
+                        color: 'var(--foreground)',
                         wordBreak: 'break-all',
                         flex: 1,
                       }}
@@ -371,50 +357,29 @@ export default function NuevoSocioPage() {
                         background: 'none',
                         border: 'none',
                         cursor: 'pointer',
-                        color: 'rgba(157,92,192,0.7)',
+                        color: 'var(--foreground-muted)',
                         padding: '4px',
                         display: 'flex',
                         alignItems: 'center',
                         flexShrink: 0,
                       }}
+                      aria-label="Copiar"
                     >
-                      <Copy size={14} />
+                      <Copy size={13} strokeWidth={1.5} />
                     </button>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div style={{ display: 'flex', gap: '10px', marginTop: '28px' }}>
-              <button
-                onClick={copyAll}
-                style={{
-                  flex: 1,
-                  backgroundColor: 'transparent',
-                  border: '1px solid rgba(157,92,192,0.3)',
-                  color: '#9D5CC0',
-                  borderRadius: '8px',
-                  padding: '10px',
-                  fontSize: '0.875rem',
-                  cursor: 'pointer',
-                }}
-              >
+            <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
+              <button onClick={copyAll} className="syb-btn-ghost" style={{ flex: 1 }}>
                 Copiar todo
               </button>
               <button
                 onClick={() => router.push('/admin/socios/' + modalData.socioId)}
-                style={{
-                  flex: 1,
-                  background: 'linear-gradient(135deg, #3B1E63, #9D5CC0)',
-                  border: 'none',
-                  color: '#FFFFFF',
-                  borderRadius: '8px',
-                  padding: '10px',
-                  fontSize: '0.875rem',
-                  fontFamily: 'Merriweather, Georgia, serif',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
+                className="syb-btn-primary"
+                style={{ flex: 1 }}
               >
                 Ir al perfil
               </button>

@@ -36,11 +36,11 @@ export default function ModalVideo({ isOpen, onClose, entregable }: ModalVideoPr
           width="100%"
           height="460px"
           allow="autoplay; fullscreen; picture-in-picture"
-          style={{ border: "none", borderRadius: "8px" }}
+          style={{ border: "1px solid var(--hairline)", borderRadius: "var(--radius-sm)" }}
           title={entregable.titulo}
         />
       ) : (
-        <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "40px 0" }}>
+        <p style={{ color: "var(--foreground-muted)", textAlign: "center", padding: "40px 0" }}>
           Este entregable no tiene video disponible.
         </p>
       )}

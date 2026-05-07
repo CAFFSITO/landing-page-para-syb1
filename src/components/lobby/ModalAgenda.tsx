@@ -31,32 +31,26 @@ export default function ModalAgenda({ isOpen, onClose, reunion }: ModalAgendaPro
             href={reunion.agenda_url}
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              padding: "10px 20px",
-              background: "linear-gradient(135deg, #3B1E63, #9D5CC0)",
-              color: "#FFFFFF",
-              borderRadius: "6px",
-              textDecoration: "none",
-              fontSize: "0.875rem",
-              fontFamily: "Merriweather, Georgia, serif",
-              fontWeight: 700,
-            }}
+            className="syb-btn-primary"
+            style={{ textDecoration: "none" }}
           >
-            Ver en calendario →
+            Ver en calendario
           </a>
         ) : undefined
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
         {reunion.fecha && (
           <div>
             <p
               style={{
-                margin: "0 0 4px",
-                fontSize: "0.75rem",
-                color: "rgba(157,92,192,0.7)",
+                margin: "0 0 6px",
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.65rem",
+                fontWeight: 500,
                 textTransform: "uppercase",
-                letterSpacing: "0.08em",
+                letterSpacing: "0.18em",
+                color: "var(--foreground-subtle)",
               }}
             >
               Fecha
@@ -64,11 +58,12 @@ export default function ModalAgenda({ isOpen, onClose, reunion }: ModalAgendaPro
             <p
               style={{
                 margin: 0,
-                fontSize: "1rem",
-                color: "#FFFFFF",
-                fontFamily: "Merriweather, Georgia, serif",
+                fontSize: "1.05rem",
+                color: "var(--foreground)",
+                fontFamily: "var(--font-serif)",
                 fontWeight: 700,
                 textTransform: "capitalize",
+                letterSpacing: "-0.005em",
               }}
             >
               {formatearFecha(reunion.fecha)}
@@ -79,22 +74,30 @@ export default function ModalAgenda({ isOpen, onClose, reunion }: ModalAgendaPro
         <div>
           <p
             style={{
-              margin: "0 0 4px",
-              fontSize: "0.75rem",
-              color: "rgba(157,92,192,0.7)",
+              margin: "0 0 6px",
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.65rem",
+              fontWeight: 500,
               textTransform: "uppercase",
-              letterSpacing: "0.08em",
+              letterSpacing: "0.18em",
+              color: "var(--foreground-subtle)",
             }}
           >
             Reunión
           </p>
-          <p style={{ margin: 0, fontSize: "0.9rem", color: "rgba(255,255,255,0.8)" }}>
+          <p style={{ margin: 0, fontSize: "0.95rem", color: "var(--foreground)" }}>
             {reunion.nombre}
           </p>
         </div>
 
         {!reunion.fecha && !reunion.agenda_url && (
-          <p style={{ color: "rgba(255,255,255,0.4)", padding: "16px 0" }}>
+          <p
+            style={{
+              color: "var(--foreground-muted)",
+              padding: "16px 0",
+              fontStyle: "italic",
+            }}
+          >
             La fecha de esta reunión aún no está confirmada.
           </p>
         )}

@@ -43,37 +43,43 @@ function calcularProgreso(socio: SocioRow): number {
   return Math.round((done / 3) * 100);
 }
 
+const headStyle: React.CSSProperties = {
+  padding: "14px 16px",
+  textAlign: "left",
+  fontFamily: "var(--font-mono)",
+  fontSize: "0.62rem",
+  color: "var(--foreground-subtle)",
+  textTransform: "uppercase",
+  letterSpacing: "0.18em",
+  fontWeight: 500,
+  whiteSpace: "nowrap",
+};
+
+const cellBase: React.CSSProperties = {
+  padding: "14px 16px",
+  fontFamily: "var(--font-sans)",
+  fontSize: "0.875rem",
+  whiteSpace: "nowrap",
+};
+
 export default function SociosTable({ socios, ultimaActividad }: Props) {
   return (
-    <div style={{ overflowX: "auto" }}>
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          fontSize: "0.875rem",
-        }}
-      >
+    <div
+      style={{
+        overflowX: "auto",
+        backgroundColor: "var(--surface-1)",
+        border: "1px solid var(--hairline)",
+        borderRadius: "var(--radius-md)",
+      }}
+    >
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.875rem" }}>
         <thead>
-          <tr style={{ borderBottom: "1px solid rgba(157,92,192,0.15)" }}>
-            {["Nombre", "Empresa", "Fase", "Progreso", "Última actividad", "Acciones"].map(
-              (col) => (
-                <th
-                  key={col}
-                  style={{
-                    padding: "12px 16px",
-                    textAlign: "left",
-                    fontSize: "0.7rem",
-                    color: "rgba(157,92,192,0.7)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    fontWeight: 600,
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {col}
-                </th>
-              )
-            )}
+          <tr style={{ borderBottom: "1px solid var(--hairline)" }}>
+            {["Nombre", "Empresa", "Fase", "Progreso", "Última actividad", "Acciones"].map((col) => (
+              <th key={col} style={headStyle}>
+                {col}
+              </th>
+            ))}
           </tr>
         </thead>
 
@@ -85,7 +91,8 @@ export default function SociosTable({ socios, ultimaActividad }: Props) {
                 style={{
                   padding: "40px 16px",
                   textAlign: "center",
-                  color: "rgba(255,255,255,0.3)",
+                  color: "var(--foreground-subtle)",
+                  fontStyle: "italic",
                 }}
               >
                 No hay socios activos.
@@ -100,14 +107,11 @@ export default function SociosTable({ socios, ultimaActividad }: Props) {
                 <tr
                   key={socio.id}
                   style={{
-                    borderBottom:
-                      idx < socios.length - 1
-                        ? "1px solid rgba(157,92,192,0.08)"
-                        : "none",
+                    borderBottom: idx < socios.length - 1 ? "1px solid var(--hairline)" : "none",
                     transition: "background 150ms ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "rgba(157,92,192,0.05)";
+                    e.currentTarget.style.background = "var(--surface-2)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "transparent";
@@ -115,51 +119,30 @@ export default function SociosTable({ socios, ultimaActividad }: Props) {
                 >
                   <td
                     style={{
-                      padding: "14px 16px",
-                      color: "#FFFFFF",
-                      fontFamily: "Merriweather, Georgia, serif",
-                      fontWeight: 700,
-                      whiteSpace: "nowrap",
+                      ...cellBase,
+                      color: "var(--foreground)",
+                      fontWeight: 600,
                     }}
                   >
                     {socio.nombre}
                   </td>
 
-                  <td
-                    style={{
-                      padding: "14px 16px",
-                      color: "rgba(255,255,255,0.6)",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
+                  <td style={{ ...cellBase, color: "var(--foreground-muted)" }}>
                     {socio.empresa ?? "—"}
                   </td>
 
-                  <td style={{ padding: "14px 16px", whiteSpace: "nowrap" }}>
-                    <span
-                      style={{
-                        display: "inline-block",
-                        padding: "3px 10px",
-                        borderRadius: "20px",
-                        fontSize: "0.75rem",
-                        fontWeight: 600,
-                        backgroundColor: "rgba(157,92,192,0.15)",
-                        color: "#9D5CC0",
-                        border: "1px solid rgba(157,92,192,0.3)",
-                      }}
-                    >
-                      Fase {socio.fase_actual}
-                    </span>
+                  <td style={cellBase}>
+                    <span className="syb-tag syb-tag-accent">Fase 0{socio.fase_actual}</span>
                   </td>
 
-                  <td style={{ padding: "14px 16px", minWidth: "120px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <td style={{ ...cellBase, minWidth: "140px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       <div
                         style={{
                           flex: 1,
-                          height: "6px",
-                          backgroundColor: "rgba(157,92,192,0.15)",
-                          borderRadius: "3px",
+                          height: "3px",
+                          backgroundColor: "var(--hairline)",
+                          borderRadius: "2px",
                           overflow: "hidden",
                           minWidth: "60px",
                         }}
@@ -168,16 +151,17 @@ export default function SociosTable({ socios, ultimaActividad }: Props) {
                           style={{
                             height: "100%",
                             width: `${progreso}%`,
-                            background: "linear-gradient(90deg, #9D5CC0, #C084FC)",
-                            borderRadius: "3px",
+                            backgroundColor: "var(--foreground)",
+                            borderRadius: "2px",
                             transition: "width 600ms ease",
                           }}
                         />
                       </div>
                       <span
                         style={{
-                          fontSize: "0.75rem",
-                          color: "rgba(255,255,255,0.5)",
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "0.7rem",
+                          color: "var(--foreground-subtle)",
                           whiteSpace: "nowrap",
                         }}
                       >
@@ -188,46 +172,27 @@ export default function SociosTable({ socios, ultimaActividad }: Props) {
 
                   <td
                     style={{
-                      padding: "14px 16px",
-                      color: "rgba(255,255,255,0.4)",
+                      ...cellBase,
+                      color: "var(--foreground-muted)",
                       fontSize: "0.8rem",
-                      whiteSpace: "nowrap",
                     }}
                   >
                     {tiempoRelativo(ultimaAct)}
                   </td>
 
-                  <td style={{ padding: "14px 16px", whiteSpace: "nowrap" }}>
+                  <td style={cellBase}>
                     <div style={{ display: "flex", gap: "8px" }}>
                       <Link
                         href="/lobby"
-                        style={{
-                          padding: "5px 12px",
-                          fontSize: "0.75rem",
-                          borderRadius: "6px",
-                          backgroundColor: "rgba(157,92,192,0.15)",
-                          color: "#9D5CC0",
-                          border: "1px solid rgba(157,92,192,0.3)",
-                          textDecoration: "none",
-                          fontFamily: "inherit",
-                          transition: "background 150ms ease",
-                        }}
+                        className="syb-btn-ghost"
+                        style={{ textDecoration: "none", padding: "5px 12px", fontSize: "0.75rem" }}
                       >
                         Ver lobby
                       </Link>
                       <Link
                         href={`/admin/socios/${socio.id}`}
-                        style={{
-                          padding: "5px 12px",
-                          fontSize: "0.75rem",
-                          borderRadius: "6px",
-                          backgroundColor: "transparent",
-                          color: "rgba(255,255,255,0.5)",
-                          border: "1px solid rgba(255,255,255,0.1)",
-                          textDecoration: "none",
-                          fontFamily: "inherit",
-                          transition: "color 150ms ease, border-color 150ms ease",
-                        }}
+                        className="syb-btn-ghost"
+                        style={{ textDecoration: "none", padding: "5px 12px", fontSize: "0.75rem" }}
                       >
                         Editar
                       </Link>

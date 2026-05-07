@@ -50,40 +50,58 @@ export default async function AdminPage() {
   const enFase1 = sociosList.filter((s) => s.fase_actual === 1).length;
   const enFase3 = sociosList.filter((s) => s.fase_actual === 3).length;
 
-  const cardStyle: React.CSSProperties = {
-    backgroundColor: "#1C0D35",
-    border: "1px solid rgba(157,92,192,0.2)",
-    borderRadius: "12px",
-    padding: "24px",
+  const statCard: React.CSSProperties = {
+    backgroundColor: "var(--surface-1)",
+    border: "1px solid var(--hairline)",
+    borderRadius: "var(--radius-md)",
+    padding: "28px 24px",
     flex: "1 1 0",
-    minWidth: "160px",
+    minWidth: "180px",
   };
 
-  const labelStyle: React.CSSProperties = {
-    fontSize: "0.7rem",
-    color: "rgba(157,92,192,0.7)",
+  const statLabel: React.CSSProperties = {
+    fontFamily: "var(--font-mono)",
+    fontSize: "0.65rem",
+    fontWeight: 500,
+    color: "var(--foreground-subtle)",
     textTransform: "uppercase",
-    letterSpacing: "0.1em",
-    marginBottom: "8px",
+    letterSpacing: "0.18em",
+    margin: "0 0 12px 0",
   };
 
-  const valueStyle: React.CSSProperties = {
-    fontFamily: "Merriweather, Georgia, serif",
+  const statValue: React.CSSProperties = {
+    fontFamily: "var(--font-serif)",
     fontWeight: 700,
-    fontSize: "2.25rem",
-    color: "#FFFFFF",
+    fontSize: "2.5rem",
+    color: "var(--foreground)",
     margin: 0,
+    letterSpacing: "-0.02em",
+    lineHeight: 1,
   };
 
   return (
     <div style={{ maxWidth: "1100px" }}>
+      <p
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.7rem",
+          fontWeight: 500,
+          textTransform: "uppercase",
+          letterSpacing: "0.22em",
+          color: "var(--foreground-subtle)",
+          margin: "0 0 14px 0",
+        }}
+      >
+        Panel Admin
+      </p>
       <h1
         style={{
-          fontFamily: "Merriweather, Georgia, serif",
+          fontFamily: "var(--font-serif)",
           fontWeight: 700,
-          fontSize: "1.5rem",
-          color: "#FFFFFF",
-          marginBottom: "32px",
+          fontSize: "2rem",
+          color: "var(--foreground)",
+          margin: "0 0 36px 0",
+          letterSpacing: "-0.015em",
         }}
       >
         Dashboard
@@ -93,55 +111,43 @@ export default async function AdminPage() {
         style={{
           display: "flex",
           gap: "20px",
-          marginBottom: "40px",
+          marginBottom: "44px",
           flexWrap: "wrap",
         }}
       >
-        <div style={cardStyle}>
-          <p style={labelStyle}>Socios activos</p>
-          <p style={valueStyle}>{totalActivos}</p>
+        <div style={statCard}>
+          <p style={statLabel}>Socios activos</p>
+          <p style={statValue}>{totalActivos}</p>
         </div>
 
-        <div style={cardStyle}>
-          <p style={labelStyle}>En Fase 1</p>
-          <p style={valueStyle}>{enFase1}</p>
+        <div style={statCard}>
+          <p style={statLabel}>En Fase 01</p>
+          <p style={statValue}>{enFase1}</p>
         </div>
 
-        <div style={cardStyle}>
-          <p style={labelStyle}>En Fase 3</p>
-          <p style={valueStyle}>{enFase3}</p>
+        <div style={statCard}>
+          <p style={statLabel}>En Fase 03</p>
+          <p style={statValue}>{enFase3}</p>
         </div>
       </div>
 
-      <div
-        style={{
-          backgroundColor: "#1C0D35",
-          border: "1px solid rgba(157,92,192,0.2)",
-          borderRadius: "12px",
-          overflow: "hidden",
-        }}
-      >
-        <div
+      <div style={{ marginBottom: "16px" }}>
+        <p
           style={{
-            padding: "20px 24px",
-            borderBottom: "1px solid rgba(157,92,192,0.15)",
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.65rem",
+            fontWeight: 500,
+            textTransform: "uppercase",
+            letterSpacing: "0.18em",
+            color: "var(--foreground-subtle)",
+            margin: "0 0 14px 0",
           }}
         >
-          <h2
-            style={{
-              fontFamily: "Merriweather, Georgia, serif",
-              fontWeight: 700,
-              fontSize: "1rem",
-              color: "#FFFFFF",
-              margin: 0,
-            }}
-          >
-            Socios
-          </h2>
-        </div>
-
-        <SociosTable socios={sociosOrdenados} ultimaActividad={ultimaActividad} />
+          Socios
+        </p>
       </div>
+
+      <SociosTable socios={sociosOrdenados} ultimaActividad={ultimaActividad} />
     </div>
   );
 }

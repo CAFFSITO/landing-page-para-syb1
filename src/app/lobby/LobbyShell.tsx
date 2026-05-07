@@ -20,7 +20,6 @@ export default function LobbyShell({
 }: LobbyShellProps) {
   const storageKey = `syb_lobby_tab_${socio.id}`;
 
-  // Inicializar desde localStorage para que Sidebar también reciba el valor correcto
   const [tabActiva, setTabActiva] = useState<TabActiva>("programa");
 
   useEffect(() => {
@@ -31,14 +30,14 @@ export default function LobbyShell({
   }, [storageKey]);
 
   return (
-    <div style={{ display: "flex", minHeight: "calc(100vh - 56px)" }}>
+    <div style={{ display: "flex", minHeight: "calc(100dvh - 40px)" }}>
       <Sidebar socio={socio} tabActiva={tabActiva} />
 
       <main
         style={{
           flex: 1,
-          padding: "40px 24px",
-          maxWidth: "800px",
+          padding: "48px 28px",
+          maxWidth: "880px",
           margin: "0 auto",
           width: "100%",
         }}

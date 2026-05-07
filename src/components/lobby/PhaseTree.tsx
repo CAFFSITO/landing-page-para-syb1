@@ -154,20 +154,20 @@ export default function PhaseTree({
 
   return (
     <div style={{ position: "relative" }}>
-      {/* Línea vertical continua */}
+      {/* Línea vertical hairline */}
       <div
         style={{
           position: "absolute",
-          left: "15px",
+          left: "14.5px",
           top: "16px",
           bottom: "16px",
-          width: "2px",
-          backgroundColor: "#9D5CC0",
+          width: "1px",
+          backgroundColor: "var(--hairline-strong)",
           zIndex: 0,
         }}
       />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "44px" }}>
         {FASES.map((fase) => {
           const estado = calcularEstadoFase(fase);
           const isOpen = fasesAbiertas[fase];
@@ -198,19 +198,27 @@ export default function PhaseTree({
                   <h3
                     style={{
                       margin: 0,
-                      fontFamily: "Merriweather, Georgia, serif",
+                      fontFamily: "var(--font-serif)",
                       fontWeight: 700,
-                      fontSize: "1rem",
-                      color: estado === "pendiente" ? "rgba(255,255,255,0.4)" : "#FFFFFF",
+                      fontSize: "1.05rem",
+                      letterSpacing: "-0.005em",
+                      color:
+                        estado === "pendiente"
+                          ? "var(--foreground-subtle)"
+                          : "var(--foreground)",
                     }}
                   >
                     {NOMBRES_FASE[fase]}
                   </h3>
                   <p
                     style={{
-                      margin: "2px 0 0",
-                      fontSize: "0.75rem",
-                      color: "rgba(157,92,192,0.6)",
+                      margin: "3px 0 0",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "0.68rem",
+                      fontWeight: 500,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.14em",
+                      color: "var(--foreground-subtle)",
                     }}
                   >
                     {itemsFase.length === 0
@@ -222,9 +230,9 @@ export default function PhaseTree({
                 <motion.div
                   animate={{ rotate: isOpen ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
-                  style={{ color: "rgba(157,92,192,0.6)", flexShrink: 0 }}
+                  style={{ color: "var(--foreground-muted)", flexShrink: 0 }}
                 >
-                  <ChevronDown size={18} />
+                  <ChevronDown size={16} strokeWidth={1.5} />
                 </motion.div>
               </button>
 
@@ -251,7 +259,7 @@ export default function PhaseTree({
                       }}
                     >
                       {itemsFase.length === 0 ? (
-                        <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.875rem" }}>
+                        <p style={{ color: "var(--foreground-subtle)", fontSize: "0.85rem", fontStyle: "italic" }}>
                           No hay entregables enviados en esta fase.
                         </p>
                       ) : (

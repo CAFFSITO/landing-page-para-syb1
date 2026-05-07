@@ -15,8 +15,8 @@ type LobbyTabsProps = {
 };
 
 const TABS: { key: TabActiva; label: string }[] = [
-  { key: "programa", label: "Mi programa" },
-  { key: "progreso", label: "Mi progreso" },
+  { key: "programa", label: "Programa" },
+  { key: "progreso", label: "Progreso" },
   { key: "reuniones", label: "Reuniones" },
 ];
 
@@ -30,7 +30,6 @@ export default function LobbyTabs({
 }: LobbyTabsProps) {
   const storageKey = `syb_lobby_tab_${socioId}`;
 
-  // Persistir selección de tab en localStorage
   useEffect(() => {
     localStorage.setItem(storageKey, tabActiva);
   }, [tabActiva, storageKey]);
@@ -43,13 +42,13 @@ export default function LobbyTabs({
 
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
-      {/* Barra de tabs */}
+      {/* Tabs editoriales — separación por hairline 1px, sin borde grueso */}
       <div
         style={{
           display: "flex",
-          gap: "0",
-          borderBottom: "1px solid rgba(157,92,192,0.2)",
-          marginBottom: "32px",
+          gap: "4px",
+          borderBottom: "1px solid var(--hairline)",
+          marginBottom: "40px",
         }}
       >
         {TABS.map(({ key, label }) => {
@@ -59,34 +58,45 @@ export default function LobbyTabs({
               key={key}
               onClick={() => onTabChange(key)}
               style={{
-                padding: "14px 24px",
+                position: "relative",
+                padding: "12px 18px",
                 background: "none",
                 border: "none",
-                borderBottom: isActiva
-                  ? "2px solid #9D5CC0"
-                  : "2px solid transparent",
-                color: isActiva ? "#FFFFFF" : "rgba(255,255,255,0.4)",
-                fontFamily: "Merriweather, Georgia, serif",
-                fontWeight: isActiva ? 700 : 400,
-                fontSize: "0.9rem",
+                color: isActiva ? "var(--foreground)" : "var(--foreground-muted)",
+                fontFamily: "var(--font-sans)",
+                fontWeight: isActiva ? 600 : 500,
+                fontSize: "0.875rem",
                 cursor: "pointer",
-                transition: "color 200ms ease, border-color 200ms ease",
+                transition: "color 180ms ease",
               }}
             >
               {label}
+              {isActiva && (
+                <motion.span
+                  layoutId="lobby-tab-indicator"
+                  style={{
+                    position: "absolute",
+                    left: 12,
+                    right: 12,
+                    bottom: -1,
+                    height: 1,
+                    backgroundColor: "var(--foreground)",
+                  }}
+                  transition={{ type: "spring", stiffness: 320, damping: 30 }}
+                />
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* Contenido con animación */}
       <AnimatePresence mode="wait">
         <motion.div
           key={tabActiva}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 8 }}
-          transition={{ duration: 0.2 }}
+          exit={{ opacity: 0, y: 6 }}
+          transition={{ duration: 0.18 }}
         >
           {content[tabActiva]}
         </motion.div>

@@ -1,10 +1,5 @@
 "use client";
 
-/**
- * Navegación por dots + botones prev/next para las fases del roadmap.
- * Indicador deslizante con Framer Motion layoutId.
- */
-
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -19,134 +14,95 @@ export default function RoadmapNav({ faseActiva, onFaseChange }: RoadmapNavProps
   const isFirst = faseActiva === 1;
   const isLast = faseActiva === 3;
 
-  function handlePrev() {
-    if (!isFirst) onFaseChange((faseActiva - 1) as 1 | 2 | 3);
-  }
-
-  function handleNext() {
-    if (!isLast) onFaseChange((faseActiva + 1) as 1 | 2 | 3);
-  }
-
   return (
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
         alignItems: "center",
-        gap: "12px",
+        justifyContent: "space-between",
+        gap: "16px",
+        paddingBottom: "12px",
+        borderBottom: "1px solid var(--hairline)",
       }}
     >
-      {/* Dots */}
-      <div
+      <button
+        onClick={() => !isFirst && onFaseChange((faseActiva - 1) as 1 | 2 | 3)}
+        disabled={isFirst}
+        aria-label="Fase anterior"
         style={{
+          background: "none",
+          border: "none",
+          cursor: isFirst ? "not-allowed" : "pointer",
+          color: isFirst ? "var(--foreground-subtle)" : "var(--foreground)",
           display: "flex",
           alignItems: "center",
-          gap: "12px",
-          position: "relative",
+          padding: "4px",
+          transition: "color 180ms ease",
         }}
       >
-        {FASES.map((fase) => (
-          <button
-            key={fase}
-            onClick={() => onFaseChange(fase)}
-            aria-label={`Ir a fase ${fase}`}
-            style={{
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              border: "none",
-              cursor: "pointer",
-              background: "transparent",
-              padding: 0,
-              position: "relative",
-            }}
-          >
-            {/* Dot inactivo */}
-            <span
+        <ChevronLeft size={18} strokeWidth={1.5} />
+      </button>
+
+      {/* Tabs de fase con indicador deslizante */}
+      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+        {FASES.map((fase) => {
+          const activo = faseActiva === fase;
+          return (
+            <button
+              key={fase}
+              onClick={() => onFaseChange(fase)}
               style={{
-                display: "block",
-                width: "10px",
-                height: "10px",
-                borderRadius: "50%",
-                backgroundColor: "rgba(157,92,192,0.25)",
+                position: "relative",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                padding: "8px 14px",
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.72rem",
+                fontWeight: 600,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: activo ? "var(--foreground)" : "var(--foreground-subtle)",
+                transition: "color 180ms ease",
               }}
-            />
-            {/* Indicador activo deslizante */}
-            {faseActiva === fase && (
-              <motion.span
-                layoutId="roadmap-dot-active"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  borderRadius: "50%",
-                  backgroundColor: "#9D5CC0",
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              />
-            )}
-          </button>
-        ))}
+            >
+              Fase 0{fase}
+              {activo && (
+                <motion.span
+                  layoutId="roadmap-tab-indicator"
+                  style={{
+                    position: "absolute",
+                    left: 12,
+                    right: 12,
+                    bottom: -13,
+                    height: 1,
+                    backgroundColor: "var(--foreground)",
+                  }}
+                  transition={{ type: "spring", stiffness: 320, damping: 30 }}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Botones prev/next */}
-      <div
+      <button
+        onClick={() => !isLast && onFaseChange((faseActiva + 1) as 1 | 2 | 3)}
+        disabled={isLast}
+        aria-label="Fase siguiente"
         style={{
+          background: "none",
+          border: "none",
+          cursor: isLast ? "not-allowed" : "pointer",
+          color: isLast ? "var(--foreground-subtle)" : "var(--foreground)",
           display: "flex",
           alignItems: "center",
-          gap: "16px",
+          padding: "4px",
+          transition: "color 180ms ease",
         }}
       >
-        <button
-          onClick={handlePrev}
-          disabled={isFirst}
-          aria-label="Fase anterior"
-          style={{
-            background: "none",
-            border: "none",
-            cursor: isFirst ? "not-allowed" : "pointer",
-            color: isFirst ? "rgba(157,92,192,0.25)" : "#9D5CC0",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "4px",
-            transition: "color 200ms ease",
-          }}
-        >
-          <ChevronLeft size={20} />
-        </button>
-
-        <span
-          style={{
-            fontFamily: "Merriweather, Georgia, serif",
-            fontWeight: 700,
-            fontSize: "0.8rem",
-            color: "rgba(255,255,255,0.5)",
-            minWidth: "60px",
-            textAlign: "center",
-          }}
-        >
-          Fase {faseActiva}
-        </span>
-
-        <button
-          onClick={handleNext}
-          disabled={isLast}
-          aria-label="Fase siguiente"
-          style={{
-            background: "none",
-            border: "none",
-            cursor: isLast ? "not-allowed" : "pointer",
-            color: isLast ? "rgba(157,92,192,0.25)" : "#9D5CC0",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "4px",
-            transition: "color 200ms ease",
-          }}
-        >
-          <ChevronRight size={20} />
-        </button>
-      </div>
+        <ChevronRight size={18} strokeWidth={1.5} />
+      </button>
     </div>
   );
 }

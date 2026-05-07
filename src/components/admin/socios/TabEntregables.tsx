@@ -6,7 +6,7 @@ import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Pencil, Trash2 } from 'lucide-react';
+import { GripVertical, Pencil, Trash2, Plus } from 'lucide-react';
 import { reorderEntregablesAction, deleteEntregableAction, updateEstadoEntregableAction } from '@/app/actions/entregables-admin';
 import AdminModal from '@/components/admin/socios/AdminModal';
 import EntregableModal from '@/components/admin/socios/EntregableModal';
@@ -17,12 +17,12 @@ interface Props {
   entregables: Entregable[];
 }
 
-const TIPO_COLORS: Record<string, { bg: string; color: string }> = {
-  pdf: { bg: 'rgba(239,68,68,0.1)', color: '#ef4444' },
-  video: { bg: 'rgba(99,102,241,0.15)', color: '#818cf8' },
-  reporte: { bg: 'rgba(234,179,8,0.1)', color: '#eab308' },
-  registro_reunion: { bg: 'rgba(34,197,94,0.1)', color: '#22c55e' },
-  agenda: { bg: 'rgba(249,115,22,0.1)', color: '#f97316' },
+const TIPO_LABEL: Record<string, string> = {
+  pdf: 'PDF',
+  video: 'Video',
+  reporte: 'Reporte',
+  registro_reunion: 'Registro',
+  agenda: 'Agenda',
 };
 
 function SortableEntregableRow({
@@ -37,7 +37,6 @@ function SortableEntregableRow({
   onEstadoChange: (id: string, estado: EntregableEstado) => void;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: entregable.id });
-  const tipoColor = TIPO_COLORS[entregable.tipo] ?? { bg: 'rgba(157,92,192,0.1)', color: '#9D5CC0' };
 
   return (
     <div
@@ -45,11 +44,11 @@ function SortableEntregableRow({
       style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '10px',
-        padding: '10px 14px',
-        backgroundColor: '#1C0D35',
-        border: '1px solid rgba(157,92,192,0.1)',
-        borderRadius: '8px',
+        gap: '12px',
+        padding: '12px 16px',
+        backgroundColor: 'var(--surface-1)',
+        border: '1px solid var(--hairline)',
+        borderRadius: 'var(--radius-sm)',
         marginBottom: '6px',
         transform: CSS.Transform.toString(transform),
         transition,
@@ -59,29 +58,29 @@ function SortableEntregableRow({
       <span
         {...attributes}
         {...listeners}
-        style={{ cursor: 'grab', color: 'rgba(157,92,192,0.4)', flexShrink: 0, display: 'flex' }}
+        style={{ cursor: 'grab', color: 'var(--foreground-subtle)', flexShrink: 0, display: 'flex' }}
       >
-        <GripVertical size={16} />
+        <GripVertical size={14} strokeWidth={1.5} />
       </span>
       <span
         style={{
-          backgroundColor: tipoColor.bg,
-          color: tipoColor.color,
-          fontSize: '0.7rem',
-          padding: '2px 8px',
-          borderRadius: '999px',
-          flexShrink: 0,
+          fontFamily: 'var(--font-mono)',
+          fontSize: '0.62rem',
+          fontWeight: 500,
           textTransform: 'uppercase',
-          letterSpacing: '0.05em',
-          fontWeight: 600,
+          letterSpacing: '0.14em',
+          color: 'var(--foreground-subtle)',
+          flexShrink: 0,
+          minWidth: '60px',
         }}
       >
-        {entregable.tipo}
+        {TIPO_LABEL[entregable.tipo] ?? entregable.tipo}
       </span>
       <span
         style={{
-          color: '#FFFFFF',
+          color: 'var(--foreground)',
           fontSize: '0.875rem',
+          fontWeight: 500,
           flex: 1,
           minWidth: 0,
           overflow: 'hidden',
@@ -94,17 +93,8 @@ function SortableEntregableRow({
       <select
         value={entregable.estado}
         onChange={e => onEstadoChange(entregable.id, e.target.value as EntregableEstado)}
-        style={{
-          backgroundColor: '#0D0618',
-          color: '#FFFFFF',
-          border: '1px solid rgba(157,92,192,0.25)',
-          borderRadius: '6px',
-          padding: '4px 8px',
-          fontSize: '0.75rem',
-          outline: 'none',
-          cursor: 'pointer',
-          flexShrink: 0,
-        }}
+        className="syb-input"
+        style={{ width: 'auto', padding: '4px 8px', fontSize: '0.75rem' }}
       >
         <option value="pendiente">pendiente</option>
         <option value="enviado">enviado</option>
@@ -112,15 +102,17 @@ function SortableEntregableRow({
       </select>
       <button
         onClick={() => onEdit(entregable)}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(157,92,192,0.6)', display: 'flex', padding: 4, flexShrink: 0 }}
+        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--foreground-muted)', display: 'flex', padding: 4, flexShrink: 0 }}
+        aria-label="Editar"
       >
-        <Pencil size={14} />
+        <Pencil size={13} strokeWidth={1.5} />
       </button>
       <button
         onClick={() => onDelete(entregable)}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(239,68,68,0.4)', display: 'flex', padding: 4, flexShrink: 0 }}
+        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--foreground-subtle)', display: 'flex', padding: 4, flexShrink: 0 }}
+        aria-label="Eliminar"
       >
-        <Trash2 size={14} />
+        <Trash2 size={13} strokeWidth={1.5} />
       </button>
     </div>
   );
@@ -214,20 +206,31 @@ export function TabEntregables({ socioId, entregables }: Props) {
         const faseItems = items.filter(e => e.fase === fase).sort((a, b) => a.orden - b.orden);
 
         return (
-          <div key={fase} style={{ marginBottom: '28px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{ fontFamily: 'Merriweather, Georgia, serif', fontWeight: 700, fontSize: '0.875rem', color: 'rgba(157,92,192,0.8)' }}>
-                Fase {fase}
+          <div key={fase} style={{ marginBottom: '32px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.65rem',
+                  fontWeight: 500,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.18em',
+                  color: 'var(--foreground-subtle)',
+                }}
+              >
+                Fase 0{fase}
               </span>
               <button
                 onClick={() => openNew(fase)}
-                style={{ background: 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(157,92,192,0.8)', borderRadius: '6px', padding: '4px 12px', fontSize: '0.8rem', cursor: 'pointer' }}
+                className="syb-btn-ghost"
+                style={{ padding: '5px 12px', fontSize: '0.78rem' }}
               >
-                + Agregar
+                <Plus size={13} strokeWidth={1.5} />
+                Agregar
               </button>
             </div>
             {faseItems.length === 0 ? (
-              <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.8rem', padding: '8px 0', margin: 0 }}>
+              <p style={{ color: 'var(--foreground-subtle)', fontSize: '0.82rem', padding: '8px 0', margin: 0, fontStyle: 'italic' }}>
                 Sin entregables en esta fase.
               </p>
             ) : (
@@ -266,23 +269,31 @@ export function TabEntregables({ socioId, entregables }: Props) {
         maxWidth={420}
         footer={
           <>
-            <button
-              onClick={() => setDeleteTarget(null)}
-              style={{ background: 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(255,255,255,0.6)', borderRadius: '8px', padding: '8px 16px', cursor: 'pointer', fontSize: '0.875rem' }}
-            >
+            <button onClick={() => setDeleteTarget(null)} className="syb-btn-ghost">
               Cancelar
             </button>
             <button
               onClick={handleDelete}
               disabled={deleteLoading}
-              style={{ backgroundColor: '#ef4444', border: 'none', color: '#FFFFFF', borderRadius: '8px', padding: '8px 20px', cursor: deleteLoading ? 'not-allowed' : 'pointer', fontSize: '0.875rem', opacity: deleteLoading ? 0.7 : 1 }}
+              style={{
+                backgroundColor: 'var(--color-danger)',
+                border: 'none',
+                color: '#FFFFFF',
+                borderRadius: 'var(--radius-sm)',
+                padding: '10px 18px',
+                cursor: deleteLoading ? 'not-allowed' : 'pointer',
+                fontSize: '0.875rem',
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 600,
+                opacity: deleteLoading ? 0.7 : 1,
+              }}
             >
-              {deleteLoading ? 'Eliminando...' : 'Eliminar'}
+              {deleteLoading ? 'Eliminando…' : 'Eliminar'}
             </button>
           </>
         }
       >
-        <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.875rem', margin: 0, lineHeight: 1.6 }}>
+        <p style={{ color: 'var(--foreground)', fontSize: '0.9rem', margin: 0, lineHeight: 1.6 }}>
           ¿Eliminar «{deleteTarget?.titulo}»? Esta acción no se puede deshacer.
         </p>
       </AdminModal>

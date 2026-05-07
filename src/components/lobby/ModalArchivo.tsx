@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Download, FileText, Film, Image as ImageIcon, File } from "lucide-react";
 import Modal from "@/components/ui/Modal";
+import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 import { obtenerSignedUrl } from "@/app/actions/storage";
 import type { Entregable } from "@/types";
 
@@ -63,19 +64,19 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
   function renderContenido() {
     if (cargando) {
       return (
-        <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "60px 0" }}>
-          Cargando archivo...
+        <p style={{ color: "var(--foreground-muted)", textAlign: "center", padding: "60px 0" }}>
+          Cargando archivo…
         </p>
       );
     }
     if (error) {
       return (
-        <p style={{ color: "#EF4444", textAlign: "center", padding: "60px 0" }}>{error}</p>
+        <p style={{ color: "var(--color-danger)", textAlign: "center", padding: "60px 0" }}>{error}</p>
       );
     }
     if (!signedUrl) {
       return (
-        <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "60px 0" }}>
+        <p style={{ color: "var(--foreground-muted)", textAlign: "center", padding: "60px 0" }}>
           Este entregable no tiene archivo adjunto.
         </p>
       );
@@ -87,7 +88,7 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
           src={signedUrl}
           width="100%"
           height="520px"
-          style={{ border: "none", borderRadius: "8px" }}
+          style={{ border: "1px solid var(--hairline)", borderRadius: "var(--radius-sm)" }}
           title={entregable.titulo}
         />
       );
@@ -100,7 +101,7 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
           controls
           style={{
             width: "100%",
-            borderRadius: "10px",
+            borderRadius: "var(--radius-sm)",
             backgroundColor: "#000",
             maxHeight: "520px",
           }}
@@ -118,7 +119,7 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
             style={{
               maxWidth: "100%",
               maxHeight: "520px",
-              borderRadius: "10px",
+              borderRadius: "var(--radius-sm)",
               objectFit: "contain",
             }}
           />
@@ -126,7 +127,7 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
       );
     }
 
-    // Tipo "otro" — sin vista previa, mostrar descripción + ícono
+    // Tipo "otro" — sin vista previa
     return (
       <div
         style={{
@@ -137,14 +138,15 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
           padding: "48px 0",
         }}
       >
-        <File size={48} color="rgba(157,92,192,0.5)" />
-        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.95rem", margin: 0, textAlign: "center" }}>
-          Vista previa no disponible para <strong style={{ color: "#9D5CC0" }}>.{ext}</strong>
+        <File size={36} strokeWidth={1.2} color="var(--foreground-subtle)" />
+        <p style={{ color: "var(--foreground-muted)", fontSize: "0.9rem", margin: 0, textAlign: "center" }}>
+          Vista previa no disponible para{" "}
+          <span style={{ fontFamily: "var(--font-mono)", color: "var(--foreground)" }}>.{ext}</span>
         </p>
         {entregable.descripcion && (
-          <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "0.875rem", margin: 0, textAlign: "center", maxWidth: "480px" }}>
-            {entregable.descripcion}
-          </p>
+          <div style={{ color: "var(--foreground-muted)", fontSize: "0.875rem", maxWidth: "560px" }}>
+            <MarkdownRenderer content={entregable.descripcion} />
+          </div>
         )}
       </div>
     );
@@ -165,29 +167,26 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
       tipoBadge={badge}
       footer={
         signedUrl ? (
-          <a
-            href={signedUrl}
-            download
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "10px 20px",
-              background: "linear-gradient(135deg, #3B1E63, #9D5CC0)",
-              color: "#FFFFFF",
-              borderRadius: "6px",
-              textDecoration: "none",
-              fontSize: "0.875rem",
-              fontFamily: "Merriweather, Georgia, serif",
-              fontWeight: 700,
-            }}
-          >
+          <a href={signedUrl} download className="syb-btn-primary" style={{ textDecoration: "none" }}>
             {iconoDescarga[tipoArchivo]}
             Descargar
           </a>
         ) : undefined
       }
     >
+      {entregable.descripcion && tipoArchivo !== "otro" && (
+        <div
+          style={{
+            marginBottom: "20px",
+            paddingBottom: "20px",
+            borderBottom: "1px solid var(--border-color)",
+            color: "rgba(255,255,255,0.85)",
+            fontSize: "0.9rem",
+          }}
+        >
+          <MarkdownRenderer content={entregable.descripcion} />
+        </div>
+      )}
       {renderContenido()}
     </Modal>
   );

@@ -1,16 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2 } from "lucide-react";
+import { Check } from "lucide-react";
 
 type PhaseNodeProps = {
   estado: "completada" | "activa" | "pendiente";
   faseNum: 1 | 2 | 3;
 };
 
-export default function PhaseNode({ estado, faseNum }: PhaseNodeProps) {
-  const SIZE = 32;
+const SIZE = 30;
 
+export default function PhaseNode({ estado, faseNum }: PhaseNodeProps) {
   if (estado === "completada") {
     return (
       <div
@@ -20,52 +20,61 @@ export default function PhaseNode({ estado, faseNum }: PhaseNodeProps) {
           width: SIZE,
           height: SIZE,
           borderRadius: "50%",
-          backgroundColor: "#9D5CC0",
+          backgroundColor: "var(--color-secondary)",
+          color: "var(--color-contrast)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
         }}
       >
-        <CheckCircle2 size={18} color="#FFFFFF" strokeWidth={2} />
+        <Check size={15} strokeWidth={2.4} />
       </div>
     );
   }
 
   if (estado === "activa") {
     return (
-      <motion.div
-        animate={{ scale: [1, 1.15, 1] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+      <div
         style={{
           position: "relative",
           zIndex: 2,
           width: SIZE,
           height: SIZE,
-          borderRadius: "50%",
-          backgroundColor: "#9D5CC0",
-          boxShadow: "0 0 16px rgba(157,92,192,0.7)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           flexShrink: 0,
         }}
       >
-        <span
+        <motion.span
+          animate={{ scale: [1, 1.55, 1], opacity: [0.45, 0, 0.45] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }}
           style={{
-            fontFamily: "Merriweather, Georgia, serif",
-            fontWeight: 700,
-            fontSize: "0.75rem",
-            color: "#FFFFFF",
+            position: "absolute",
+            inset: 0,
+            borderRadius: "50%",
+            border: "1px solid var(--color-secondary)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            borderRadius: "50%",
+            backgroundColor: "var(--color-secondary)",
+            color: "var(--color-contrast)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "var(--font-mono)",
+            fontWeight: 600,
+            fontSize: "0.72rem",
           }}
         >
-          {faseNum}
-        </span>
-      </motion.div>
+          0{faseNum}
+        </div>
+      </div>
     );
   }
 
-  // Pendiente
   return (
     <div
       style={{
@@ -74,23 +83,19 @@ export default function PhaseNode({ estado, faseNum }: PhaseNodeProps) {
         width: SIZE,
         height: SIZE,
         borderRadius: "50%",
-        border: "2px solid rgba(157,92,192,0.4)",
+        border: "1px solid var(--hairline-strong)",
+        backgroundColor: "var(--background)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         flexShrink: 0,
+        fontFamily: "var(--font-mono)",
+        fontWeight: 500,
+        fontSize: "0.7rem",
+        color: "var(--foreground-subtle)",
       }}
     >
-      <span
-        style={{
-          fontFamily: "Merriweather, Georgia, serif",
-          fontWeight: 700,
-          fontSize: "0.75rem",
-          color: "rgba(157,92,192,0.4)",
-        }}
-      >
-        {faseNum}
-      </span>
+      0{faseNum}
     </div>
   );
 }

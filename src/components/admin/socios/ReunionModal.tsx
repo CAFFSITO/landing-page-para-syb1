@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
 import AdminModal from '@/components/admin/socios/AdminModal';
+import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
 import { createReunionAction, updateReunionAction } from '@/app/actions/reuniones-admin';
 import { toast } from 'sonner';
 import type { Reunion } from '@/types';
@@ -19,11 +19,12 @@ interface Props {
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  backgroundColor: '#0D0618',
-  border: '1px solid rgba(157,92,192,0.25)',
-  color: '#FFFFFF',
-  borderRadius: '8px',
+  backgroundColor: 'var(--surface-2)',
+  border: '1px solid var(--hairline-strong)',
+  color: 'var(--foreground)',
+  borderRadius: 'var(--radius-sm)',
   padding: '10px 14px',
+  fontFamily: 'var(--font-sans)',
   fontSize: '0.875rem',
   outline: 'none',
   boxSizing: 'border-box',
@@ -32,15 +33,17 @@ const inputStyle: React.CSSProperties = {
 const fieldStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  gap: '6px',
-  marginBottom: '16px',
+  gap: '8px',
+  marginBottom: '18px',
 };
 
 const labelStyle: React.CSSProperties = {
-  fontSize: '0.75rem',
-  color: 'rgba(157,92,192,0.7)',
+  fontFamily: 'var(--font-mono)',
+  fontSize: '0.65rem',
+  fontWeight: 500,
+  color: 'var(--foreground-subtle)',
   textTransform: 'uppercase',
-  letterSpacing: '0.08em',
+  letterSpacing: '0.18em',
 };
 
 function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
@@ -49,12 +52,12 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
       type="button"
       onClick={onChange}
       style={{
-        width: '40px',
-        height: '22px',
-        borderRadius: '11px',
+        width: '36px',
+        height: '20px',
+        borderRadius: '10px',
         border: 'none',
         cursor: 'pointer',
-        backgroundColor: value ? '#9D5CC0' : 'rgba(157,92,192,0.2)',
+        backgroundColor: value ? 'var(--color-secondary)' : 'var(--hairline-strong)',
         position: 'relative',
         flexShrink: 0,
         transition: 'background-color 200ms',
@@ -67,11 +70,11 @@ function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
         style={{
           position: 'absolute',
           top: '3px',
-          left: value ? '21px' : '3px',
-          width: '16px',
-          height: '16px',
+          left: value ? '19px' : '3px',
+          width: '14px',
+          height: '14px',
           borderRadius: '50%',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--surface-1)',
           transition: 'left 200ms',
         }}
       />
@@ -174,20 +177,17 @@ export default function ReunionModal({ isOpen, onClose, socioId, editTarget, onS
 
   const footer = (
     <>
-      <button
-        type="button"
-        onClick={onClose}
-        style={{ background: 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(255,255,255,0.6)', borderRadius: '8px', padding: '8px 16px', cursor: 'pointer', fontSize: '0.875rem' }}
-      >
+      <button type="button" onClick={onClose} className="syb-btn-ghost">
         Cancelar
       </button>
       <button
         type="submit"
         form="reunion-form"
         disabled={submitting}
-        style={{ background: 'linear-gradient(135deg,#3B1E63,#9D5CC0)', border: 'none', color: '#FFFFFF', borderRadius: '8px', padding: '8px 20px', cursor: submitting ? 'not-allowed' : 'pointer', fontSize: '0.875rem', opacity: submitting ? 0.7 : 1 }}
+        className="syb-btn-primary"
+        style={{ opacity: submitting ? 0.7 : 1, cursor: submitting ? 'not-allowed' : 'pointer' }}
       >
-        {submitting ? 'Guardando...' : editTarget ? 'Actualizar' : 'Registrar'}
+        {submitting ? 'Guardando…' : editTarget ? 'Actualizar' : 'Registrar'}
       </button>
     </>
   );
@@ -247,16 +247,15 @@ export default function ReunionModal({ isOpen, onClose, socioId, editTarget, onS
           <div
             style={{
               minHeight: '100px',
-              backgroundColor: 'rgba(13,6,24,0.5)',
+              backgroundColor: '#1C0D35',
               border: '1px solid rgba(157,92,192,0.15)',
               borderRadius: '8px',
               padding: '12px 16px',
               color: 'rgba(255,255,255,0.85)',
               fontSize: '0.875rem',
-              lineHeight: 1.6,
             }}
           >
-            <ReactMarkdown>{notas || '*Sin contenido*'}</ReactMarkdown>
+            <MarkdownRenderer content={notas || '*Sin contenido*'} />
           </div>
         </div>
       </form>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import AdminModal from '@/components/admin/socios/AdminModal';
+import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
 import { createEntregableAction, updateEntregableAction } from '@/app/actions/entregables-admin';
 import { toast } from 'sonner';
 import type { Entregable, EntregableTipo, EntregableEstado } from '@/types';
@@ -18,11 +19,12 @@ interface Props {
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  backgroundColor: '#0D0618',
-  border: '1px solid rgba(157,92,192,0.25)',
-  color: '#FFFFFF',
-  borderRadius: '8px',
+  backgroundColor: 'var(--surface-2)',
+  border: '1px solid var(--hairline-strong)',
+  color: 'var(--foreground)',
+  borderRadius: 'var(--radius-sm)',
   padding: '10px 14px',
+  fontFamily: 'var(--font-sans)',
   fontSize: '0.875rem',
   outline: 'none',
   boxSizing: 'border-box',
@@ -31,15 +33,17 @@ const inputStyle: React.CSSProperties = {
 const fieldStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  gap: '6px',
-  marginBottom: '16px',
+  gap: '8px',
+  marginBottom: '18px',
 };
 
 const labelStyle: React.CSSProperties = {
-  fontSize: '0.75rem',
-  color: 'rgba(157,92,192,0.7)',
+  fontFamily: 'var(--font-mono)',
+  fontSize: '0.65rem',
+  fontWeight: 500,
+  color: 'var(--foreground-subtle)',
   textTransform: 'uppercase',
-  letterSpacing: '0.08em',
+  letterSpacing: '0.18em',
 };
 
 const TIPOS: EntregableTipo[] = ['pdf', 'video', 'reporte', 'registro_reunion', 'agenda'];
@@ -158,20 +162,17 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
 
   const footer = (
     <>
-      <button
-        type="button"
-        onClick={onClose}
-        style={{ background: 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(255,255,255,0.6)', borderRadius: '8px', padding: '8px 16px', cursor: 'pointer', fontSize: '0.875rem' }}
-      >
+      <button type="button" onClick={onClose} className="syb-btn-ghost">
         Cancelar
       </button>
       <button
         type="submit"
         form="entregable-form"
         disabled={submitting}
-        style={{ background: 'linear-gradient(135deg,#3B1E63,#9D5CC0)', border: 'none', color: '#FFFFFF', borderRadius: '8px', padding: '8px 20px', cursor: submitting ? 'not-allowed' : 'pointer', fontSize: '0.875rem', opacity: submitting ? 0.7 : 1 }}
+        className="syb-btn-primary"
+        style={{ opacity: submitting ? 0.7 : 1, cursor: submitting ? 'not-allowed' : 'pointer' }}
       >
-        {submitting ? 'Guardando...' : editTarget ? 'Actualizar' : 'Crear'}
+        {submitting ? 'Guardando…' : editTarget ? 'Actualizar' : 'Crear'}
       </button>
     </>
   );
@@ -199,7 +200,30 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
         </div>
         <div style={fieldStyle}>
           <label style={labelStyle}>Descripción</label>
-          <textarea style={{ ...inputStyle, resize: 'vertical' }} rows={3} value={descripcion} onChange={e => setDescripcion(e.target.value)} />
+          <textarea
+            style={{ ...inputStyle, resize: 'vertical', fontFamily: 'monospace' }}
+            rows={4}
+            value={descripcion}
+            onChange={e => setDescripcion(e.target.value)}
+          />
+          <div style={{ display: 'flex', alignItems: 'center', margin: '16px 0 8px 0' }}>
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(157,92,192,0.2)' }} />
+            <span style={{ margin: '0 12px', fontSize: '0.75rem', color: 'rgba(157,92,192,0.7)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Vista previa</span>
+            <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(157,92,192,0.2)' }} />
+          </div>
+          <div
+            style={{
+              minHeight: '80px',
+              backgroundColor: '#1C0D35',
+              border: '1px solid rgba(157,92,192,0.15)',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              color: 'rgba(255,255,255,0.85)',
+              fontSize: '0.875rem',
+            }}
+          >
+            <MarkdownRenderer content={descripcion || '*Sin descripción*'} />
+          </div>
         </div>
         <div style={fieldStyle}>
           <label style={labelStyle}>Estado *</label>

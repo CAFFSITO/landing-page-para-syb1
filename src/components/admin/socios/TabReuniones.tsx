@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { toast, Toaster } from 'sonner';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Plus } from 'lucide-react';
 import { deleteReunionAction } from '@/app/actions/reuniones-admin';
 import AdminModal from '@/components/admin/socios/AdminModal';
 import ReunionModal from '@/components/admin/socios/ReunionModal';
@@ -91,28 +91,40 @@ export function TabReuniones({ socioId, reuniones }: Props) {
         const faseItems = items.filter(r => r.fase === fase);
 
         return (
-          <div key={fase} style={{ marginBottom: '28px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{ fontFamily: 'Merriweather, Georgia, serif', fontWeight: 700, fontSize: '0.875rem', color: 'rgba(157,92,192,0.8)' }}>
-                Fase {fase}
+          <div key={fase} style={{ marginBottom: '32px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.65rem',
+                  fontWeight: 500,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.18em',
+                  color: 'var(--foreground-subtle)',
+                }}
+              >
+                Fase 0{fase}
               </span>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <button
                   onClick={() => toggleCalendario(fase)}
-                  style={{ background: calVisible[fase] ? 'rgba(157,92,192,0.15)' : 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(157,92,192,0.8)', borderRadius: '6px', padding: '4px 12px', fontSize: '0.8rem', cursor: 'pointer' }}
+                  className="syb-btn-ghost"
+                  style={{
+                    padding: '5px 12px',
+                    fontSize: '0.78rem',
+                    backgroundColor: calVisible[fase] ? 'var(--surface-2)' : 'transparent',
+                  }}
                 >
                   {calVisible[fase] ? 'Ocultar calendario' : 'Ver calendario'}
                 </button>
-                <button
-                  onClick={() => openNew(fase)}
-                  style={{ background: 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(157,92,192,0.8)', borderRadius: '6px', padding: '4px 12px', fontSize: '0.8rem', cursor: 'pointer' }}
-                >
-                  + Registrar reunión
+                <button onClick={() => openNew(fase)} className="syb-btn-ghost" style={{ padding: '5px 12px', fontSize: '0.78rem' }}>
+                  <Plus size={13} strokeWidth={1.5} />
+                  Registrar
                 </button>
               </div>
             </div>
             {faseItems.length === 0 ? (
-              <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '0.8rem', padding: '8px 0', margin: 0 }}>
+              <p style={{ color: 'var(--foreground-subtle)', fontSize: '0.82rem', padding: '8px 0', margin: 0, fontStyle: 'italic' }}>
                 Sin reuniones en esta fase.
               </p>
             ) : (
@@ -121,54 +133,54 @@ export function TabReuniones({ socioId, reuniones }: Props) {
                   key={r.id}
                   style={{
                     display: 'flex',
-                    flexDirection: 'row',
                     alignItems: 'center',
                     gap: '12px',
                     padding: '14px 16px',
-                    backgroundColor: 'rgba(157,92,192,0.04)',
-                    border: '1px solid rgba(157,92,192,0.1)',
-                    borderRadius: '8px',
+                    backgroundColor: 'var(--surface-1)',
+                    border: '1px solid var(--hairline)',
+                    borderRadius: 'var(--radius-sm)',
                     marginBottom: '8px',
                   }}
                 >
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
-                      <span style={{ fontFamily: 'Merriweather, Georgia, serif', fontWeight: 700, fontSize: '0.875rem', color: '#FFFFFF' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' }}>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-serif)',
+                          fontWeight: 700,
+                          fontSize: '0.95rem',
+                          color: 'var(--foreground)',
+                          letterSpacing: '-0.005em',
+                        }}
+                      >
                         {r.nombre}
                       </span>
-                      <span style={{ fontSize: '0.75rem', color: 'rgba(157,92,192,0.6)' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--foreground-subtle)' }}>
                         F{r.fase} · #{r.numero}
                       </span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--foreground-muted)' }}>
                         {formatFecha(r.fecha)}
                       </span>
-                      <span
-                        style={{
-                          fontSize: '0.72rem',
-                          padding: '2px 8px',
-                          borderRadius: '999px',
-                          backgroundColor: r.completada ? 'rgba(34,197,94,0.1)' : 'rgba(157,92,192,0.1)',
-                          color: r.completada ? '#22c55e' : '#9D5CC0',
-                          fontWeight: 600,
-                        }}
-                      >
+                      <span className={r.completada ? 'syb-tag syb-tag-success' : 'syb-tag syb-tag-accent'}>
                         {r.completada ? 'Completada' : 'Pendiente'}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => openEdit(r)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(157,92,192,0.6)', display: 'flex', padding: 4, flexShrink: 0 }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--foreground-muted)', display: 'flex', padding: 4, flexShrink: 0 }}
+                    aria-label="Editar"
                   >
-                    <Pencil size={14} />
+                    <Pencil size={13} strokeWidth={1.5} />
                   </button>
                   <button
                     onClick={() => setDeleteTarget(r)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(239,68,68,0.4)', display: 'flex', padding: 4, flexShrink: 0 }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--foreground-subtle)', display: 'flex', padding: 4, flexShrink: 0 }}
+                    aria-label="Eliminar"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={13} strokeWidth={1.5} />
                   </button>
                 </div>
               ))
@@ -202,23 +214,29 @@ export function TabReuniones({ socioId, reuniones }: Props) {
         maxWidth={420}
         footer={
           <>
-            <button
-              onClick={() => setDeleteTarget(null)}
-              style={{ background: 'none', border: '1px solid rgba(157,92,192,0.3)', color: 'rgba(255,255,255,0.6)', borderRadius: '8px', padding: '8px 16px', cursor: 'pointer', fontSize: '0.875rem' }}
-            >
-              Cancelar
-            </button>
+            <button onClick={() => setDeleteTarget(null)} className="syb-btn-ghost">Cancelar</button>
             <button
               onClick={handleDelete}
               disabled={deleteLoading}
-              style={{ backgroundColor: '#ef4444', border: 'none', color: '#FFFFFF', borderRadius: '8px', padding: '8px 20px', cursor: deleteLoading ? 'not-allowed' : 'pointer', fontSize: '0.875rem', opacity: deleteLoading ? 0.7 : 1 }}
+              style={{
+                backgroundColor: 'var(--color-danger)',
+                border: 'none',
+                color: '#FFFFFF',
+                borderRadius: 'var(--radius-sm)',
+                padding: '10px 18px',
+                cursor: deleteLoading ? 'not-allowed' : 'pointer',
+                fontSize: '0.875rem',
+                fontFamily: 'var(--font-sans)',
+                fontWeight: 600,
+                opacity: deleteLoading ? 0.7 : 1,
+              }}
             >
-              {deleteLoading ? 'Eliminando...' : 'Eliminar'}
+              {deleteLoading ? 'Eliminando…' : 'Eliminar'}
             </button>
           </>
         }
       >
-        <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.875rem', margin: 0, lineHeight: 1.6 }}>
+        <p style={{ color: 'var(--foreground)', fontSize: '0.9rem', margin: 0, lineHeight: 1.6 }}>
           ¿Eliminar «{deleteTarget?.nombre}»? Esta acción no se puede deshacer.
         </p>
       </AdminModal>
