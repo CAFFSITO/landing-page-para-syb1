@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Merriweather, Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans, Syne, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const merriweather = Merriweather({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  weight: ["300", "400", "700", "900"],
-  variable: "--font-merriweather",
+  axes: ["opsz"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-dm-sans",
 });
 
-const geistSans = Geist({
+const syne = Syne({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-syne",
 });
 
 const geistMono = Geist_Mono({
@@ -29,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`dark ${merriweather.variable} ${geistSans.variable} ${geistMono.variable} antialiased h-full`}>
+    <html lang="es" className={`dark ${dmSans.variable} ${syne.variable} ${geistMono.variable} antialiased h-full`}>
       <body className="min-h-full flex flex-col font-sans">
         {children}
       </body>

@@ -4,9 +4,10 @@
 
 @theme {
   /* === Tipografía editorial === */
-  /* Body / UI: sans utilitario (sin Inter/Roboto). Merriweather queda como serif editorial reservado a headings y citas. */
-  --font-sans: var(--font-geist-sans), "SF Pro Display", "Helvetica Neue", system-ui, sans-serif;
-  --font-serif: var(--font-merriweather), "Newsreader", "Playfair Display", Georgia, serif;
+  /* Body / UI: DM Sans — variable weight, optical sizing óptimo */
+  --font-sans: var(--font-dm-sans), "Helvetica Neue", system-ui, sans-serif;
+  /* Headings: Syne — geométrico editorial, contraste marcado con DM Sans */
+  --font-serif: var(--font-syne), "SF Pro Display", system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* === Marca SYB (acento único: púrpura) === */
@@ -99,10 +100,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Headings editoriales: serif por defecto */
+/* Headings: Syne — geométrico, contraste marcado con DM Sans en body */
 h1, h2, h3, h4 {
   font-family: var(--font-serif);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+  font-weight: 700;
 }
 
 /* ============================================================
