@@ -53,6 +53,8 @@ export type Entregable = {
   /** Ruta en Supabase Storage (si se subió un archivo). */
   storage_path?: string;
   estado: EntregableEstado;
+  /** Estado de versión: 'vigente' (verde) u 'obsoleto' (rojo). */
+  version_estado?: 'vigente' | 'obsoleto';
   /** Orden de aparición dentro de la fase. */
   orden: number;
   created_at: string;

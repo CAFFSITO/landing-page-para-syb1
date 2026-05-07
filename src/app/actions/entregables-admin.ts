@@ -16,6 +16,7 @@ type CreateEntregablePayload = {
   descripcion?: string;
   url?: string;
   estado: EntregableEstado;
+  version_estado: 'vigente' | 'obsoleto';
   orden: number;
   // Si hay archivo, viene serializado como base64 + metadata
   file?: { base64: string; filename: string; mimeType: string };
@@ -54,6 +55,7 @@ export async function createEntregableAction(
     url: payload.url ?? null,
     storage_path: storagePath,
     estado: payload.estado,
+    version_estado: payload.version_estado,
     orden: payload.orden,
   });
 
@@ -74,6 +76,7 @@ type UpdateEntregablePayload = {
   descripcion?: string;
   url?: string;
   estado: EntregableEstado;
+  version_estado: 'vigente' | 'obsoleto';
   orden: number;
   file?: { base64: string; filename: string; mimeType: string };
   existingStoragePath?: string;
@@ -107,6 +110,7 @@ export async function updateEntregableAction(
       url: payload.url ?? null,
       storage_path: storagePath,
       estado: payload.estado,
+      version_estado: payload.version_estado,
       orden: payload.orden,
       updated_at: new Date().toISOString(),
     })

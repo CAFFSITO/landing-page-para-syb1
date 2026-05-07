@@ -90,6 +90,20 @@ function SortableEntregableRow({
       >
         {entregable.titulo}
       </span>
+      {/* Dot de versión */}
+      <span
+        title={entregable.version_estado === 'obsoleto' ? 'Obsoleto' : 'Vigente'}
+        style={{
+          flexShrink: 0,
+          width: 8,
+          height: 8,
+          borderRadius: '50%',
+          backgroundColor: entregable.version_estado === 'obsoleto' ? '#ef4444' : '#22c55e',
+          boxShadow: entregable.version_estado === 'obsoleto'
+            ? '0 0 4px rgba(239,68,68,0.5)'
+            : '0 0 4px rgba(34,197,94,0.5)',
+        }}
+      />
       <select
         value={entregable.estado}
         onChange={e => onEstadoChange(entregable.id, e.target.value as EntregableEstado)}

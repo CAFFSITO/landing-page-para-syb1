@@ -63,6 +63,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [estado, setEstado] = useState<EntregableEstado>('pendiente');
+  const [versionEstado, setVersionEstado] = useState<'vigente' | 'obsoleto'>('vigente');
   const [url, setUrl] = useState('');
   const [orden, setOrden] = useState(defaultOrden);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
@@ -77,6 +78,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
       setTitulo(editTarget.titulo);
       setDescripcion(editTarget.descripcion ?? '');
       setEstado(editTarget.estado);
+      setVersionEstado(editTarget.version_estado ?? 'vigente');
       setUrl(editTarget.url ?? '');
       setOrden(editTarget.orden);
     } else {
@@ -85,6 +87,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
       setTitulo('');
       setDescripcion('');
       setEstado('pendiente');
+      setVersionEstado('vigente');
       setUrl('');
       setOrden(defaultOrden);
     }
@@ -126,6 +129,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
         descripcion: descripcion.trim() || undefined,
         url: url.trim() || undefined,
         estado,
+        version_estado: versionEstado,
         orden,
         file: filePayload,
         existingStoragePath: editTarget.storage_path ?? undefined,
@@ -139,6 +143,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
         descripcion: descripcion.trim() || undefined,
         url: url.trim() || undefined,
         estado,
+        version_estado: versionEstado,
         orden,
         file: filePayload,
       });
@@ -152,8 +157,8 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
 
     const now = new Date().toISOString();
     const saved: Entregable = editTarget
-      ? { ...editTarget, fase: faseVal, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() || undefined, url: url.trim() || undefined, estado, orden, updated_at: now }
-      : { id: crypto.randomUUID(), socio_id: socioId, fase: faseVal, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() || undefined, url: url.trim() || undefined, estado, orden, created_at: now, updated_at: now };
+      ? { ...editTarget, fase: faseVal, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() || undefined, url: url.trim() || undefined, estado, version_estado: versionEstado, orden, updated_at: now }
+      : { id: crypto.randomUUID(), socio_id: socioId, fase: faseVal, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() || undefined, url: url.trim() || undefined, estado, version_estado: versionEstado, orden, created_at: now, updated_at: now };
 
     toast.success(editTarget ? 'Entregable actualizado' : 'Entregable creado');
     onSaved(saved);
@@ -230,6 +235,50 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
           <select style={inputStyle} value={estado} onChange={e => setEstado(e.target.value as EntregableEstado)}>
             {ESTADOS.map(s => <option key={s} value={s}>{s}</option>)}
           </select>
+        </div>
+        <div style={fieldStyle}>
+          <label style={labelStyle}>Versión</label>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {(['vigente', 'obsoleto'] as const).map(v => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setVersionEstado(v)}
+                style={{
+                  flex: 1,
+                  padding: '9px 14px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1.5px solid',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  transition: 'all 180ms ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  ...(versionEstado === v
+                    ? v === 'vigente'
+                      ? { backgroundColor: 'rgba(34,197,94,0.15)', borderColor: '#22c55e', color: '#22c55e' }
+                      : { backgroundColor: 'rgba(239,68,68,0.15)', borderColor: '#ef4444', color: '#ef4444' }
+                    : { backgroundColor: 'transparent', borderColor: 'var(--hairline-strong)', color: 'var(--foreground-subtle)' }
+                  ),
+                }}
+              >
+                <span style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  backgroundColor: v === 'vigente' ? '#22c55e' : '#ef4444',
+                  flexShrink: 0,
+                }} />
+                {v === 'vigente' ? 'Vigente' : 'Obsoleto'}
+              </button>
+            ))}
+          </div>
         </div>
         <div style={fieldStyle}>
           <label style={labelStyle}>URL (Vimeo, Drive, etc.)</label>

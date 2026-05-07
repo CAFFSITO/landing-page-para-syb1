@@ -62,6 +62,21 @@ export default function EntregableCard({
   if (entregable.estado === "pendiente") return null;
 
   const esRechazado = entregable.estado === "rechazado";
+  const esObsoleto = entregable.version_estado === 'obsoleto';
+  const esVigente = entregable.version_estado === 'vigente';
+  const tieneVersion = entregable.version_estado != null;
+
+  // Estilos de color según versión
+  const versionBorderColor = esObsoleto
+    ? '#ef4444'
+    : esVigente
+    ? '#22c55e'
+    : undefined;
+  const versionBg = esObsoleto
+    ? 'rgba(239,68,68,0.04)'
+    : esVigente
+    ? 'rgba(34,197,94,0.04)'
+    : undefined;
 
   async function handleClick() {
     onOpen(entregable);
@@ -102,9 +117,10 @@ export default function EntregableCard({
           alignItems: "center",
           gap: "14px",
           padding: "14px 16px",
-          backgroundColor: "var(--surface-1)",
+          backgroundColor: versionBg ?? "var(--surface-1)",
           border: "1px solid var(--hairline)",
-          borderLeftWidth: 1,
+          borderLeftWidth: tieneVersion ? 3 : 1,
+          borderLeftColor: versionBorderColor ?? "var(--hairline)",
           borderRadius: "var(--radius-sm)",
           cursor: "pointer",
           textAlign: "left",
@@ -113,10 +129,11 @@ export default function EntregableCard({
           transition: "border-color 180ms ease, background-color 180ms ease",
         }}
         onMouseEnter={(e) => {
-          if (!esRechazado) e.currentTarget.style.borderColor = "var(--hairline-strong)";
+          if (!esRechazado) e.currentTarget.style.borderColor = versionBorderColor ?? "var(--hairline-strong)";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.borderColor = "var(--hairline)";
+          if (versionBorderColor) e.currentTarget.style.borderLeftColor = versionBorderColor;
         }}
       >
         {/* Ícono tipo — pequeño, alineado a la izquierda */}
@@ -166,6 +183,26 @@ export default function EntregableCard({
             >
               {TIPO_LABEL[entregable.tipo]}
             </span>
+            {/* Badge de versión */}
+            {tieneVersion && (
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.58rem",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  color: versionBorderColor,
+                  flexShrink: 0,
+                  padding: "2px 5px",
+                  borderRadius: "4px",
+                  border: `1px solid ${versionBorderColor}`,
+                  backgroundColor: versionBg,
+                }}
+              >
+                {esObsoleto ? "Obsoleto" : "Vigente"}
+              </span>
+            )}
           </div>
           {entregable.descripcion && (
             <p
