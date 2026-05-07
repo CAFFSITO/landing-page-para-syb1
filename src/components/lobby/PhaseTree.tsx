@@ -119,6 +119,19 @@ export default function PhaseTree({
           ) ?? reportes.find((r) => r.fase === entregable.fase);
         if (match) {
           setModalState({ tipo: "reporte", entregable, item: match });
+        } else if (entregable.descripcion) {
+          // Fallback: contenido en el campo descripcion del entregable
+          const syntheticReporte = {
+            id: entregable.id,
+            socio_id: entregable.socio_id,
+            fase: entregable.fase,
+            numero: entregable.orden,
+            titulo: entregable.titulo,
+            contenido: entregable.descripcion,
+            visible: true,
+            created_at: entregable.created_at,
+          };
+          setModalState({ tipo: "reporte", entregable, item: syntheticReporte as Reporte });
         }
         break;
       }
@@ -129,6 +142,18 @@ export default function PhaseTree({
           ) ?? reuniones.find((r) => r.fase === entregable.fase);
         if (match) {
           setModalState({ tipo: "reporte", entregable, item: match });
+        } else if (entregable.descripcion) {
+          const syntheticReporte = {
+            id: entregable.id,
+            socio_id: entregable.socio_id,
+            fase: entregable.fase,
+            numero: entregable.orden,
+            titulo: entregable.titulo,
+            contenido: entregable.descripcion,
+            visible: true,
+            created_at: entregable.created_at,
+          };
+          setModalState({ tipo: "reporte", entregable, item: syntheticReporte as Reporte });
         }
         break;
       }
