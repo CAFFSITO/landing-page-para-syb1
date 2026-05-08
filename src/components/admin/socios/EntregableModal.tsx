@@ -49,13 +49,23 @@ const labelStyle: React.CSSProperties = {
 const TIPOS: EntregableTipo[] = ['pdf', 'video', 'reporte', 'registro_reunion', 'agenda'];
 const ESTADOS: EntregableEstado[] = ['pendiente', 'enviado', 'rechazado'];
 
-const ACCEPT_POR_TIPO: Record<EntregableTipo, string> = {
-  pdf: '.pdf,application/pdf',
-  video: '.mp4,.webm,.mov,.avi,video/*',
-  reporte: '.pdf,.docx,.xlsx,.pptx,application/pdf',
-  registro_reunion: '.mp4,.webm,.mov,.pdf,video/*',
-  agenda: '.pdf,.docx,.txt,application/pdf',
-};
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+
+const BLOCKED_EXTENSIONS = new Set([
+  'exe', 'sh', 'bat', 'cmd', 'msi', 'com', 'scr', 'pif',
+  'vbs', 'vbe', 'js', 'jse', 'ws', 'wsf', 'wsc', 'wsh',
+  'ps1', 'psm1', 'psd1', 'reg', 'inf', 'hta', 'cpl', 'msp',
+]);
+
+const BLOCKED_MIMES = new Set([
+  'application/x-msdownload',
+  'application/x-msdos-program',
+  'application/x-executable',
+  'application/x-sharedlib',
+  'application/x-shellscript',
+  'application/x-bat',
+  'application/x-msi',
+]);
 
 export default function EntregableModal({ isOpen, onClose, socioId, fase, editTarget, onSaved, defaultOrden }: Props) {
   const [faseVal, setFaseVal] = useState<1 | 2 | 3>(fase);
@@ -99,6 +109,31 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Validar tamaño
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error('Archivo muy pesado (máx. 500 MB)');
+      e.target.value = '';
+      return;
+    }
+
+    // Validar extensión
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    if (BLOCKED_EXTENSIONS.has(ext)) {
+      toast.error('Por seguridad, no se permiten archivos ejecutables');
+      e.target.value = '';
+      return;
+    }
+
+    // Validar MIME
+    if (BLOCKED_MIMES.has(file.type)) {
+      toast.error('Por seguridad, no se permiten archivos ejecutables');
+      e.target.value = '';
+      return;
+    }
+
+    console.log('[Entregable] Archivo seleccionado:', file.name, file.type, `${(file.size / 1024 / 1024).toFixed(2)} MB`);
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
@@ -289,7 +324,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
           <input
             style={{ ...inputStyle, padding: '8px 14px', cursor: 'pointer' }}
             type="file"
-            accept={ACCEPT_POR_TIPO[tipo]}
+            accept="*/*"
             onChange={handleFile}
           />
           {editTarget?.storage_path && !fileName && (

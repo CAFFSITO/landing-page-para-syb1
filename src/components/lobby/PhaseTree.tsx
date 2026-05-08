@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import PhaseNode from "@/components/lobby/PhaseNode";
 import EntregableCard from "@/components/lobby/EntregableCard";
-import ModalPDF from "@/components/lobby/ModalPDF";
 import ModalVideo from "@/components/lobby/ModalVideo";
 import ModalReporte from "@/components/lobby/ModalReporte";
 import ModalAgenda from "@/components/lobby/ModalAgenda";
@@ -23,7 +22,6 @@ type PhaseTreeProps = {
 type EstadoFase = "completada" | "activa" | "pendiente";
 
 type ModalState =
-  | { tipo: "pdf"; entregable: Entregable }
   | { tipo: "video"; entregable: Entregable }
   | { tipo: "reporte"; entregable: Entregable; item: Reporte | Reunion }
   | { tipo: "agenda"; entregable: Entregable; reunion: Reunion }
@@ -98,21 +96,22 @@ export default function PhaseTree({
   }
 
   function handleOpen(entregable: Entregable) {
-    // Tipos distintos a pdf con archivo subido → visor genérico
-    if (entregable.storage_path && entregable.tipo !== "pdf") {
+    // Si tiene archivo subido en Storage → visor universal
+    if (entregable.storage_path) {
       setModalState({ tipo: "archivo", entregable });
       return;
     }
 
+    // Sin storage_path → fallback a modales por tipo (url-based)
     switch (entregable.tipo) {
       case "pdf":
-        setModalState({ tipo: "pdf", entregable });
+        // PDF sin archivo subido: nada que mostrar o URL externa
+        setModalState({ tipo: "archivo", entregable });
         break;
       case "video":
         setModalState({ tipo: "video", entregable });
         break;
       case "reporte": {
-        // Buscar reporte matcheando por fase y orden === numero
         const match =
           reportes.find(
             (r) => r.fase === entregable.fase && r.numero === entregable.orden
@@ -120,7 +119,6 @@ export default function PhaseTree({
         if (match) {
           setModalState({ tipo: "reporte", entregable, item: match });
         } else if (entregable.descripcion) {
-          // Fallback: contenido en el campo descripcion del entregable
           const syntheticReporte = {
             id: entregable.id,
             socio_id: entregable.socio_id,
@@ -313,13 +311,6 @@ export default function PhaseTree({
       </div>
 
       {/* Modales */}
-      {modalState?.tipo === "pdf" && (
-        <ModalPDF
-          isOpen
-          onClose={cerrarModal}
-          entregable={modalState.entregable}
-        />
-      )}
       {modalState?.tipo === "video" && (
         <ModalVideo
           isOpen

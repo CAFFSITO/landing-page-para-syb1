@@ -6,6 +6,34 @@ import type { EntregableTipo, EntregableEstado } from "@/types";
 
 const BUCKET = "entregables";
 
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+
+const BLOCKED_MIMES = new Set([
+  'application/x-msdownload',
+  'application/x-msdos-program',
+  'application/x-executable',
+  'application/x-sharedlib',
+  'application/x-shellscript',
+  'application/x-bat',
+  'application/x-msi',
+  'application/x-dosexec',
+]);
+
+const BLOCKED_EXTENSIONS = new Set([
+  'exe', 'sh', 'bat', 'cmd', 'msi', 'com', 'scr', 'pif',
+  'vbs', 'vbe', 'js', 'jse', 'ws', 'wsf', 'wsc', 'wsh',
+  'ps1', 'psm1', 'psd1', 'reg', 'inf', 'hta', 'cpl', 'msp',
+]);
+
+function validateFile(file: { base64: string; filename: string; mimeType: string }): string | null {
+  const bytes = Buffer.from(file.base64, 'base64');
+  if (bytes.length > MAX_FILE_SIZE) return 'Archivo muy pesado (máx. 500 MB)';
+  const ext = file.filename.split('.').pop()?.toLowerCase() ?? '';
+  if (BLOCKED_EXTENSIONS.has(ext)) return 'Por seguridad, no se permiten archivos ejecutables';
+  if (BLOCKED_MIMES.has(file.mimeType)) return 'Por seguridad, no se permiten archivos ejecutables';
+  return null;
+}
+
 // ─── Crear entregable ─────────────────────────────────────────────────────────
 
 type CreateEntregablePayload = {
@@ -32,6 +60,11 @@ export async function createEntregableAction(
 
   // Subir archivo si se proporcionó
   if (payload.file) {
+    const validationError = validateFile(payload.file);
+    if (validationError) return { ok: false, error: validationError };
+
+    console.log('[Entregable:create] Subiendo archivo:', payload.file.filename, payload.file.mimeType);
+
     const bytes = Buffer.from(payload.file.base64, "base64");
     const path = `${payload.socioId}/fase-${payload.fase}/${Date.now()}-${payload.file.filename}`;
 
@@ -89,6 +122,11 @@ export async function updateEntregableAction(
   let storagePath = payload.existingStoragePath ?? null;
 
   if (payload.file) {
+    const validationError = validateFile(payload.file);
+    if (validationError) return { ok: false, error: validationError };
+
+    console.log('[Entregable:update] Subiendo archivo:', payload.file.filename, payload.file.mimeType);
+
     const bytes = Buffer.from(payload.file.base64, "base64");
     const path = `${payload.socioId}/fase-${payload.fase}/${Date.now()}-${payload.file.filename}`;
 
