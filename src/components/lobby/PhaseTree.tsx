@@ -165,6 +165,10 @@ export default function PhaseTree({
         }
         break;
       }
+      default:
+        // audio, imagen, documento, archivo → visor universal
+        setModalState({ tipo: "archivo", entregable });
+        break;
     }
   }
 

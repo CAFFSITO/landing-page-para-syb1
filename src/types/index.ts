@@ -33,6 +33,10 @@ export type Socio = {
 export type EntregableTipo =
   | "pdf"
   | "video"
+  | "audio"
+  | "imagen"
+  | "documento"
+  | "archivo"
   | "reporte"
   | "registro_reunion"
   | "agenda";

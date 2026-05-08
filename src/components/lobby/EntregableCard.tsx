@@ -26,6 +26,10 @@ import {
   Calendar,
   Check,
   X,
+  Music,
+  Image as ImageIcon,
+  FileSpreadsheet,
+  File,
 } from "lucide-react";
 import { registrarLecturaAction } from "@/app/actions/lecturas";
 import type { Entregable } from "@/types";
@@ -39,6 +43,10 @@ type EntregableCardProps = {
 const ICONOS: Record<Entregable["tipo"], React.ReactNode> = {
   pdf: <FileText size={16} strokeWidth={1.5} />,
   video: <Play size={16} strokeWidth={1.5} />,
+  audio: <Music size={16} strokeWidth={1.5} />,
+  imagen: <ImageIcon size={16} strokeWidth={1.5} />,
+  documento: <FileSpreadsheet size={16} strokeWidth={1.5} />,
+  archivo: <File size={16} strokeWidth={1.5} />,
   reporte: <BarChart2 size={16} strokeWidth={1.5} />,
   registro_reunion: <Video size={16} strokeWidth={1.5} />,
   agenda: <Calendar size={16} strokeWidth={1.5} />,
@@ -47,6 +55,10 @@ const ICONOS: Record<Entregable["tipo"], React.ReactNode> = {
 const TIPO_LABEL: Record<Entregable["tipo"], string> = {
   pdf: "PDF",
   video: "Video",
+  audio: "Audio",
+  imagen: "Imagen",
+  documento: "Documento",
+  archivo: "Archivo",
   reporte: "Reporte",
   registro_reunion: "Registro",
   agenda: "Agenda",

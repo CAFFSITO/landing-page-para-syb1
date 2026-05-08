@@ -46,7 +46,19 @@ const labelStyle: React.CSSProperties = {
   letterSpacing: '0.18em',
 };
 
-const TIPOS: EntregableTipo[] = ['pdf', 'video', 'reporte', 'registro_reunion', 'agenda'];
+const TIPOS: EntregableTipo[] = ['pdf', 'video', 'audio', 'imagen', 'documento', 'archivo', 'reporte', 'registro_reunion', 'agenda'];
+
+const TIPO_LABELS: Record<EntregableTipo, string> = {
+  pdf: 'PDF',
+  video: 'Video',
+  audio: 'Audio',
+  imagen: 'Imagen',
+  documento: 'Documento (Office, etc.)',
+  archivo: 'Archivo genérico',
+  reporte: 'Reporte',
+  registro_reunion: 'Registro de reunión',
+  agenda: 'Agenda',
+};
 const ESTADOS: EntregableEstado[] = ['pendiente', 'enviado', 'rechazado'];
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
@@ -231,7 +243,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
         <div style={fieldStyle}>
           <label style={labelStyle}>Tipo *</label>
           <select style={inputStyle} value={tipo} onChange={e => setTipo(e.target.value as EntregableTipo)}>
-            {TIPOS.map(t => <option key={t} value={t}>{t}</option>)}
+            {TIPOS.map(t => <option key={t} value={t}>{TIPO_LABELS[t]}</option>)}
           </select>
         </div>
         <div style={fieldStyle}>
