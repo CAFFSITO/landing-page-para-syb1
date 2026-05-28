@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import logoSYB from "@/app/SYB RECUPERADO.png";
+import logoSYB from "@/app/SYB_RECUPERADO.png";
 
 const CAL_URL = process.env.NEXT_PUBLIC_CAL_URL ?? "#";
 
