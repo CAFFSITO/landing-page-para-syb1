@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AdminNavbar from "@/components/admin/AdminNavbar";
@@ -6,7 +7,7 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 export default async function AdminProtectedLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   const supabase = await createClient();
 

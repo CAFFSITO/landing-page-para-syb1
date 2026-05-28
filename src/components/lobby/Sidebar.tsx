@@ -7,7 +7,7 @@ import { signOut } from "@/app/actions/auth";
 import type { Socio } from "@/types";
 import type { TabActiva } from "@/components/lobby/LobbyTabs";
 import Image from "next/image";
-import logoSYB from "@/app/SYB RECUPERADO.png";
+import logoSYB from "@/app/SYB_RECUPERADO.png";
 
 type SidebarProps = {
   socio: Socio;

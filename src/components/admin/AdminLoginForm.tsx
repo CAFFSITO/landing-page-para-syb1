@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { adminLoginWithToken } from "@/app/actions/admin-auth";
 import Image from "next/image";
-import logoSYB from "@/app/SYB RECUPERADO.png";
+import logoSYB from "@/app/SYB_RECUPERADO.png";
 
 const initialState = { error: null };
 

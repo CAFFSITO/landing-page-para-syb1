@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import type { ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export type TabActiva = "programa" | "progreso" | "reuniones";
@@ -9,9 +10,9 @@ type LobbyTabsProps = {
   socioId: string;
   tabActiva: TabActiva;
   onTabChange: (tab: TabActiva) => void;
-  programaContent: React.ReactNode;
-  progresoContent: React.ReactNode;
-  reunionesContent: React.ReactNode;
+  programaContent: ReactNode;
+  progresoContent: ReactNode;
+  reunionesContent: ReactNode;
 };
 
 const TABS: { key: TabActiva; label: string }[] = [
@@ -35,7 +36,7 @@ export default function LobbyTabs({
     localStorage.setItem(storageKey, tabActiva);
   }, [tabActiva, storageKey]);
 
-  const content: Record<TabActiva, React.ReactNode> = {
+  const content: Record<TabActiva, ReactNode> = {
     programa: programaContent,
     progreso: progresoContent,
     reuniones: reunionesContent,

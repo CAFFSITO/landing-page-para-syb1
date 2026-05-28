@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
-import logoSYB from "@/app/SYB RECUPERADO.png";
+import logoSYB from "@/app/SYB_RECUPERADO.png";
 
 export default function LoginForm() {
   const router = useRouter();

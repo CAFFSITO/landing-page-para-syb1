@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import { Download, FileText, Film, Image as ImageIcon, File } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import { obtenerSignedUrl } from "@/app/actions/storage";
@@ -150,7 +151,7 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
     );
   }
 
-  const iconoDescarga: Record<TipoArchivo, React.ReactNode> = {
+  const iconoDescarga: Record<TipoArchivo, ReactNode> = {
     pdf: <FileText size={16} />,
     video: <Film size={16} />,
     imagen: <ImageIcon size={16} />,

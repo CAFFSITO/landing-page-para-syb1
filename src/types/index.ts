@@ -38,7 +38,7 @@ export type EntregableTipo =
   | "agenda";
 
 /** Estado de revisión de un entregable. */
-export type EntregableEstado = "enviado" | "rechazado" | "pendiente";
+export type EntregableEstado = "enviado" | "aprobado" | "rechazado" | "pendiente";
 
 /** Un entregable asociado a un socio dentro de una fase. */
 export type Entregable = {

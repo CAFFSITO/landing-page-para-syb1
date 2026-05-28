@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FileText,
@@ -20,12 +21,20 @@ type EntregableCardProps = {
   onOpen: (entregable: Entregable) => void;
 };
 
-const ICONOS: Record<Entregable["tipo"], React.ReactNode> = {
-  pdf: <FileText size={20} color="#9D5CC0" />,
-  video: <Play size={20} color="#9D5CC0" />,
-  reporte: <BarChart2 size={20} color="#9D5CC0" />,
-  registro_reunion: <Video size={20} color="#9D5CC0" />,
-  agenda: <Calendar size={20} color="#9D5CC0" />,
+const ICONOS: Record<Entregable["tipo"], ReactNode> = {
+  pdf: <FileText size={18} color="#9D5CC0" />,
+  video: <Play size={18} color="#9D5CC0" />,
+  reporte: <BarChart2 size={18} color="#9D5CC0" />,
+  registro_reunion: <Video size={18} color="#9D5CC0" />,
+  agenda: <Calendar size={18} color="#9D5CC0" />,
+};
+
+const TIPO_LABELS: Record<Entregable["tipo"], string> = {
+  pdf: "PDF",
+  video: "VIDEO",
+  reporte: "REPORTE",
+  registro_reunion: "REUNIÓN",
+  agenda: "AGENDA",
 };
 
 export default function EntregableCard({
@@ -35,14 +44,13 @@ export default function EntregableCard({
 }: EntregableCardProps) {
   const [leido, setLeido] = useState(yaLeido);
 
-  // No renderizar entregables pendientes — filtrar antes de pasar el prop, pero como defensa:
   if (entregable.estado === "pendiente") return null;
 
   const esRechazado = entregable.estado === "rechazado";
+  const esAceptado = entregable.estado === "enviado" || entregable.estado === "aprobado";
 
   async function handleClick() {
     onOpen(entregable);
-    // Registro optimista: actualizar UI antes de esperar la respuesta del servidor
     if (!leido && !esRechazado) {
       setLeido(true);
       registrarLecturaAction({ entregable_id: entregable.id });
@@ -84,13 +92,13 @@ export default function EntregableCard({
             esRechazado
               ? "rgba(239,68,68,0.4)"
               : leido
-              ? "rgba(74,222,128,0.4)"
+              ? "rgba(74,222,128,0.3)"
               : "rgba(157,92,192,0.4)"
           }`,
           borderRadius: "12px",
           cursor: "pointer",
           textAlign: "left",
-          opacity: leido && !esRechazado ? 0.75 : 1,
+          opacity: leido && !esRechazado ? 0.8 : 1,
           width: "100%",
           boxShadow: "0 2px 20px rgba(59,30,99,0.1)",
         }}
@@ -98,23 +106,38 @@ export default function EntregableCard({
         {/* Ícono de tipo */}
         <div style={{ flexShrink: 0 }}>{ICONOS[entregable.tipo]}</div>
 
-        {/* Título y descripción */}
+        {/* Título, tipo-label y descripción */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "0.875rem",
-              fontWeight: 700,
-              color: esRechazado ? "rgba(255,255,255,0.5)" : "#FFFFFF",
-              textDecoration: esRechazado ? "line-through" : "none",
-              fontFamily: "Merriweather, Georgia, serif",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {entregable.titulo}
-          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            <p
+              style={{
+                margin: 0,
+                fontSize: "0.875rem",
+                fontWeight: 700,
+                color: esRechazado ? "rgba(255,255,255,0.4)" : "#FFFFFF",
+                textDecoration: esRechazado ? "line-through" : "none",
+                fontFamily: "Merriweather, Georgia, serif",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                maxWidth: "160px",
+              }}
+            >
+              {entregable.titulo}
+            </p>
+            <span
+              style={{
+                fontSize: "0.6rem",
+                color: "rgba(157,92,192,0.6)",
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                flexShrink: 0,
+              }}
+            >
+              {TIPO_LABELS[entregable.tipo]}
+            </span>
+          </div>
+
           {entregable.descripcion && (
             <p
               style={{
@@ -131,39 +154,58 @@ export default function EntregableCard({
           )}
         </div>
 
-        {/* Estado: badge rechazado o checkmark leído */}
+        {/* Estado: badge + leido check */}
         <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: "6px" }}>
           {esRechazado && (
             <>
-              <XCircle size={16} color="#EF4444" />
+              <XCircle size={14} color="#EF4444" />
               <span
                 style={{
-                  fontSize: "0.7rem",
+                  fontSize: "0.65rem",
                   color: "#EF4444",
                   backgroundColor: "rgba(239,68,68,0.1)",
-                  padding: "2px 6px",
+                  border: "1px solid rgba(239,68,68,0.3)",
+                  padding: "2px 7px",
                   borderRadius: "4px",
                   fontWeight: 700,
+                  letterSpacing: "0.04em",
                 }}
               >
-                Rechazado
+                RECHAZADO
               </span>
             </>
           )}
 
-          {!esRechazado && (
-            <AnimatePresence>
-              {leido && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                >
-                  <CheckCircle2 size={16} color="#4ADE80" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+          {esAceptado && (
+            <>
+              <span
+                style={{
+                  fontSize: "0.65rem",
+                  color: "#4ADE80",
+                  backgroundColor: "rgba(74,222,128,0.08)",
+                  border: "1px solid rgba(74,222,128,0.3)",
+                  padding: "2px 7px",
+                  borderRadius: "4px",
+                  fontWeight: 700,
+                  letterSpacing: "0.04em",
+                }}
+              >
+                ACEPTADO
+              </span>
+
+              <AnimatePresence>
+                {leido && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  >
+                    <CheckCircle2 size={14} color="#4ADE80" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </>
           )}
         </div>
       </motion.button>

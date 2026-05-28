@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { ReactNode } from "react";
 import Sidebar from "@/components/lobby/Sidebar";
 import LobbyTabs, { type TabActiva } from "@/components/lobby/LobbyTabs";
 import type { Socio } from "@/types";
 
 type LobbyShellProps = {
   socio: Socio;
-  programaContent: React.ReactNode;
-  progresoContent: React.ReactNode;
-  reunionesContent: React.ReactNode;
+  programaContent: ReactNode;
+  progresoContent: ReactNode;
+  reunionesContent: ReactNode;
 };
 
 export default function LobbyShell({

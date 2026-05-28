@@ -32,9 +32,9 @@ type ModalState =
 
 const FASES = [1, 2, 3] as const;
 const NOMBRES_FASE: Record<number, string> = {
-  1: "Fase 1 — Diagnóstico y Bases",
-  2: "Fase 2 — Implementación",
-  3: "Fase 3 — Escala y Consolidación",
+  1: "Fase 1 — Diagnóstico",
+  2: "Fase 2 — Diseño",
+  3: "Fase 3 — Validación",
 };
 
 const containerVariants = {

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useOptimistic, useTransition } from 'react'
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { Copy } from 'lucide-react'
 import { toast, Toaster } from 'sonner'
@@ -17,7 +18,7 @@ function PillButton({
 }: {
   active: boolean
   onClick: () => void
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <button

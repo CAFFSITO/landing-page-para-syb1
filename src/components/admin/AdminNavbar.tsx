@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
 import { signOut } from "@/app/actions/auth";
 import Image from "next/image";
-import logoSYB from "@/app/SYB RECUPERADO.png";
+import logoSYB from "@/app/SYB_RECUPERADO.png";
 
 export default function AdminNavbar() {
   const [isDark, setIsDark] = useState(true);
