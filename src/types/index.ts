@@ -7,6 +7,19 @@
 
 // ─── Socio ──────────────────────────────────────────────────────────────────
 
+/** Datos de garantía del socio: incumplimientos y estado de cláusula. */
+export type GarantiaData = {
+  breach_reunion?: boolean;
+  breach_reunion_razon?: string;
+  breach_uso?: boolean;
+  breach_uso_razon?: string;
+  breach_reporte?: boolean;
+  breach_reporte_razon?: string;
+  clausula_activa?: boolean;
+  opcion_ejecutada?: "A" | "B" | null;
+  opcion_ejecutada_at?: string | null;
+};
+
 /** Representa a un socio (cliente) dentro del programa SYB. */
 export type Socio = {
   id: string;
@@ -25,6 +38,10 @@ export type Socio = {
   created_at: string;
   /** Notas internas del administrador sobre este socio. */
   notas_admin?: string;
+  /** Hitos granulares de progreso (jsonb en Supabase). */
+  hitos?: Record<string, boolean>;
+  /** Estado de garantía del socio (jsonb en Supabase). */
+  garantia?: GarantiaData;
 };
 
 // ─── Entregables ────────────────────────────────────────────────────────────

@@ -4,40 +4,39 @@ import ProgressBar from "@/components/lobby/ProgressBar";
 import LobbyShell from "@/app/lobby/LobbyShell";
 import ProgramaRoadmap from "@/components/lobby/ProgramaRoadmap";
 import PhaseTree from "@/components/lobby/PhaseTree";
+import GarantiaStatus from "@/components/lobby/GarantiaStatus";
 import ReunionesSection from "@/components/lobby/ReunionesSection";
-import type { Socio, Entregable, Reunion, Reporte, Lectura } from "@/types";
+import { calcularPorcentaje } from "@/lib/hitos";
+import type { Socio, Entregable, Reunion, Reporte, Lectura, GarantiaData } from "@/types";
+import type { HitosMap } from "@/lib/hitos";
 
 export default async function LobbyPage() {
   const supabase = await createClient();
 
-  // Validar sesión activa
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/");
-  }
+  if (!user) redirect("/");
 
-  // Para los datos, usamos el cliente Admin. 
-  // Esto evita que RLS bloquee la lectura si el ID de Auth (generado dinámicamente) 
-  // no coincide con el ID de la tabla socios (generado al insertar manualmente).
-  // La seguridad está garantizada porque filtramos estrictamente por `user.email` (que es seguro y viene del token validado).
   const adminClient = createAdminClient();
 
   const { data: socio } = await adminClient
     .from("socios")
     .select(
-      "id, nombre, empresa, fase_actual, fase_1_done, fase_2_done, fase_3_done, email, token, activo, created_at"
+      "id, nombre, empresa, fase_actual, fase_1_done, fase_2_done, fase_3_done, email, token, activo, created_at, hitos, garantia"
     )
     .eq("email", user.email)
     .single<Socio>();
 
-  if (!socio) {
-    redirect("/");
-  }
+  if (!socio) redirect("/");
 
-  // Fetches paralelos: entregables, reuniones, reportes, lecturas (usando adminClient)
+  const hitos: HitosMap = (socio.hitos as HitosMap | undefined) ?? {};
+  const garantia: GarantiaData = socio.garantia ?? {};
+  const progressPct = calcularPorcentaje(hitos);
+  const garantiaActiva = !!hitos["f3_r5"];
+  const opcion = garantia.opcion_ejecutada ?? null;
+
   const [
     { data: entregables },
     { data: reuniones },
@@ -77,15 +76,35 @@ export default async function LobbyPage() {
       .returns<Lectura[]>(),
   ]);
 
-  // Calcular porcentaje de progreso según fases completadas
-  const fasesCompletas = [socio.fase_1_done, socio.fase_2_done, socio.fase_3_done].filter(
-    Boolean
-  ).length;
-  const progressPct = (fasesCompletas === 3 ? 100 : fasesCompletas * 33) as
-    | 0
-    | 33
-    | 66
-    | 100;
+  // Stub para el Pack de Consultoría (Opción B) — contenido real se construye luego
+  const consultoriaContent =
+    opcion === "B" ? (
+      <div style={{ padding: "40px 0", textAlign: "center" }}>
+        <p
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "1.5rem",
+            fontWeight: 700,
+            color: "var(--foreground)",
+            marginBottom: 12,
+          }}
+        >
+          Pack de Consultoría Estratégica en IA
+        </p>
+        <p
+          style={{
+            fontSize: "0.9rem",
+            color: "var(--foreground-muted)",
+            lineHeight: 1.7,
+            maxWidth: 480,
+            margin: "0 auto",
+          }}
+        >
+          Tu acceso a los recursos y la consultoría está siendo preparado. Pronto encontrarás
+          aquí los PDFs, videos de la Masterclass y el calendario para los 60 días de consultoría.
+        </p>
+      </div>
+    ) : undefined;
 
   return (
     <>
@@ -93,10 +112,13 @@ export default async function LobbyPage() {
         progressPct={progressPct}
         faseActual={socio.fase_actual}
         nombreSocio={socio.nombre}
+        garantia={garantia}
       />
 
       <LobbyShell
         socio={socio}
+        garantia={garantia}
+        consultoriaContent={consultoriaContent}
         programaContent={
           <ProgramaRoadmap
             nombreSocio={socio.nombre}
@@ -104,13 +126,20 @@ export default async function LobbyPage() {
           />
         }
         progresoContent={
-          <PhaseTree
-            socio={socio}
-            entregables={entregables ?? []}
-            reuniones={reuniones ?? []}
-            reportes={reportes ?? []}
-            lecturas={lecturas ?? []}
-          />
+          <>
+            <PhaseTree
+              socio={socio}
+              entregables={entregables ?? []}
+              reuniones={reuniones ?? []}
+              reportes={reportes ?? []}
+              lecturas={lecturas ?? []}
+            />
+            <GarantiaStatus
+              garantia={garantia}
+              garantiaActiva={garantiaActiva}
+              nombreSocio={socio.nombre}
+            />
+          </>
         }
         reunionesContent={<ReunionesSection reuniones={reuniones ?? []} />}
       />
