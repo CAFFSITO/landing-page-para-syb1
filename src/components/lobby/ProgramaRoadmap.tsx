@@ -157,69 +157,73 @@ export default function ProgramaRoadmap({
       }}
     >
       {/* ─── 1) Encabezado de bienvenida ──────────────────────────── */}
-      <motion.div
+      <motion.header
         variants={{
-          hidden: { opacity: 0, y: 20 },
+          hidden: { opacity: 0, y: 16 },
           show: { opacity: 1, y: 0 },
         }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         style={{
-          background: "linear-gradient(135deg, #1C0D35, #0F0720)",
-          border: "1px solid rgba(157,92,192,0.25)",
-          borderRadius: "16px",
-          padding: "28px 24px",
+          paddingBottom: "28px",
+          borderBottom: "1px solid var(--hairline)",
         }}
       >
-        <h2
+        <p
           style={{
-            fontFamily: "Merriweather, Georgia, serif",
-            fontWeight: 700,
-            fontSize: "1.75rem",
-            color: "#FFFFFF",
-            margin: "0 0 12px 0",
-            lineHeight: 1.2,
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.7rem",
+            fontWeight: 500,
+            textTransform: "uppercase",
+            letterSpacing: "0.18em",
+            color: "var(--foreground-subtle)",
+            margin: "0 0 14px 0",
           }}
         >
-          Hola, {nombreSocio}.{" "}
-          <motion.span
-            style={{
-              display: "inline-block",
-              transformOrigin: "70% 80%",
-            }}
-            animate={{ rotate: [-20, 10, -20] }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            👋
-          </motion.span>
+          Programa · 8 semanas
+        </p>
+        <h2
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontWeight: 700,
+            fontSize: "2rem",
+            color: "var(--foreground)",
+            margin: "0 0 14px 0",
+            lineHeight: 1.15,
+            letterSpacing: "-0.015em",
+          }}
+        >
+          Hola, {nombreSocio}.
         </h2>
         <p
           style={{
             fontSize: "0.95rem",
-            color: "rgba(255,255,255,0.7)",
+            color: "var(--foreground-muted)",
             lineHeight: 1.7,
             margin: "0 0 8px 0",
+            maxWidth: "60ch",
           }}
         >
-          Bienvenido al portal de tu programa.
-          Acá vas a encontrar todo lo que necesitás saber sobre el proceso de transformación de{" "}
-          <strong style={{ color: "#C084FC" }}>{empresaNombre}</strong>.
+          Bienvenido al portal de tu programa. Acá vas a encontrar todo lo que necesitás
+          saber sobre el proceso de transformación de{" "}
+          <strong style={{ color: "var(--foreground)", fontWeight: 600 }}>
+            {empresaNombre}
+          </strong>
+          .
         </p>
         <p
           style={{
             fontSize: "0.95rem",
-            color: "rgba(255,255,255,0.7)",
+            color: "var(--foreground-muted)",
             lineHeight: 1.7,
             margin: 0,
+            maxWidth: "60ch",
           }}
         >
-          Debajo podés explorar las 3 fases del programa: qué hacemos en cada una, qué
-          entregables vas a recibir y cómo vamos a trabajar juntos durante las próximas 8 semanas.
+          Debajo podés explorar las 3 fases del programa: qué hacemos en cada una,
+          qué entregables vas a recibir y cómo vamos a trabajar juntos durante las
+          próximas 8 semanas.
         </p>
-      </motion.div>
+      </motion.header>
 
       {/* ─── 2) Roadmap de fases ──────────────────────────────────── */}
       <motion.div
@@ -265,27 +269,19 @@ export default function ProgramaRoadmap({
                 empresaNombre={empresaNombre}
               />
 
-              {/* Conector entre fases (solo entre cards, no después de la última) */}
+              {/* Conector entre fases — flecha sutil sin loop perpetuo */}
               {i < FASES_DATA.length - 1 && (
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    padding: "8px 12px",
+                    padding: "10px 14px",
+                    color: "var(--foreground-subtle)",
                   }}
                   className="rotate-90 md:rotate-0"
                 >
-                  <motion.div
-                    animate={{ x: [0, 6, 0] }}
-                    transition={{
-                      duration: 1.2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                  >
-                    <ArrowRight size={20} color="#9D5CC0" />
-                  </motion.div>
+                  <ArrowRight size={16} strokeWidth={1.5} />
                 </div>
               )}
             </div>
@@ -293,36 +289,39 @@ export default function ProgramaRoadmap({
         </div>
       </motion.div>
 
-      {/* ─── 3) Nota al pie ───────────────────────────────────────── */}
+      {/* ─── 3) Nota al pie — bento minimal con borde 1px ─────────── */}
       <motion.div
         variants={{
-          hidden: { opacity: 0, y: 20 },
+          hidden: { opacity: 0, y: 16 },
           show: { opacity: 1, y: 0 },
         }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         style={{
           display: "flex",
-          gap: "12px",
+          gap: "14px",
           alignItems: "flex-start",
-          backgroundColor: "rgba(157,92,192,0.06)",
-          border: "1px solid rgba(157,92,192,0.19)",
-          borderRadius: "10px",
-          padding: "16px 20px",
+          backgroundColor: "var(--surface-2)",
+          border: "1px solid var(--hairline)",
+          borderRadius: "var(--radius-md)",
+          padding: "18px 22px",
         }}
       >
-        <Info size={18} color="#9D5CC0" style={{ flexShrink: 0, marginTop: "2px" }} />
+        <Info
+          size={16}
+          strokeWidth={1.5}
+          style={{ flexShrink: 0, marginTop: "3px", color: "var(--foreground-muted)" }}
+        />
         <p
           style={{
             fontSize: "0.85rem",
-            color: "rgba(255,255,255,0.55)",
+            color: "var(--foreground-muted)",
             lineHeight: 1.7,
             margin: 0,
-            fontStyle: "italic",
           }}
         >
           Las duraciones son estimadas y pueden ajustarse según las necesidades de{" "}
-          {empresaNombre}. Tu consultor te mantendrá informado sobre cualquier cambio en el
-          cronograma.
+          {empresaNombre}. Tu consultor te mantendrá informado sobre cualquier cambio
+          en el cronograma.
         </p>
       </motion.div>
     </motion.div>

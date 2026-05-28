@@ -20,7 +20,7 @@ export default async function AdminProtectedLayout({
   }
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#0D0618" }}>
+    <div style={{ minHeight: "100dvh", backgroundColor: "var(--background)" }}>
       <AdminNavbar />
 
       <div style={{ display: "flex" }}>
@@ -29,8 +29,8 @@ export default async function AdminProtectedLayout({
         <main
           style={{
             flex: 1,
-            padding: "40px 32px",
-            minHeight: "calc(100vh - 56px)",
+            padding: "48px 36px",
+            minHeight: "calc(100dvh - 56px)",
             overflowX: "hidden",
           }}
         >

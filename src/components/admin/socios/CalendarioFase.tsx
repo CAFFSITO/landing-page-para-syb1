@@ -48,28 +48,30 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
   }
 
   const hoy = new Date();
+  const hoyISO = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, "0")}-${String(hoy.getDate()).padStart(2, "0")}`;
 
   return (
     <div
       style={{
         marginTop: "16px",
-        padding: "16px",
-        backgroundColor: "rgba(157,92,192,0.04)",
-        border: "1px solid rgba(157,92,192,0.1)",
-        borderRadius: "8px",
+        padding: "20px",
+        backgroundColor: "var(--surface-2)",
+        border: "1px solid var(--hairline)",
+        borderRadius: "var(--radius-md)",
       }}
     >
       <p
         style={{
-          fontSize: "0.7rem",
-          color: "rgba(157,92,192,0.5)",
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.65rem",
+          fontWeight: 500,
+          color: "var(--foreground-subtle)",
           textTransform: "uppercase",
-          letterSpacing: "0.1em",
-          marginBottom: "12px",
-          margin: "0 0 12px 0",
+          letterSpacing: "0.18em",
+          margin: "0 0 16px 0",
         }}
       >
-        Calendario {anio} — Fase {fase}
+        Calendario {anio} · Fase 0{fase}
       </p>
 
       <div
@@ -87,22 +89,28 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
             ...Array.from({ length: dias }, (_, i) => i + 1),
           ];
           const resto = celdas.length % 7;
-          if (resto > 0) {
-            for (let i = 0; i < 7 - resto; i++) celdas.push(null);
-          }
+          if (resto > 0) for (let i = 0; i < 7 - resto; i++) celdas.push(null);
 
           return (
-            <div key={mes}>
+            <div
+              key={mes}
+              style={{
+                padding: "10px",
+                border: "1px solid var(--hairline)",
+                borderRadius: "var(--radius-sm)",
+                backgroundColor: "var(--surface-1)",
+              }}
+            >
               <div
                 style={{
                   textAlign: "center",
-                  fontSize: "0.65rem",
-                  color: "#9D5CC0",
-                  fontFamily: "Merriweather, Georgia, serif",
-                  fontWeight: 700,
-                  marginBottom: "6px",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.62rem",
+                  fontWeight: 500,
+                  color: "var(--foreground-subtle)",
+                  marginBottom: "8px",
                   textTransform: "uppercase",
-                  letterSpacing: "0.08em",
+                  letterSpacing: "0.18em",
                 }}
               >
                 {MESES[mes]}
@@ -119,11 +127,12 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
                   <div
                     key={d}
                     style={{
+                      fontFamily: "var(--font-mono)",
                       fontSize: "0.55rem",
-                      color: "rgba(157,92,192,0.4)",
+                      color: "var(--foreground-subtle)",
                       textAlign: "center",
                       padding: "2px 0",
-                      fontWeight: 600,
+                      fontWeight: 500,
                     }}
                   >
                     {d}
@@ -139,6 +148,7 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
                     anio === hoy.getFullYear() &&
                     mes === hoy.getMonth() &&
                     dia === hoy.getDate();
+                  const esPasado = !esHoy && clave < hoyISO;
 
                   return (
                     <button
@@ -155,23 +165,26 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
                       style={{
                         position: "relative",
                         fontSize: "0.6rem",
-                        color: tieneReuniones
-                          ? "#FFFFFF"
+                        color: esPasado
+                          ? "var(--foreground-subtle)"
+                          : tieneReuniones
+                          ? "var(--foreground)"
                           : esHoy
-                          ? "#9D5CC0"
-                          : "rgba(255,255,255,0.45)",
+                          ? "var(--foreground)"
+                          : "var(--foreground-muted)",
                         textAlign: "center",
                         padding: "3px 1px",
-                        background: esHoy ? "rgba(157,92,192,0.15)" : "none",
-                        border: esHoy ? "1px solid rgba(157,92,192,0.3)" : "1px solid transparent",
-                        borderRadius: "3px",
+                        opacity: esPasado ? 0.4 : 1,
+                        background: esHoy ? "var(--surface-2)" : "none",
+                        border: esHoy ? "1px solid var(--hairline-strong)" : "1px solid transparent",
+                        borderRadius: "var(--radius-xs)",
                         cursor: "pointer",
-                        fontWeight: tieneReuniones ? 700 : 400,
+                        fontWeight: (!esPasado && tieneReuniones) ? 600 : 400,
                         lineHeight: "1.6",
                       }}
                     >
                       {dia}
-                      {tieneReuniones && (
+                      {tieneReuniones && !esPasado && (
                         <span
                           style={{
                             position: "absolute",
@@ -182,8 +195,8 @@ export default function CalendarioFase({ fase, reuniones, onDiaClick }: Props) {
                             height: "3px",
                             borderRadius: "50%",
                             backgroundColor: rs.some((r) => r.completada)
-                              ? "#22c55e"
-                              : "#9D5CC0",
+                              ? "var(--color-success)"
+                              : "var(--color-secondary)",
                             display: "block",
                           }}
                         />

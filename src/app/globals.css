@@ -3,32 +3,252 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: var(--font-merriweather), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  
+  /* === Tipografía editorial === */
+  /* Body / UI: DM Sans — variable weight, optical sizing óptimo */
+  --font-sans: var(--font-dm-sans), "Helvetica Neue", system-ui, sans-serif;
+  /* Headings: Syne — geométrico editorial, contraste marcado con DM Sans */
+  --font-serif: var(--font-syne), "SF Pro Display", system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* === Marca SYB (acento único: púrpura) === */
   --color-primary: #3B1E63;
   --color-secondary: #9D5CC0;
   --color-contrast: #FFFFFF;
   --color-accent: #2D2D2D;
+
+  /* Pasteles desaturados para badges/estados (regla minimalista) */
   --color-success: #4ADE80;
+  --color-success-soft: #EDF3EC;
   --color-danger: #EF4444;
+  --color-danger-soft: #FDEBEC;
   --color-warning: #F59E0B;
+  --color-warning-soft: #FBF3DB;
+  --color-info-soft: #E1F3FE;
+  --color-accent-soft: rgba(157, 92, 192, 0.10);
+
+  /* === Radii — sin píldoras en contenedores grandes === */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  /* === Sombras ultra difusas (opacidad < 0.06) === */
+  --shadow-hairline: 0 0 0 1px rgba(17, 17, 17, 0.04);
+  --shadow-soft: 0 1px 2px rgba(17, 17, 17, 0.04);
+  --shadow-elevated: 0 8px 28px rgba(17, 17, 17, 0.05);
+
+  /* Macro espacios */
+  --space-section: 6rem;
+  --space-section-sm: 4rem;
 }
 
+/* ============================================================
+   Modo claro — papel cálido, alto contraste editorial
+   ============================================================ */
 :root {
-  --background: #F9F7FF;
-  --foreground: #2D2D2D;
-  --card-bg: #FFFFFF;
-  --border-color: rgba(59,30,99,0.15);
+  --background: #F7F6F3;          /* lienzo cálido */
+  --background-soft: #FBFBFA;     /* superficies secundarias */
+  --foreground: #111111;          /* nunca negro absoluto */
+  --foreground-muted: #6B6B6B;
+  --foreground-subtle: #9A9A9A;
+
+  --surface-1: #FFFFFF;           /* cards primarios */
+  --surface-2: #F9F9F8;           /* cards secundarios */
+
+  --hairline: #EAEAEA;            /* línea 1px universal */
+  --hairline-strong: #D4D4D4;
+
+  /* Compatibilidad hacia atrás con código existente */
+  --card-bg: var(--surface-1);
+  --border-color: var(--hairline);
 }
 
+/* ============================================================
+   Modo oscuro — púrpura SYB conservado, plano y sin neón
+   ============================================================ */
 .dark {
   --background: #0D0618;
-  --foreground: #FFFFFF;
-  --card-bg: #1C0D35;
-  --border-color: rgba(157,92,192,0.25);
+  --background-soft: #120925;
+  --foreground: #F7F5FA;
+  --foreground-muted: rgba(247, 245, 250, 0.62);
+  --foreground-subtle: rgba(247, 245, 250, 0.38);
+
+  --surface-1: #1A0E2F;
+  --surface-2: #150A26;
+
+  --hairline: rgba(255, 255, 255, 0.07);
+  --hairline-strong: rgba(255, 255, 255, 0.14);
+
+  --shadow-hairline: 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 28px rgba(0, 0, 0, 0.35);
+
+  --card-bg: var(--surface-1);
+  --border-color: var(--hairline);
 }
 
+/* ============================================================
+   Base
+   ============================================================ */
+html,
 body {
   background-color: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
+
+/* Headings: Syne — geométrico, contraste marcado con DM Sans en body */
+h1, h2, h3, h4 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* ============================================================
+   Primitivas reusables (acompañan a Tailwind, no lo reemplazan)
+   ============================================================ */
+
+/* Card minimalista — superficie plana + hairline 1px */
+.syb-card {
+  background-color: var(--surface-1);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+/* Sección bento — separación por línea, sin sombras */
+.syb-section {
+  border-top: 1px solid var(--hairline);
+}
+
+/* Botón primario — sólido, sin gradiente. Reservar gradiente a CTA estrella explícito. */
+.syb-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-contrast);
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 150ms ease;
+}
+.syb-btn-primary:hover {
+  background-color: #2E1750;
+}
+.syb-btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Botón fantasma — solo borde hairline */
+.syb-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  background-color: transparent;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 120ms ease, background-color 150ms ease;
+}
+.syb-btn-ghost:hover {
+  background-color: var(--surface-2);
+}
+.syb-btn-ghost:active {
+  transform: scale(0.98);
+}
+
+/* CTA estrella — único lugar donde sobrevive el gradiente SYB */
+.syb-btn-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-contrast);
+  background: linear-gradient(135deg, #3B1E63 0%, #9D5CC0 100%);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 120ms ease, filter 150ms ease;
+}
+.syb-btn-star:hover { filter: brightness(1.08); }
+.syb-btn-star:active { transform: scale(0.98); }
+
+/* Tags / badges con pasteles desaturados */
+.syb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--hairline);
+}
+.syb-tag-success { background-color: var(--color-success-soft); color: #1F6B3B; border-color: rgba(74, 222, 128, 0.2); }
+.syb-tag-danger  { background-color: var(--color-danger-soft);  color: #8A2A2A; border-color: rgba(239, 68, 68, 0.2); }
+.syb-tag-warning { background-color: var(--color-warning-soft); color: #7A5306; border-color: rgba(245, 158, 11, 0.2); }
+.syb-tag-info    { background-color: var(--color-info-soft);    color: #1B4D72; border-color: rgba(56, 132, 197, 0.2); }
+.syb-tag-accent  { background-color: var(--color-accent-soft);  color: var(--color-secondary); border-color: rgba(157, 92, 192, 0.18); }
+
+.dark .syb-tag-success { color: #6EE7A1; background-color: rgba(74,222,128,0.10); border-color: rgba(74,222,128,0.22); }
+.dark .syb-tag-danger  { color: #F8A0A0; background-color: rgba(239,68,68,0.10);  border-color: rgba(239,68,68,0.22); }
+.dark .syb-tag-warning { color: #F4C572; background-color: rgba(245,158,11,0.10); border-color: rgba(245,158,11,0.22); }
+.dark .syb-tag-info    { color: #8FCBF1; background-color: rgba(56,132,197,0.10); border-color: rgba(56,132,197,0.22); }
+.dark .syb-tag-accent  { color: #C49EE0; background-color: rgba(157,92,192,0.12); border-color: rgba(157,92,192,0.25); }
+
+/* Eyebrow editorial */
+.syb-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--foreground-muted);
+}
+
+/* Hairline divider */
+.syb-divider {
+  height: 1px;
+  background-color: var(--hairline);
+  width: 100%;
+}
+
+/* Inputs — borde 1px, sin sombra */
+.syb-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--foreground);
+  background-color: var(--surface-1);
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 150ms ease;
+}
+.syb-input:focus {
+  border-color: var(--color-secondary);
+}
+.dark .syb-input { background-color: var(--surface-2); }

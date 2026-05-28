@@ -58,23 +58,24 @@ export default async function SocioDetailPage({
       <Link
         href="/admin/socios"
         style={{
-          color: 'rgba(157,92,192,0.7)',
-          fontSize: '0.875rem',
+          color: 'var(--foreground-muted)',
+          fontFamily: 'var(--font-sans)',
+          fontSize: '0.85rem',
           textDecoration: 'none',
-          display: 'inline-block',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
           marginBottom: '24px',
         }}
       >
         ← Socios
       </Link>
 
-      <div
+      <header
         style={{
-          backgroundColor: '#1C0D35',
-          border: '1px solid rgba(157,92,192,0.2)',
-          borderRadius: '12px',
-          padding: '24px',
-          marginBottom: '32px',
+          paddingBottom: '28px',
+          borderBottom: '1px solid var(--hairline)',
+          marginBottom: '36px',
         }}
       >
         <div
@@ -87,13 +88,27 @@ export default async function SocioDetailPage({
           }}
         >
           <div>
+            <p
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.65rem',
+                fontWeight: 500,
+                textTransform: 'uppercase',
+                letterSpacing: '0.22em',
+                color: 'var(--foreground-subtle)',
+                margin: '0 0 12px 0',
+              }}
+            >
+              Socio
+            </p>
             <h1
               style={{
-                fontFamily: 'Merriweather, Georgia, serif',
+                fontFamily: 'var(--font-serif)',
                 fontWeight: 700,
-                fontSize: '1.5rem',
-                color: '#FFFFFF',
-                margin: '0 0 4px',
+                fontSize: '2rem',
+                color: 'var(--foreground)',
+                margin: '0 0 6px 0',
+                letterSpacing: '-0.015em',
               }}
             >
               {socio.nombre}
@@ -101,9 +116,9 @@ export default async function SocioDetailPage({
             {socio.empresa && (
               <p
                 style={{
-                  color: 'rgba(157,92,192,0.7)',
-                  margin: '0 0 12px',
-                  fontSize: '0.875rem',
+                  color: 'var(--foreground-muted)',
+                  margin: '0 0 10px 0',
+                  fontSize: '0.95rem',
                 }}
               >
                 {socio.empresa}
@@ -111,8 +126,9 @@ export default async function SocioDetailPage({
             )}
             <p
               style={{
-                color: 'rgba(255,255,255,0.5)',
+                color: 'var(--foreground-muted)',
                 margin: 0,
+                fontFamily: 'var(--font-mono)',
                 fontSize: '0.8rem',
               }}
             >
@@ -127,38 +143,21 @@ export default async function SocioDetailPage({
               gap: '8px',
             }}
           >
-            <span
-              style={{
-                display: 'inline-block',
-                padding: '3px 10px',
-                borderRadius: '20px',
-                fontSize: '0.75rem',
-                fontWeight: 600,
-                backgroundColor: socio.activo
-                  ? 'rgba(34,197,94,0.15)'
-                  : 'rgba(239,68,68,0.1)',
-                color: socio.activo ? '#22c55e' : '#ef4444',
-                border: `1px solid ${
-                  socio.activo
-                    ? 'rgba(34,197,94,0.3)'
-                    : 'rgba(239,68,68,0.2)'
-                }`,
-              }}
-            >
+            <span className={socio.activo ? 'syb-tag syb-tag-success' : 'syb-tag syb-tag-danger'}>
               {socio.activo ? 'Activo' : 'Inactivo'}
             </span>
             <span
               style={{
-                fontSize: '0.75rem',
-                color: 'rgba(157,92,192,0.6)',
-                fontFamily: 'monospace',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.72rem',
+                color: 'var(--foreground-subtle)',
               }}
             >
-              Token: {socio.token.slice(0, 24)}…
+              {socio.token.slice(0, 24)}…
             </span>
           </div>
         </div>
-      </div>
+      </header>
 
       <SocioDetailShell
         socio={socio}

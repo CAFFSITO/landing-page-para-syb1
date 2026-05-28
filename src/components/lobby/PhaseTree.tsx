@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import PhaseNode from "@/components/lobby/PhaseNode";
 import EntregableCard from "@/components/lobby/EntregableCard";
-import ModalPDF from "@/components/lobby/ModalPDF";
 import ModalVideo from "@/components/lobby/ModalVideo";
 import ModalReporte from "@/components/lobby/ModalReporte";
 import ModalAgenda from "@/components/lobby/ModalAgenda";
@@ -23,7 +22,6 @@ type PhaseTreeProps = {
 type EstadoFase = "completada" | "activa" | "pendiente";
 
 type ModalState =
-  | { tipo: "pdf"; entregable: Entregable }
   | { tipo: "video"; entregable: Entregable }
   | { tipo: "reporte"; entregable: Entregable; item: Reporte | Reunion }
   | { tipo: "agenda"; entregable: Entregable; reunion: Reunion }
@@ -98,27 +96,40 @@ export default function PhaseTree({
   }
 
   function handleOpen(entregable: Entregable) {
-    // Tipos distintos a pdf con archivo subido → visor genérico
-    if (entregable.storage_path && entregable.tipo !== "pdf") {
+    // Si tiene archivo subido en Storage → visor universal
+    if (entregable.storage_path) {
       setModalState({ tipo: "archivo", entregable });
       return;
     }
 
+    // Sin storage_path → fallback a modales por tipo (url-based)
     switch (entregable.tipo) {
       case "pdf":
-        setModalState({ tipo: "pdf", entregable });
+        // PDF sin archivo subido: nada que mostrar o URL externa
+        setModalState({ tipo: "archivo", entregable });
         break;
       case "video":
         setModalState({ tipo: "video", entregable });
         break;
       case "reporte": {
-        // Buscar reporte matcheando por fase y orden === numero
         const match =
           reportes.find(
             (r) => r.fase === entregable.fase && r.numero === entregable.orden
           ) ?? reportes.find((r) => r.fase === entregable.fase);
         if (match) {
           setModalState({ tipo: "reporte", entregable, item: match });
+        } else if (entregable.descripcion) {
+          const syntheticReporte = {
+            id: entregable.id,
+            socio_id: entregable.socio_id,
+            fase: entregable.fase,
+            numero: entregable.orden,
+            titulo: entregable.titulo,
+            contenido: entregable.descripcion,
+            visible: true,
+            created_at: entregable.created_at,
+          };
+          setModalState({ tipo: "reporte", entregable, item: syntheticReporte as Reporte });
         }
         break;
       }
@@ -129,6 +140,18 @@ export default function PhaseTree({
           ) ?? reuniones.find((r) => r.fase === entregable.fase);
         if (match) {
           setModalState({ tipo: "reporte", entregable, item: match });
+        } else if (entregable.descripcion) {
+          const syntheticReporte = {
+            id: entregable.id,
+            socio_id: entregable.socio_id,
+            fase: entregable.fase,
+            numero: entregable.orden,
+            titulo: entregable.titulo,
+            contenido: entregable.descripcion,
+            visible: true,
+            created_at: entregable.created_at,
+          };
+          setModalState({ tipo: "reporte", entregable, item: syntheticReporte as Reporte });
         }
         break;
       }
@@ -142,6 +165,10 @@ export default function PhaseTree({
         }
         break;
       }
+      default:
+        // audio, imagen, documento, archivo → visor universal
+        setModalState({ tipo: "archivo", entregable });
+        break;
     }
   }
 
@@ -154,20 +181,20 @@ export default function PhaseTree({
 
   return (
     <div style={{ position: "relative" }}>
-      {/* Línea vertical continua */}
+      {/* Línea vertical hairline */}
       <div
         style={{
           position: "absolute",
-          left: "15px",
+          left: "14.5px",
           top: "16px",
           bottom: "16px",
-          width: "2px",
-          backgroundColor: "#9D5CC0",
+          width: "1px",
+          backgroundColor: "var(--hairline-strong)",
           zIndex: 0,
         }}
       />
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "44px" }}>
         {FASES.map((fase) => {
           const estado = calcularEstadoFase(fase);
           const isOpen = fasesAbiertas[fase];
@@ -198,19 +225,27 @@ export default function PhaseTree({
                   <h3
                     style={{
                       margin: 0,
-                      fontFamily: "Merriweather, Georgia, serif",
+                      fontFamily: "var(--font-serif)",
                       fontWeight: 700,
-                      fontSize: "1rem",
-                      color: estado === "pendiente" ? "rgba(255,255,255,0.4)" : "#FFFFFF",
+                      fontSize: "1.05rem",
+                      letterSpacing: "-0.005em",
+                      color:
+                        estado === "pendiente"
+                          ? "var(--foreground-subtle)"
+                          : "var(--foreground)",
                     }}
                   >
                     {NOMBRES_FASE[fase]}
                   </h3>
                   <p
                     style={{
-                      margin: "2px 0 0",
-                      fontSize: "0.75rem",
-                      color: "rgba(157,92,192,0.6)",
+                      margin: "3px 0 0",
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "0.68rem",
+                      fontWeight: 500,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.14em",
+                      color: "var(--foreground-subtle)",
                     }}
                   >
                     {itemsFase.length === 0
@@ -222,9 +257,9 @@ export default function PhaseTree({
                 <motion.div
                   animate={{ rotate: isOpen ? 180 : 0 }}
                   transition={{ duration: 0.2 }}
-                  style={{ color: "rgba(157,92,192,0.6)", flexShrink: 0 }}
+                  style={{ color: "var(--foreground-muted)", flexShrink: 0 }}
                 >
-                  <ChevronDown size={18} />
+                  <ChevronDown size={16} strokeWidth={1.5} />
                 </motion.div>
               </button>
 
@@ -251,7 +286,7 @@ export default function PhaseTree({
                       }}
                     >
                       {itemsFase.length === 0 ? (
-                        <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.875rem" }}>
+                        <p style={{ color: "var(--foreground-subtle)", fontSize: "0.85rem", fontStyle: "italic" }}>
                           No hay entregables enviados en esta fase.
                         </p>
                       ) : (
@@ -280,13 +315,6 @@ export default function PhaseTree({
       </div>
 
       {/* Modales */}
-      {modalState?.tipo === "pdf" && (
-        <ModalPDF
-          isOpen
-          onClose={cerrarModal}
-          entregable={modalState.entregable}
-        />
-      )}
       {modalState?.tipo === "video" && (
         <ModalVideo
           isOpen

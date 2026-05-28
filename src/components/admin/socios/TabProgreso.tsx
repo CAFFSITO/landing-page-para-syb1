@@ -9,13 +9,7 @@ interface Props {
   socio: Socio;
 }
 
-function Toggle({
-  value,
-  onChange,
-}: {
-  value: boolean;
-  onChange: () => void;
-}) {
+function Toggle({ value, onChange }: { value: boolean; onChange: () => void }) {
   return (
     <button
       onClick={onChange}
@@ -25,7 +19,7 @@ function Toggle({
         borderRadius: '11px',
         border: 'none',
         cursor: 'pointer',
-        backgroundColor: value ? '#9D5CC0' : 'rgba(157,92,192,0.2)',
+        backgroundColor: value ? 'var(--color-secondary)' : 'var(--hairline-strong)',
         position: 'relative',
         flexShrink: 0,
         transition: 'background-color 200ms',
@@ -42,13 +36,32 @@ function Toggle({
           width: '16px',
           height: '16px',
           borderRadius: '50%',
-          backgroundColor: '#FFFFFF',
+          backgroundColor: 'var(--surface-1)',
           transition: 'left 200ms',
         }}
       />
     </button>
   );
 }
+
+const cardStyle: React.CSSProperties = {
+  backgroundColor: 'var(--surface-1)',
+  border: '1px solid var(--hairline)',
+  borderRadius: 'var(--radius-md)',
+  padding: '24px',
+  marginBottom: '20px',
+};
+
+const titleStyle: React.CSSProperties = {
+  fontFamily: 'var(--font-mono)',
+  fontWeight: 500,
+  fontSize: '0.65rem',
+  textTransform: 'uppercase',
+  letterSpacing: '0.18em',
+  color: 'var(--foreground-subtle)',
+  marginBottom: '16px',
+  marginTop: 0,
+};
 
 export function TabProgreso({ socio }: Props) {
   const [activo, setActivo] = useState(socio.activo);
@@ -69,12 +82,8 @@ export function TabProgreso({ socio }: Props) {
     }
   }
 
-  async function handleToggleFase(
-    fase: 1 | 2 | 3,
-    currentValue: boolean
-  ) {
+  async function handleToggleFase(fase: 1 | 2 | 3, currentValue: boolean) {
     const newValue = !currentValue;
-
     const newFase1 = fase === 1 ? newValue : fase1;
     const newFase2 = fase === 2 ? newValue : fase2;
     const newFase3 = fase === 3 ? newValue : fase3;
@@ -103,27 +112,10 @@ export function TabProgreso({ socio }: Props) {
 
   const progress = ([fase1, fase2, fase3].filter(Boolean).length / 3) * 100;
 
-  const cardStyle: React.CSSProperties = {
-    backgroundColor: '#1C0D35',
-    border: '1px solid rgba(157,92,192,0.2)',
-    borderRadius: '12px',
-    padding: '24px',
-    marginBottom: '20px',
-  };
-
-  const titleStyle: React.CSSProperties = {
-    fontFamily: 'Merriweather, Georgia, serif',
-    fontWeight: 700,
-    fontSize: '1rem',
-    color: '#FFFFFF',
-    marginBottom: '16px',
-    marginTop: 0,
-  };
-
   const fases: { key: 1 | 2 | 3; label: string; value: boolean }[] = [
-    { key: 1, label: 'Fase 1 completada', value: fase1 },
-    { key: 2, label: 'Fase 2 completada', value: fase2 },
-    { key: 3, label: 'Fase 3 completada', value: fase3 },
+    { key: 1, label: 'Fase 01 — Diagnóstico', value: fase1 },
+    { key: 2, label: 'Fase 02 — Diseño y Ejecución', value: fase2 },
+    { key: 3, label: 'Fase 03 — Validación', value: fase3 },
   ];
 
   return (
@@ -132,25 +124,10 @@ export function TabProgreso({ socio }: Props) {
         <p style={titleStyle}>Estado</p>
         <button
           onClick={handleToggleActivo}
-          style={{
-            backgroundColor: activo
-              ? 'rgba(34,197,94,0.15)'
-              : 'rgba(239,68,68,0.1)',
-            border: `1px solid ${
-              activo ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.2)'
-            }`,
-            color: activo ? '#22c55e' : '#ef4444',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontSize: '0.875rem',
-            outline: 'none',
-            transition: '150ms',
-          }}
+          className={activo ? 'syb-tag syb-tag-success' : 'syb-tag syb-tag-danger'}
+          style={{ cursor: 'pointer', padding: '6px 14px', fontSize: '0.72rem' }}
         >
-          {activo
-            ? 'Activo — clic para desactivar'
-            : 'Inactivo — clic para activar'}
+          {activo ? 'Activo · Click para desactivar' : 'Inactivo · Click para activar'}
         </button>
       </div>
 
@@ -158,13 +135,14 @@ export function TabProgreso({ socio }: Props) {
         <p style={titleStyle}>Hitos de fase</p>
         <p
           style={{
-            color: 'rgba(255,255,255,0.4)',
-            fontSize: '0.8rem',
-            marginBottom: '16px',
+            color: 'var(--foreground-muted)',
+            fontSize: '0.82rem',
+            marginBottom: '20px',
             marginTop: 0,
+            lineHeight: 1.6,
           }}
         >
-          Activar una fase marca el hito como completado en el lobby del socio.
+          Activar una fase la marca como completada en el lobby del socio.
         </p>
 
         {fases.map((f, idx) => (
@@ -173,22 +151,17 @@ export function TabProgreso({ socio }: Props) {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
-              padding: '10px 0',
-              borderBottom:
-                idx < fases.length - 1
-                  ? '1px solid rgba(157,92,192,0.08)'
-                  : 'none',
+              gap: '14px',
+              padding: '12px 0',
+              borderTop: idx === 0 ? 'none' : '1px solid var(--hairline)',
             }}
           >
-            <Toggle
-              value={f.value}
-              onChange={() => handleToggleFase(f.key, f.value)}
-            />
+            <Toggle value={f.value} onChange={() => handleToggleFase(f.key, f.value)} />
             <span
               style={{
-                color: f.value ? '#FFFFFF' : 'rgba(255,255,255,0.5)',
-                fontSize: '0.875rem',
+                color: f.value ? 'var(--foreground)' : 'var(--foreground-muted)',
+                fontSize: '0.9rem',
+                fontWeight: f.value ? 600 : 500,
               }}
             >
               {f.label}
@@ -199,22 +172,25 @@ export function TabProgreso({ socio }: Props) {
         {saving && (
           <p
             style={{
-              color: 'rgba(157,92,192,0.5)',
-              fontSize: '0.75rem',
-              marginTop: '12px',
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--foreground-subtle)',
+              fontSize: '0.7rem',
+              marginTop: '14px',
               marginBottom: 0,
+              textTransform: 'uppercase',
+              letterSpacing: '0.12em',
             }}
           >
-            Guardando...
+            Guardando…
           </p>
         )}
 
-        <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '24px' }}>
           <div
             style={{
-              height: '6px',
-              borderRadius: '3px',
-              backgroundColor: 'rgba(157,92,192,0.1)',
+              height: '3px',
+              borderRadius: '2px',
+              backgroundColor: 'var(--hairline)',
               overflow: 'hidden',
             }}
           >
@@ -222,8 +198,8 @@ export function TabProgreso({ socio }: Props) {
               style={{
                 height: '100%',
                 width: `${progress}%`,
-                background: 'linear-gradient(to right, #9D5CC0, #C084FC)',
-                borderRadius: '3px',
+                backgroundColor: 'var(--color-secondary)',
+                borderRadius: '2px',
                 transition: 'width 300ms',
               }}
             />

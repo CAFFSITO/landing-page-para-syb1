@@ -29,7 +29,6 @@ export default function Modal({
     setMounted(true);
   }, []);
 
-  // Cerrar con Escape
   useEffect(() => {
     if (!isOpen) return;
     function handleKeydown(e: KeyboardEvent) {
@@ -44,7 +43,6 @@ export default function Modal({
   return createPortal(
     <AnimatePresence>
       {isOpen && (
-        // Overlay
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -53,8 +51,8 @@ export default function Modal({
           style={{
             position: "fixed",
             inset: 0,
-            backgroundColor: "rgba(0,0,0,0.75)",
-            backdropFilter: "blur(4px)",
+            backgroundColor: "rgba(13,6,24,0.55)",
+            backdropFilter: "blur(6px)",
             zIndex: 100,
             display: "flex",
             alignItems: "center",
@@ -62,88 +60,82 @@ export default function Modal({
             padding: "24px",
           }}
         >
-          {/* Card — detener propagación para no cerrar al clickear adentro */}
           <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            initial={{ scale: 0.97, opacity: 0, y: 8 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.97, opacity: 0, y: 8 }}
+            transition={{ type: "spring", stiffness: 300, damping: 28 }}
             onClick={(e) => e.stopPropagation()}
             style={{
-              backgroundColor: "var(--card-bg)",
-              borderRadius: "16px",
+              backgroundColor: "var(--surface-1)",
+              border: "1px solid var(--hairline)",
+              borderRadius: "var(--radius-md)",
               maxWidth: "860px",
               width: "100%",
-              maxHeight: "90vh",
+              maxHeight: "90dvh",
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
-              boxShadow: "0 8px 40px rgba(0,0,0,0.5)",
+              boxShadow: "var(--shadow-elevated)",
             }}
           >
-            {/* Header */}
+            {/* Header — eyebrow mono + title serif */}
             <div
               style={{
-                padding: "20px 24px",
+                padding: "20px 24px 18px",
                 display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                borderBottom: "1px solid var(--border-color)",
+                alignItems: "flex-start",
+                gap: "16px",
+                borderBottom: "1px solid var(--hairline)",
               }}
             >
-              <h2
-                style={{
-                  flex: 1,
-                  margin: 0,
-                  fontFamily: "Merriweather, Georgia, serif",
-                  fontWeight: 700,
-                  fontSize: "1.125rem",
-                  color: "#FFFFFF",
-                }}
-              >
-                {titulo}
-              </h2>
-              <span
-                style={{
-                  backgroundColor: "rgba(157,92,192,0.15)",
-                  color: "#9D5CC0",
-                  borderRadius: "6px",
-                  padding: "3px 10px",
-                  fontSize: "0.75rem",
-                  fontWeight: 700,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.05em",
-                  flexShrink: 0,
-                }}
-              >
-                {tipoBadge}
-              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    margin: "0 0 6px 0",
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.65rem",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.18em",
+                    color: "var(--foreground-subtle)",
+                  }}
+                >
+                  {tipoBadge}
+                </p>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontFamily: "var(--font-serif)",
+                    fontWeight: 700,
+                    fontSize: "1.2rem",
+                    color: "var(--foreground)",
+                    letterSpacing: "-0.005em",
+                    lineHeight: 1.25,
+                  }}
+                >
+                  {titulo}
+                </h2>
+              </div>
               <button
                 onClick={onClose}
                 style={{
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  color: "rgba(255,255,255,0.4)",
+                  color: "var(--foreground-muted)",
                   display: "flex",
                   alignItems: "center",
                   padding: "4px",
-                  transition: "color 150ms ease",
                   flexShrink: 0,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = "#FFFFFF";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = "rgba(255,255,255,0.4)";
+                  transition: "color 150ms ease",
                 }}
                 aria-label="Cerrar"
               >
-                <X size={20} />
+                <X size={18} strokeWidth={1.5} />
               </button>
             </div>
 
-            {/* Body */}
             <div
               style={{
                 padding: "24px",
@@ -154,15 +146,15 @@ export default function Modal({
               {children}
             </div>
 
-            {/* Footer — solo si se pasa el prop */}
             {footer && (
               <div
                 style={{
-                  padding: "16px 24px",
-                  borderTop: "1px solid var(--border-color)",
+                  padding: "14px 24px",
+                  borderTop: "1px solid var(--hairline)",
                   display: "flex",
                   justifyContent: "flex-end",
-                  gap: "12px",
+                  gap: "10px",
+                  backgroundColor: "var(--surface-2)",
                 }}
               >
                 {footer}

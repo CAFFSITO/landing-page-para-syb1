@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import type { Socio, Entregable, Reunion, Reporte, Lectura } from '@/types';
 import { TabProgreso } from '@/components/admin/socios/TabProgreso';
 import { TabEntregables } from '@/components/admin/socios/TabEntregables';
@@ -40,8 +41,9 @@ export function SocioDetailShell({
       <div
         style={{
           display: 'flex',
-          borderBottom: '1px solid rgba(157,92,192,0.15)',
-          marginBottom: '28px',
+          gap: '4px',
+          borderBottom: '1px solid var(--hairline)',
+          marginBottom: '32px',
         }}
       >
         {TABS.map((tab) => {
@@ -51,22 +53,34 @@ export function SocioDetailShell({
               key={tab.key}
               onClick={() => setTabActiva(tab.key)}
               style={{
+                position: 'relative',
                 background: 'none',
                 border: 'none',
-                borderBottom: isActive
-                  ? '2px solid #9D5CC0'
-                  : '2px solid transparent',
-                color: isActive ? '#9D5CC0' : 'rgba(255,255,255,0.5)',
-                fontWeight: isActive ? 600 : 400,
+                padding: '12px 18px',
+                fontFamily: 'var(--font-sans)',
+                fontWeight: isActive ? 600 : 500,
                 fontSize: '0.875rem',
-                padding: '10px 16px',
+                color: isActive ? 'var(--foreground)' : 'var(--foreground-muted)',
                 cursor: 'pointer',
                 outline: 'none',
-                transition: 'color 150ms, border-color 150ms',
-                marginBottom: '-1px',
+                transition: 'color 180ms ease',
               }}
             >
               {tab.label}
+              {isActive && (
+                <motion.span
+                  layoutId="admin-detail-tab-indicator"
+                  style={{
+                    position: 'absolute',
+                    left: 12,
+                    right: 12,
+                    bottom: -1,
+                    height: 1,
+                    backgroundColor: 'var(--foreground)',
+                  }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 30 }}
+                />
+              )}
             </button>
           );
         })}

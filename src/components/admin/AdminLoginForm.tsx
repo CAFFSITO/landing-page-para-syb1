@@ -13,79 +13,78 @@ export default function AdminLoginForm() {
     initialState
   );
 
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    backgroundColor: "#0F0720",
-    border: "1.5px solid rgba(157,92,192,0.4)",
-    borderRadius: "6px",
-    padding: "12px 16px",
-    color: "#FFFFFF",
-    fontSize: "1rem",
-    outline: "none",
-    boxSizing: "border-box",
-    fontFamily: "inherit",
-  };
-
   return (
     <div
-      style={{ backgroundColor: "#0D0618", minHeight: "100vh" }}
+      style={{
+        backgroundColor: "var(--background)",
+        minHeight: "100dvh",
+      }}
       className="flex flex-col items-center justify-center px-4"
     >
-      <div className="mb-8 flex flex-col items-center gap-2">
-        <Image src={logoSYB} alt="Logo SYB" width={96} height={96} style={{ objectFit: "contain" }} />
+      <div className="mb-10 flex flex-col items-center gap-4">
+        <Image src={logoSYB} alt="Scale Your Business" height={56} style={{ width: "auto", objectFit: "contain" }} priority />
         <span
           style={{
-            fontFamily: "Merriweather, Georgia, serif",
-            fontWeight: 700,
-            fontSize: "1.25rem",
-            color: "#FFFFFF",
-            letterSpacing: "0.12em",
+            fontFamily: "var(--font-mono)",
+            fontWeight: 500,
+            fontSize: "0.7rem",
+            color: "var(--foreground-subtle)",
+            letterSpacing: "0.22em",
+            textTransform: "uppercase",
           }}
         >
-          SYB Admin
+          Panel Admin
         </span>
       </div>
 
       <div
         style={{
-          backgroundColor: "#1C0D35",
-          border: "1px solid rgba(157,92,192,0.25)",
-          borderRadius: "12px",
-          padding: "32px",
+          backgroundColor: "var(--surface-1)",
+          border: "1px solid var(--hairline)",
+          borderRadius: "var(--radius-md)",
+          padding: "36px 32px",
           width: "100%",
           maxWidth: "400px",
-          boxShadow: "0 2px 20px rgba(59,30,99,0.15)",
         }}
       >
         <h1
           style={{
-            fontFamily: "Merriweather, Georgia, serif",
+            fontFamily: "var(--font-serif)",
             fontWeight: 700,
             fontSize: "1.5rem",
-            color: "#FFFFFF",
-            marginBottom: "8px",
+            color: "var(--foreground)",
+            margin: "0 0 6px 0",
+            letterSpacing: "-0.01em",
           }}
         >
-          Panel de administración
+          Acceso administradores
         </h1>
         <p
           style={{
             fontSize: "0.875rem",
-            color: "rgba(157,92,192,0.6)",
-            marginBottom: "28px",
+            color: "var(--foreground-muted)",
+            margin: "0 0 28px 0",
+            lineHeight: 1.6,
           }}
         >
-          Acceso exclusivo para administradores
+          Ingresá con tu email y token de acceso para administrar la plataforma.
         </p>
 
         <form
           action={formAction}
-          style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+          style={{ display: "flex", flexDirection: "column", gap: "18px" }}
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             <label
               htmlFor="email"
-              style={{ fontSize: "0.875rem", color: "#c4b8d4", fontWeight: 500 }}
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.65rem",
+                fontWeight: 500,
+                color: "var(--foreground-subtle)",
+                textTransform: "uppercase",
+                letterSpacing: "0.18em",
+              }}
             >
               Email
             </label>
@@ -95,20 +94,21 @@ export default function AdminLoginForm() {
               type="email"
               autoComplete="email"
               required
-              style={inputStyle}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "#9D5CC0";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "rgba(157,92,192,0.4)";
-              }}
+              className="syb-input"
             />
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             <label
               htmlFor="token"
-              style={{ fontSize: "0.875rem", color: "#c4b8d4", fontWeight: 500 }}
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.65rem",
+                fontWeight: 500,
+                color: "var(--foreground-subtle)",
+                textTransform: "uppercase",
+                letterSpacing: "0.18em",
+              }}
             >
               Token de acceso
             </label>
@@ -118,49 +118,31 @@ export default function AdminLoginForm() {
               type="password"
               autoComplete="off"
               required
-              style={inputStyle}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "#9D5CC0";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "rgba(157,92,192,0.4)";
-              }}
+              className="syb-input"
+              style={{ fontFamily: "var(--font-mono)" }}
             />
           </div>
 
           <button
             type="submit"
             disabled={isPending}
+            className="syb-btn-primary"
             style={{
               width: "100%",
-              padding: "14px",
-              background: isPending
-                ? "rgba(157,92,192,0.5)"
-                : "linear-gradient(135deg, #3B1E63, #9D5CC0)",
-              color: "#FFFFFF",
-              fontFamily: "Merriweather, Georgia, serif",
-              fontWeight: 700,
-              fontSize: "1rem",
-              borderRadius: "6px",
-              border: "none",
+              padding: "12px",
+              marginTop: "8px",
+              opacity: isPending ? 0.7 : 1,
               cursor: isPending ? "not-allowed" : "pointer",
-              transition: "filter 200ms ease",
-            }}
-            onMouseEnter={(e) => {
-              if (!isPending) e.currentTarget.style.filter = "brightness(1.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.filter = "brightness(1)";
             }}
           >
-            {isPending ? "Verificando..." : "Ingresar"}
+            {isPending ? "Verificando…" : "Ingresar"}
           </button>
 
           {state?.error && (
             <p
               style={{
-                color: "#EF4444",
-                fontSize: "0.875rem",
+                color: "var(--color-danger)",
+                fontSize: "0.85rem",
                 textAlign: "center",
                 margin: 0,
               }}

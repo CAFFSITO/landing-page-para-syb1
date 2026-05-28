@@ -22,21 +22,15 @@ export default function LogoutButton() {
         gap: "8px",
         background: "none",
         border: "none",
-        color: "#9D5CC0",
+        color: "var(--foreground-muted)",
         cursor: "pointer",
-        fontSize: "0.9rem",
-        fontFamily: "inherit",
+        fontSize: "0.85rem",
+        fontFamily: "var(--font-sans)",
         padding: "6px 0",
-        transition: "color 200ms ease",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.color = "#FFFFFF";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.color = "#9D5CC0";
+        transition: "color 180ms ease",
       }}
     >
-      <LogOut size={16} />
+      <LogOut size={15} strokeWidth={1.5} />
       Cerrar sesión
     </button>
   );

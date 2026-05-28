@@ -15,26 +15,28 @@ export default function AdminSidebar() {
   return (
     <aside
       style={{
-        width: "240px",
+        width: "220px",
         flexShrink: 0,
-        backgroundColor: "#120825",
-        borderRight: "1px solid rgba(157,92,192,0.15)",
-        height: "calc(100vh - 56px)",
+        backgroundColor: "var(--background-soft)",
+        borderRight: "1px solid var(--hairline)",
+        minHeight: "calc(100dvh - 56px)",
         position: "sticky",
         top: "56px",
-        overflowY: "auto",
-        padding: "24px 0",
+        alignSelf: "flex-start",
+        padding: "28px 0",
       }}
       className="hidden md:block"
     >
       <p
         style={{
-          fontSize: "0.65rem",
-          color: "rgba(157,92,192,0.5)",
+          fontFamily: "var(--font-mono)",
+          fontSize: "0.62rem",
+          fontWeight: 500,
+          color: "var(--foreground-subtle)",
           textTransform: "uppercase",
-          letterSpacing: "0.12em",
-          padding: "0 20px",
-          marginBottom: "8px",
+          letterSpacing: "0.2em",
+          padding: "0 22px",
+          margin: "0 0 12px 0",
         }}
       >
         Navegación
@@ -51,34 +53,21 @@ export default function AdminSidebar() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "10px",
-                padding: "10px 20px",
+                gap: "12px",
+                padding: "10px 22px",
                 fontSize: "0.875rem",
-                fontFamily: "inherit",
+                fontFamily: "var(--font-sans)",
+                fontWeight: isActive ? 600 : 500,
                 textDecoration: "none",
                 borderLeft: isActive
-                  ? "3px solid #9D5CC0"
-                  : "3px solid transparent",
-                color: isActive ? "#9D5CC0" : "rgba(255,255,255,0.6)",
-                backgroundColor: isActive
-                  ? "rgba(157,92,192,0.08)"
-                  : "transparent",
+                  ? "2px solid var(--foreground)"
+                  : "2px solid transparent",
+                color: isActive ? "var(--foreground)" : "var(--foreground-muted)",
+                backgroundColor: isActive ? "var(--surface-2)" : "transparent",
                 transition: "color 150ms ease, background 150ms ease",
               }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.color = "#FFFFFF";
-                  e.currentTarget.style.background = "rgba(157,92,192,0.05)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.color = "rgba(255,255,255,0.6)";
-                  e.currentTarget.style.background = "transparent";
-                }
-              }}
             >
-              <Icon size={16} />
+              <Icon size={15} strokeWidth={1.5} />
               {label}
             </Link>
           );

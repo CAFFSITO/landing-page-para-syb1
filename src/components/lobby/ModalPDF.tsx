@@ -47,44 +47,31 @@ export default function ModalPDF({ isOpen, onClose, entregable }: ModalPDFProps)
       tipoBadge="PDF"
       footer={
         signedUrl ? (
-          <a
-            href={signedUrl}
-            download
-            style={{
-              padding: "10px 20px",
-              background: "linear-gradient(135deg, #3B1E63, #9D5CC0)",
-              color: "#FFFFFF",
-              borderRadius: "6px",
-              textDecoration: "none",
-              fontSize: "0.875rem",
-              fontFamily: "Merriweather, Georgia, serif",
-              fontWeight: 700,
-            }}
-          >
+          <a href={signedUrl} download className="syb-btn-primary" style={{ textDecoration: "none" }}>
             Descargar PDF
           </a>
         ) : undefined
       }
     >
       {cargando && (
-        <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "40px 0" }}>
-          Cargando PDF...
+        <p style={{ color: "var(--foreground-muted)", textAlign: "center", padding: "40px 0" }}>
+          Cargando PDF…
         </p>
       )}
       {error && (
-        <p style={{ color: "#EF4444", textAlign: "center", padding: "40px 0" }}>{error}</p>
+        <p style={{ color: "var(--color-danger)", textAlign: "center", padding: "40px 0" }}>{error}</p>
       )}
       {signedUrl && !cargando && (
         <iframe
           src={signedUrl}
           width="100%"
           height="500px"
-          style={{ border: "none", borderRadius: "8px" }}
+          style={{ border: "1px solid var(--hairline)", borderRadius: "var(--radius-sm)" }}
           title={entregable.titulo}
         />
       )}
       {!entregable.storage_path && !cargando && (
-        <p style={{ color: "rgba(255,255,255,0.5)", textAlign: "center", padding: "40px 0" }}>
+        <p style={{ color: "var(--foreground-muted)", textAlign: "center", padding: "40px 0" }}>
           Este entregable no tiene archivo adjunto.
         </p>
       )}

@@ -36,7 +36,8 @@ export default function AdminModal({ isOpen, onClose, titulo, children, footer, 
         style={{
           position: 'fixed',
           inset: 0,
-          backgroundColor: 'rgba(0,0,0,0.7)',
+          backgroundColor: 'rgba(13,6,24,0.55)',
+          backdropFilter: 'blur(6px)',
           zIndex: 50,
         }}
       />
@@ -47,32 +48,33 @@ export default function AdminModal({ isOpen, onClose, titulo, children, footer, 
           left: '50%',
           transform: 'translate(-50%,-50%)',
           zIndex: 51,
-          backgroundColor: '#1C0D35',
-          border: '1px solid rgba(157,92,192,0.3)',
-          borderRadius: '12px',
+          backgroundColor: 'var(--surface-1)',
+          border: '1px solid var(--hairline)',
+          borderRadius: 'var(--radius-md)',
           maxWidth: `${maxWidth ?? 560}px`,
           width: 'calc(100vw - 32px)',
-          maxHeight: '90vh',
+          maxHeight: '90dvh',
           display: 'flex',
           flexDirection: 'column',
+          boxShadow: 'var(--shadow-elevated)',
         }}
       >
         <div
           style={{
-            padding: '20px 24px',
-            borderBottom: '1px solid rgba(157,92,192,0.15)',
+            padding: '20px 24px 18px',
+            borderBottom: '1px solid var(--hairline)',
             display: 'flex',
-            flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
           }}
         >
           <span
             style={{
-              fontFamily: 'Merriweather, Georgia, serif',
+              fontFamily: 'var(--font-serif)',
               fontWeight: 700,
-              fontSize: '1rem',
-              color: '#FFFFFF',
+              fontSize: '1.1rem',
+              color: 'var(--foreground)',
+              letterSpacing: '-0.005em',
             }}
           >
             {titulo}
@@ -83,15 +85,15 @@ export default function AdminModal({ isOpen, onClose, titulo, children, footer, 
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              color: 'rgba(255,255,255,0.5)',
+              color: 'var(--foreground-muted)',
               display: 'flex',
               alignItems: 'center',
               padding: 4,
+              transition: 'color 150ms ease',
             }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#FFFFFF')}
-            onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.5)')}
+            aria-label="Cerrar"
           >
-            <X size={18} />
+            <X size={18} strokeWidth={1.5} />
           </button>
         </div>
         <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
@@ -100,11 +102,12 @@ export default function AdminModal({ isOpen, onClose, titulo, children, footer, 
         {footer && (
           <div
             style={{
-              padding: '16px 24px',
-              borderTop: '1px solid rgba(157,92,192,0.15)',
+              padding: '14px 24px',
+              borderTop: '1px solid var(--hairline)',
               display: 'flex',
               justifyContent: 'flex-end',
               gap: '10px',
+              backgroundColor: 'var(--surface-2)',
             }}
           >
             {footer}

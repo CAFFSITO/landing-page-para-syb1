@@ -21,66 +21,86 @@ export default function ProgressBar({
         position: "sticky",
         top: 0,
         zIndex: 50,
-        height: "56px",
-        backgroundColor: "#1A0A2E",
-        display: "flex",
-        alignItems: "center",
         width: "100%",
-        overflow: "hidden",
+        backgroundColor: "var(--background-soft)",
+        borderBottom: "1px solid var(--hairline)",
       }}
     >
-      {/* Fill animado */}
-      <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: `${progressPct}%` }}
-        transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      {/* Fila superior: metadata editorial */}
+      <div
         style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          height: "100%",
-          background: "linear-gradient(90deg, #9D5CC0, #C084FC, #E879F9)",
-          boxShadow: "0 0 24px rgba(192,132,252,0.7)",
-        }}
-      />
-
-      {/* Milestone dots */}
-      {MILESTONES.map((pct) => (
-        <div
-          key={pct}
-          style={{
-            position: "absolute",
-            left: `${pct}%`,
-            top: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "8px",
-            height: "8px",
-            borderRadius: "50%",
-            backgroundColor: "#FFFFFF",
-            opacity: progressPct >= pct ? 1 : 0.3,
-            transition: "opacity 0.3s ease",
-            zIndex: 1,
-          }}
-        />
-      ))}
-
-      {/* Texto centrado */}
-      <span
-        style={{
-          position: "relative",
-          zIndex: 2,
-          width: "100%",
-          textAlign: "center",
-          fontFamily: "Merriweather, Georgia, serif",
-          fontWeight: 700,
-          fontSize: "0.875rem",
-          color: "#FFFFFF",
-          letterSpacing: "0.05em",
-          textShadow: "0 1px 4px rgba(0,0,0,0.6)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 24px 6px",
         }}
       >
-        FASE {faseActual} · {progressPct}% completado
-      </span>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.68rem",
+            fontWeight: 500,
+            textTransform: "uppercase",
+            letterSpacing: "0.18em",
+            color: "var(--foreground-muted)",
+          }}
+        >
+          Fase {faseActual} · Programa
+        </span>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.68rem",
+            fontWeight: 600,
+            letterSpacing: "0.08em",
+            color: "var(--foreground)",
+          }}
+        >
+          {progressPct}%
+        </span>
+      </div>
+
+      {/* Track de progreso */}
+      <div
+        style={{
+          position: "relative",
+          height: "3px",
+          width: "100%",
+          backgroundColor: "var(--hairline)",
+          overflow: "hidden",
+        }}
+      >
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${progressPct}%` }}
+          transition={{ type: "spring", stiffness: 110, damping: 22 }}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            height: "100%",
+            backgroundColor: "var(--color-secondary)",
+          }}
+        />
+
+        {MILESTONES.map((pct) => (
+          <div
+            key={pct}
+            style={{
+              position: "absolute",
+              left: `${pct}%`,
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "5px",
+              height: "5px",
+              borderRadius: "50%",
+              backgroundColor:
+                progressPct >= pct ? "var(--color-secondary)" : "var(--hairline-strong)",
+              transition: "background-color 200ms ease",
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }

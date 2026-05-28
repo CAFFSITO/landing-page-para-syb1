@@ -1,7 +1,7 @@
 "use client";
 
-import ReactMarkdown from "react-markdown";
 import Modal from "@/components/ui/Modal";
+import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 import type { Reporte, Reunion } from "@/types";
 
 type ModalReporteProps = {
@@ -32,34 +32,20 @@ export default function ModalReporte({ isOpen, onClose, item }: ModalReporteProp
             href={grabacion}
             target="_blank"
             rel="noopener noreferrer"
-            style={{
-              padding: "10px 20px",
-              background: "linear-gradient(135deg, #3B1E63, #9D5CC0)",
-              color: "#FFFFFF",
-              borderRadius: "6px",
-              textDecoration: "none",
-              fontSize: "0.875rem",
-              fontFamily: "Merriweather, Georgia, serif",
-              fontWeight: 700,
-            }}
+            className="syb-btn-primary"
+            style={{ textDecoration: "none" }}
           >
-            Ver grabación →
+            Ver grabación
           </a>
         ) : undefined
       }
     >
       {contenido ? (
-        <div
-          style={{
-            color: "rgba(255,255,255,0.85)",
-            fontSize: "0.9rem",
-            lineHeight: 1.7,
-          }}
-        >
-          <ReactMarkdown>{contenido}</ReactMarkdown>
+        <div style={{ color: "var(--foreground)", fontSize: "0.95rem" }}>
+          <MarkdownRenderer content={contenido} />
         </div>
       ) : (
-        <p style={{ color: "rgba(255,255,255,0.4)", textAlign: "center", padding: "32px 0" }}>
+        <p style={{ color: "var(--foreground-muted)", textAlign: "center", padding: "32px 0", fontStyle: "italic" }}>
           No hay contenido disponible aún.
         </p>
       )}
