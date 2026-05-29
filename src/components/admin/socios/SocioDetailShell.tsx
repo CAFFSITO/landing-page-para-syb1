@@ -7,16 +7,13 @@ import { TabProgreso } from '@/components/admin/socios/TabProgreso';
 import { TabEntregables } from '@/components/admin/socios/TabEntregables';
 import { TabReuniones } from '@/components/admin/socios/TabReuniones';
 import { TabReportes } from '@/components/admin/socios/TabReportes';
-import { TabActividad } from '@/components/admin/socios/TabActividad';
-
-type Tab = 'progreso' | 'entregables' | 'reuniones' | 'reportes' | 'actividad';
+type Tab = 'progreso' | 'entregables' | 'reuniones' | 'reportes';
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'progreso', label: 'Progreso' },
   { key: 'entregables', label: 'Entregables' },
   { key: 'reuniones', label: 'Reuniones' },
   { key: 'reportes', label: 'Reportes' },
-  { key: 'actividad', label: 'Actividad' },
 ];
 
 interface Props {
@@ -95,15 +92,6 @@ export function SocioDetailShell({
       )}
       {tabActiva === 'reportes' && (
         <TabReportes socioId={socio.id} reportes={reportes} />
-      )}
-      {tabActiva === 'actividad' && (
-        <TabActividad
-          socioId={socio.id}
-          lecturas={lecturas}
-          entregables={entregables}
-          reuniones={reuniones}
-          reportes={reportes}
-        />
       )}
     </div>
   );
