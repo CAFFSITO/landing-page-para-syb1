@@ -45,7 +45,7 @@ function diasHasta(fecha: string): number {
 }
 
 export default function ReunionesSection({ reuniones }: { reuniones: Reunion[] }) {
-  const [sub, setSub] = useState<SubTab>("calendario");
+  const [sub, setSub] = useState<SubTab>("proximas");
 
   const ahora = new Date();
   const proximas = reuniones

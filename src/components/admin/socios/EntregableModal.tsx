@@ -46,7 +46,7 @@ const labelStyle: React.CSSProperties = {
   letterSpacing: '0.18em',
 };
 
-const TIPOS: EntregableTipo[] = ['pdf', 'video', 'audio', 'imagen', 'documento', 'archivo', 'reporte', 'registro_reunion', 'agenda'];
+const TIPOS: EntregableTipo[] = ['pdf', 'video', 'audio', 'imagen', 'documento', 'archivo', 'reporte', 'agenda'];
 
 const TIPO_LABELS: Record<EntregableTipo, string> = {
   pdf: 'PDF',

@@ -27,6 +27,7 @@ import RoadmapNav from "@/components/lobby/RoadmapNav";
 type ProgramaRoadmapProps = {
   nombreSocio: string;
   empresaNombre: string;
+  proximaReunion?: { nombre: string; fecha: string } | null;
 };
 
 /* ─── Datos de las fases (basado en la metodología SYB) ───────────── */
@@ -111,9 +112,22 @@ const FASES_DATA = [
 
 /* ─── Componente principal ────────────────────────────────────────── */
 
+function formatFechaCorta(fecha: string): string {
+  try {
+    const d = new Date(fecha);
+    const dd = String(d.getDate()).padStart(2, "0");
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const yy = String(d.getFullYear()).slice(-2);
+    return `${dd}/${mm}/${yy}`;
+  } catch {
+    return fecha;
+  }
+}
+
 export default function ProgramaRoadmap({
   nombreSocio,
   empresaNombre,
+  proximaReunion,
 }: ProgramaRoadmapProps) {
   const [faseActiva, setFaseActiva] = useState<1 | 2 | 3>(1);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -168,6 +182,47 @@ export default function ProgramaRoadmap({
           borderBottom: "1px solid var(--hairline)",
         }}
       >
+        {proximaReunion && (
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              marginBottom: "14px",
+              padding: "5px 12px",
+              border: "1px solid rgba(157,92,192,0.35)",
+              borderRadius: "999px",
+              backgroundColor: "rgba(157,92,192,0.07)",
+            }}
+          >
+            <span
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                backgroundColor: "#9D5CC0",
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.68rem",
+                fontWeight: 500,
+                color: "var(--foreground-muted)",
+                letterSpacing: "0.04em",
+              }}
+            >
+              Próxima reunión:{" "}
+              <strong style={{ color: "var(--foreground)", fontWeight: 600 }}>
+                {proximaReunion.nombre}
+              </strong>{" "}
+              <span style={{ color: "rgba(157,92,192,0.8)" }}>
+                | {formatFechaCorta(proximaReunion.fecha)}
+              </span>
+            </span>
+          </div>
+        )}
         <p
           style={{
             fontFamily: "var(--font-mono)",

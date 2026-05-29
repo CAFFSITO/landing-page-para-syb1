@@ -16,7 +16,6 @@ type SidebarProps = {
 
 function SidebarContent({
   socio,
-  tabActiva,
   isDark,
   onToggleTheme,
 }: SidebarProps & { isDark: boolean; onToggleTheme: () => void }) {
@@ -89,61 +88,6 @@ function SidebarContent({
         }}
       />
 
-      {/* Links de fase */}
-      <AnimatePresence>
-        {tabActiva === "progreso" && (
-          <motion.nav
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            style={{ overflow: "hidden", marginBottom: "24px" }}
-          >
-            <p
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.65rem",
-                fontWeight: 500,
-                textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: "var(--foreground-subtle)",
-                margin: "0 0 10px 0",
-              }}
-            >
-              Fases
-            </p>
-            {([1, 2, 3] as const).map((fase) => (
-              <a
-                key={fase}
-                href={`#fase-${fase}`}
-                className="syb-side-link"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  padding: "8px 0",
-                  color: "var(--foreground-muted)",
-                  fontSize: "0.875rem",
-                  textDecoration: "none",
-                  transition: "color 150ms ease",
-                }}
-              >
-                <span
-                  style={{
-                    width: 18,
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.7rem",
-                    color: "var(--foreground-subtle)",
-                  }}
-                >
-                  0{fase}
-                </span>
-                Fase {fase}
-              </a>
-            ))}
-          </motion.nav>
-        )}
-      </AnimatePresence>
 
       <div style={{ flex: 1 }} />
 

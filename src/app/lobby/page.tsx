@@ -70,6 +70,14 @@ export default async function LobbyPage() {
       .eq("socio_id", socio.id),
   ]);
 
+  // Próxima reunión más cercana (futura)
+  const ahora = new Date();
+  type ReunionMinimal = { nombre: string; fecha?: string };
+  const proximaReunion =
+    ((reuniones as ReunionMinimal[] | null) ?? [])
+      .filter((r) => r.fecha && new Date(r.fecha) > ahora)
+      .sort((a, b) => new Date(a.fecha!).getTime() - new Date(b.fecha!).getTime())[0] ?? null;
+
   // Stub para el Pack de Consultoría (Opción B) — contenido real se construye luego
   const consultoriaContent =
     opcion === "B" ? (
@@ -117,6 +125,7 @@ export default async function LobbyPage() {
           <ProgramaRoadmap
             nombreSocio={socio.nombre}
             empresaNombre={socio.empresa ?? "tu empresa"}
+            proximaReunion={proximaReunion as { nombre: string; fecha: string } | null}
           />
         }
         progresoContent={
