@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "PowerShell(Get-ChildItem -Path \"c:\\\\landing\\\\landing-page-para-syb1\\\\src\\\\app\" -Recurse -Force | Where-Object {$_.Name -match \"\\(auth|login|page\\)\" -and -not $_.PSIsContainer} | Select-Object FullName)"
     ]
   }
 }

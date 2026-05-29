@@ -7,7 +7,7 @@ import PhaseTree from "@/components/lobby/PhaseTree";
 import GarantiaStatus from "@/components/lobby/GarantiaStatus";
 import ReunionesSection from "@/components/lobby/ReunionesSection";
 import { calcularPorcentaje } from "@/lib/hitos";
-import type { Socio, Entregable, Reunion, Reporte, Lectura, GarantiaData } from "@/types";
+import type { Socio, GarantiaData } from "@/types";
 import type { HitosMap } from "@/lib/hitos";
 
 export default async function LobbyPage() {
@@ -23,9 +23,7 @@ export default async function LobbyPage() {
 
   const { data: socio } = await adminClient
     .from("socios")
-    .select(
-      "id, nombre, empresa, fase_actual, fase_1_done, fase_2_done, fase_3_done, email, token, activo, created_at, hitos, garantia"
-    )
+    .select("*")
     .eq("email", user.email)
     .single<Socio>();
 
@@ -49,16 +47,14 @@ export default async function LobbyPage() {
       .eq("socio_id", socio.id)
       .neq("estado", "pendiente")
       .order("fase")
-      .order("orden")
-      .returns<Entregable[]>(),
+      .order("orden"),
 
     adminClient
       .from("reuniones")
       .select("*")
       .eq("socio_id", socio.id)
       .order("fase")
-      .order("numero")
-      .returns<Reunion[]>(),
+      .order("numero"),
 
     adminClient
       .from("reportes")
@@ -66,14 +62,12 @@ export default async function LobbyPage() {
       .eq("socio_id", socio.id)
       .eq("visible", true)
       .order("fase")
-      .order("numero")
-      .returns<Reporte[]>(),
+      .order("numero"),
 
     adminClient
       .from("lecturas")
       .select("*")
-      .eq("socio_id", socio.id)
-      .returns<Lectura[]>(),
+      .eq("socio_id", socio.id),
   ]);
 
   // Stub para el Pack de Consultoría (Opción B) — contenido real se construye luego
