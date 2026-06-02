@@ -318,30 +318,17 @@ export default function CalendarioReuniones({ reuniones }: Props) {
             <p style={{ fontSize: "0.82rem", color: "var(--foreground-muted)", margin: "0 0 12px 0" }}>
               {formatFechaLarga(r.fecha)}
             </p>
-            <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-              {r.agenda_url && (
-                <a
-                  href={r.agenda_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="syb-btn-ghost"
-                  style={{ textDecoration: "none", padding: "6px 14px", fontSize: "0.78rem" }}
-                >
-                  Ver agenda
-                </a>
-              )}
-              {r.grabacion_url && (
-                <a
-                  href={r.grabacion_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="syb-btn-ghost"
-                  style={{ textDecoration: "none", padding: "6px 14px", fontSize: "0.78rem" }}
-                >
-                  Ver grabación
-                </a>
-              )}
-            </div>
+            {(r.agenda_url || r.grabacion_url) && (
+              <a
+                href={(r.agenda_url ?? r.grabacion_url)!}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="syb-btn-ghost"
+                style={{ textDecoration: "none", padding: "6px 14px", fontSize: "0.78rem", display: "inline-block" }}
+              >
+                Ir a la reunión →
+              </a>
+            )}
           </div>
         ))}
       </div>

@@ -76,6 +76,8 @@ export type Entregable = {
   estado: EntregableEstado;
   /** Estado de versión: 'vigente' (verde) u 'obsoleto' (rojo). */
   version_estado?: 'vigente' | 'obsoleto';
+  /** ID del entregable del que este es una nueva versión. */
+  parent_id?: string | null;
   /** Orden de aparición dentro de la fase. */
   orden: number;
   created_at: string;

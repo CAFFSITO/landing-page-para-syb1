@@ -274,6 +274,7 @@ export function TabEntregables({ socioId, entregables }: Props) {
         editTarget={editTarget}
         onSaved={handleSaved}
         defaultOrden={editTarget ? editTarget.orden : items.filter(e => e.fase === editFase).length + 1}
+        allEntregables={items}
       />
 
       <AdminModal

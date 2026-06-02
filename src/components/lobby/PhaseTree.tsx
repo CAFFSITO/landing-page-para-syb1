@@ -289,22 +289,61 @@ export default function PhaseTree({
                         <p style={{ color: "var(--foreground-subtle)", fontSize: "0.85rem", fontStyle: "italic" }}>
                           No hay entregables enviados en esta fase.
                         </p>
-                      ) : (
-                        itemsFase.map((entregable) => {
-                          const yaLeido = lecturas.some(
-                            (l) => l.entregable_id === entregable.id
-                          );
+                      ) : (() => {
+                        // Separar raíces (sin parent) de versiones hijas
+                        const childrenMap = new Map<string, Entregable[]>();
+                        itemsFase.forEach((e) => {
+                          if (e.parent_id) {
+                            const arr = childrenMap.get(e.parent_id) ?? [];
+                            arr.push(e);
+                            childrenMap.set(e.parent_id, arr);
+                          }
+                        });
+                        const roots = itemsFase.filter((e) => !e.parent_id);
+
+                        return roots.map((entregable) => {
+                          const yaLeido = lecturas.some((l) => l.entregable_id === entregable.id);
+                          const hijos = childrenMap.get(entregable.id) ?? [];
+
                           return (
-                            <motion.div key={entregable.id} variants={itemVariants}>
-                              <EntregableCard
-                                entregable={entregable}
-                                yaLeido={yaLeido}
-                                onOpen={handleOpen}
-                              />
-                            </motion.div>
+                            <div key={entregable.id}>
+                              <motion.div variants={itemVariants}>
+                                <EntregableCard entregable={entregable} yaLeido={yaLeido} onOpen={handleOpen} />
+                              </motion.div>
+
+                              {hijos.map((hijo) => {
+                                const hijoLeido = lecturas.some((l) => l.entregable_id === hijo.id);
+                                return (
+                                  <motion.div
+                                    key={hijo.id}
+                                    variants={itemVariants}
+                                    style={{
+                                      marginLeft: 20,
+                                      marginTop: 6,
+                                      position: "relative",
+                                      paddingLeft: 14,
+                                      borderLeft: "1.5px dashed var(--hairline-strong)",
+                                    }}
+                                  >
+                                    {/* Conector horizontal a la rama hija */}
+                                    <div
+                                      style={{
+                                        position: "absolute",
+                                        left: 0,
+                                        top: "50%",
+                                        width: 14,
+                                        height: 1,
+                                        borderTop: "1.5px dashed var(--hairline-strong)",
+                                      }}
+                                    />
+                                    <EntregableCard entregable={hijo} yaLeido={hijoLeido} onOpen={handleOpen} />
+                                  </motion.div>
+                                );
+                              })}
+                            </div>
                           );
-                        })
-                      )}
+                        });
+                      })()}
                     </motion.div>
                   </motion.div>
                 )}

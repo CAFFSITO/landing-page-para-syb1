@@ -15,6 +15,7 @@ interface Props {
   editTarget: Entregable | null;
   onSaved: (e: Entregable) => void;
   defaultOrden: number;
+  allEntregables?: Entregable[];
 }
 
 const inputStyle: React.CSSProperties = {
@@ -79,13 +80,14 @@ const BLOCKED_MIMES = new Set([
   'application/x-msi',
 ]);
 
-export default function EntregableModal({ isOpen, onClose, socioId, fase, editTarget, onSaved, defaultOrden }: Props) {
+export default function EntregableModal({ isOpen, onClose, socioId, fase, editTarget, onSaved, defaultOrden, allEntregables = [] }: Props) {
   const [faseVal, setFaseVal] = useState<1 | 2 | 3>(fase);
   const [tipo, setTipo] = useState<EntregableTipo>('pdf');
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [estado, setEstado] = useState<EntregableEstado>('pendiente');
   const [versionEstado, setVersionEstado] = useState<'vigente' | 'obsoleto'>('vigente');
+  const [parentId, setParentId] = useState<string>('');
   const [url, setUrl] = useState('');
   const [orden, setOrden] = useState(defaultOrden);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
@@ -101,6 +103,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
       setDescripcion(editTarget.descripcion ?? '');
       setEstado(editTarget.estado);
       setVersionEstado(editTarget.version_estado ?? 'vigente');
+      setParentId(editTarget.parent_id ?? '');
       setUrl(editTarget.url ?? '');
       setOrden(editTarget.orden);
     } else {
@@ -110,6 +113,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
       setDescripcion('');
       setEstado('pendiente');
       setVersionEstado('vigente');
+      setParentId('');
       setUrl('');
       setOrden(defaultOrden);
     }
@@ -177,6 +181,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
         url: url.trim() || undefined,
         estado,
         version_estado: versionEstado,
+        parent_id: parentId || null,
         orden,
         file: filePayload,
         existingStoragePath: editTarget.storage_path ?? undefined,
@@ -191,6 +196,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
         url: url.trim() || undefined,
         estado,
         version_estado: versionEstado,
+        parent_id: parentId || null,
         orden,
         file: filePayload,
       });
@@ -204,8 +210,8 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
 
     const now = new Date().toISOString();
     const saved: Entregable = editTarget
-      ? { ...editTarget, fase: faseVal, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() || undefined, url: url.trim() || undefined, estado, version_estado: versionEstado, orden, updated_at: now }
-      : { id: crypto.randomUUID(), socio_id: socioId, fase: faseVal, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() || undefined, url: url.trim() || undefined, estado, version_estado: versionEstado, orden, created_at: now, updated_at: now };
+      ? { ...editTarget, fase: faseVal, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() || undefined, url: url.trim() || undefined, estado, version_estado: versionEstado, parent_id: parentId || null, orden, updated_at: now }
+      : { id: crypto.randomUUID(), socio_id: socioId, fase: faseVal, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() || undefined, url: url.trim() || undefined, estado, version_estado: versionEstado, parent_id: parentId || null, orden, created_at: now, updated_at: now };
 
     toast.success(editTarget ? 'Entregable actualizado' : 'Entregable creado');
     onSaved(saved);
@@ -277,6 +283,25 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
             <MarkdownRenderer content={descripcion || '*Sin descripción*'} />
           </div>
         </div>
+        {allEntregables.length > 0 && (
+          <div style={fieldStyle}>
+            <label style={labelStyle}>Nueva versión de (opcional)</label>
+            <select
+              style={inputStyle}
+              value={parentId}
+              onChange={e => setParentId(e.target.value)}
+            >
+              <option value="">— Entregable nuevo —</option>
+              {allEntregables
+                .filter(e => e.id !== editTarget?.id)
+                .map(e => (
+                  <option key={e.id} value={e.id}>
+                    F{e.fase} · {e.titulo}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
         <div style={fieldStyle}>
           <label style={labelStyle}>Estado *</label>
           <select style={inputStyle} value={estado} onChange={e => setEstado(e.target.value as EntregableEstado)}>

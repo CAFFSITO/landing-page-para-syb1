@@ -255,52 +255,29 @@ function ProximaCard({ reunion, diasHasta }: { reunion: Reunion; diasHasta: numb
         </div>
       )}
 
-      {/* Links */}
+      {/* Link único */}
       {(reunion.agenda_url || reunion.grabacion_url) && (
-        <div style={{ display: "flex", gap: "10px", marginLeft: "26px", flexWrap: "wrap" }}>
-          {reunion.agenda_url && (
-            <a
-              href={reunion.agenda_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "5px",
-                fontSize: "0.8rem",
-                color: "#9D5CC0",
-                textDecoration: "none",
-                padding: "5px 12px",
-                border: "1px solid rgba(157,92,192,0.3)",
-                borderRadius: "6px",
-                transition: "background 150ms",
-              }}
-            >
-              <ExternalLink size={12} />
-              Ver agenda
-            </a>
-          )}
-          {reunion.grabacion_url && (
-            <a
-              href={reunion.grabacion_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "5px",
-                fontSize: "0.8rem",
-                color: "rgba(255,255,255,0.45)",
-                textDecoration: "none",
-                padding: "5px 12px",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "6px",
-              }}
-            >
-              <ExternalLink size={12} />
-              Ver grabación
-            </a>
-          )}
+        <div style={{ marginLeft: "26px" }}>
+          <a
+            href={(reunion.agenda_url ?? reunion.grabacion_url)!}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              fontSize: "0.8rem",
+              color: "#9D5CC0",
+              textDecoration: "none",
+              padding: "6px 16px",
+              border: "1px solid rgba(157,92,192,0.35)",
+              borderRadius: "6px",
+              fontWeight: 600,
+            }}
+          >
+            <ExternalLink size={12} />
+            Ir a la reunión
+          </a>
         </div>
       )}
     </div>
