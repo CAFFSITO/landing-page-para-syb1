@@ -72,8 +72,7 @@ export default function GarantiaStatus({ garantia, garantiaActiva, nombreSocio }
             lineHeight: 1.6,
           }}
         >
-          {nombreSocio}, estás cumpliendo con todas las condiciones del programa. Tu garantía está
-          activa y vigente.
+          {nombreSocio}, estás cumpliendo con todas las condiciones del programa.
         </p>
       )}
 
