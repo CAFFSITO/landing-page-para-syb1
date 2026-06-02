@@ -85,7 +85,7 @@ export function SocioDetailShell({
 
       {tabActiva === 'progreso' && <TabProgreso socio={socio} />}
       {tabActiva === 'entregables' && (
-        <TabEntregables socioId={socio.id} entregables={entregables} />
+        <TabEntregables socioId={socio.id} entregables={entregables} lecturas={lecturas} />
       )}
       {tabActiva === 'reuniones' && (
         <TabReuniones socioId={socio.id} reuniones={reuniones} />

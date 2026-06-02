@@ -10,11 +10,12 @@ import { GripVertical, Pencil, Trash2, Plus } from 'lucide-react';
 import { reorderEntregablesAction, deleteEntregableAction, updateEstadoEntregableAction } from '@/app/actions/entregables-admin';
 import AdminModal from '@/components/admin/socios/AdminModal';
 import EntregableModal from '@/components/admin/socios/EntregableModal';
-import type { Entregable, EntregableEstado } from '@/types';
+import type { Entregable, EntregableEstado, Lectura } from '@/types';
 
 interface Props {
   socioId: string;
   entregables: Entregable[];
+  lecturas?: Lectura[];
 }
 
 const TIPO_LABEL: Record<string, string> = {
@@ -27,11 +28,13 @@ const TIPO_LABEL: Record<string, string> = {
 
 function SortableEntregableRow({
   entregable,
+  yaLeido,
   onEdit,
   onDelete,
   onEstadoChange,
 }: {
   entregable: Entregable;
+  yaLeido: boolean;
   onEdit: (e: Entregable) => void;
   onDelete: (e: Entregable) => void;
   onEstadoChange: (id: string, estado: EntregableEstado) => void;
@@ -90,6 +93,24 @@ function SortableEntregableRow({
       >
         {entregable.titulo}
       </span>
+      {yaLeido && (
+        <span
+          style={{
+            flexShrink: 0,
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.58rem',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.1em',
+            color: '#4ade80',
+            border: '1px solid rgba(74,222,128,0.35)',
+            borderRadius: 4,
+            padding: '2px 6px',
+          }}
+        >
+          Leído
+        </span>
+      )}
       {/* Dot de versión */}
       <span
         title={entregable.version_estado === 'obsoleto' ? 'Rechazado' : 'Aceptado'}
@@ -132,7 +153,7 @@ function SortableEntregableRow({
   );
 }
 
-export function TabEntregables({ socioId, entregables }: Props) {
+export function TabEntregables({ socioId, entregables, lecturas = [] }: Props) {
   const [items, setItems] = useState<Entregable[]>(entregables);
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Entregable | null>(null);
@@ -254,6 +275,7 @@ export function TabEntregables({ socioId, entregables }: Props) {
                     <SortableEntregableRow
                       key={e.id}
                       entregable={e}
+                      yaLeido={lecturas.some(l => l.entregable_id === e.id)}
                       onEdit={openEdit}
                       onDelete={setDeleteTarget}
                       onEstadoChange={handleEstadoChange}
