@@ -26,24 +26,23 @@ const TIPO_LABEL: Record<string, string> = {
   agenda: 'Agenda',
 };
 
-function SortableEntregableRow({
+function RowInner({
   entregable,
   yaLeido,
   onEdit,
   onDelete,
   onEstadoChange,
+  dragHandle,
 }: {
   entregable: Entregable;
   yaLeido: boolean;
   onEdit: (e: Entregable) => void;
   onDelete: (e: Entregable) => void;
   onEstadoChange: (id: string, estado: EntregableEstado) => void;
+  dragHandle?: React.ReactNode;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: entregable.id });
-
   return (
     <div
-      ref={setNodeRef}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -52,19 +51,9 @@ function SortableEntregableRow({
         backgroundColor: 'var(--surface-1)',
         border: '1px solid var(--hairline)',
         borderRadius: 'var(--radius-sm)',
-        marginBottom: '6px',
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.5 : 1,
       }}
     >
-      <span
-        {...attributes}
-        {...listeners}
-        style={{ cursor: 'grab', color: 'var(--foreground-subtle)', flexShrink: 0, display: 'flex' }}
-      >
-        <GripVertical size={14} strokeWidth={1.5} />
-      </span>
+      {dragHandle}
       <span
         style={{
           fontFamily: 'var(--font-mono)',
@@ -111,7 +100,6 @@ function SortableEntregableRow({
           Leído
         </span>
       )}
-      {/* Dot de versión */}
       <span
         title={entregable.version_estado === 'obsoleto' ? 'Rechazado' : 'Aceptado'}
         style={{
@@ -149,6 +137,95 @@ function SortableEntregableRow({
       >
         <Trash2 size={13} strokeWidth={1.5} />
       </button>
+    </div>
+  );
+}
+
+function SortableEntregableRow({
+  entregable,
+  yaLeido,
+  onEdit,
+  onDelete,
+  onEstadoChange,
+}: {
+  entregable: Entregable;
+  yaLeido: boolean;
+  onEdit: (e: Entregable) => void;
+  onDelete: (e: Entregable) => void;
+  onEstadoChange: (id: string, estado: EntregableEstado) => void;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: entregable.id });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+      }}
+    >
+      <RowInner
+        entregable={entregable}
+        yaLeido={yaLeido}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onEstadoChange={onEstadoChange}
+        dragHandle={
+          <span
+            {...attributes}
+            {...listeners}
+            style={{ cursor: 'grab', color: 'var(--foreground-subtle)', flexShrink: 0, display: 'flex' }}
+          >
+            <GripVertical size={14} strokeWidth={1.5} />
+          </span>
+        }
+      />
+    </div>
+  );
+}
+
+function ChildEntregableRow({
+  entregable,
+  yaLeido,
+  onEdit,
+  onDelete,
+  onEstadoChange,
+}: {
+  entregable: Entregable;
+  yaLeido: boolean;
+  onEdit: (e: Entregable) => void;
+  onDelete: (e: Entregable) => void;
+  onEstadoChange: (id: string, estado: EntregableEstado) => void;
+}) {
+  return (
+    <div
+      style={{
+        marginLeft: 20,
+        marginTop: 6,
+        position: 'relative',
+        paddingLeft: 14,
+        borderLeft: '1.5px dashed var(--hairline-strong)',
+      }}
+    >
+      {/* Conector horizontal */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: '50%',
+          width: 14,
+          height: 1,
+          borderTop: '1.5px dashed var(--hairline-strong)',
+        }}
+      />
+      <RowInner
+        entregable={entregable}
+        yaLeido={yaLeido}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onEstadoChange={onEstadoChange}
+      />
     </div>
   );
 }
@@ -203,14 +280,17 @@ export function TabEntregables({ socioId, entregables, lecturas = [] }: Props) {
     if (!over || active.id === over.id) return;
 
     const faseItems = items.filter(e => e.fase === fase).sort((a, b) => a.orden - b.orden);
-    const oldIndex = faseItems.findIndex(e => e.id === active.id);
-    const newIndex = faseItems.findIndex(e => e.id === over.id);
-    const reordered = arrayMove(faseItems, oldIndex, newIndex).map((e, i) => ({ ...e, orden: i + 1 }));
+    // Only roots are draggable; children follow their parent
+    const roots = faseItems.filter(e => !e.parent_id);
+    const oldIndex = roots.findIndex(e => e.id === active.id);
+    const newIndex = roots.findIndex(e => e.id === over.id);
+    const reordered = arrayMove(roots, oldIndex, newIndex).map((e, i) => ({ ...e, orden: i + 1 }));
 
     const snapshot = [...items];
     setItems(prev => {
       const others = prev.filter(e => e.fase !== fase);
-      return [...others, ...reordered];
+      const faseChildren = faseItems.filter(e => e.parent_id);
+      return [...others, ...reordered, ...faseChildren];
     });
 
     reorderEntregablesAction(socioId, reordered.map(e => ({ id: e.id, orden: e.orden }))).then(res => {
@@ -239,6 +319,22 @@ export function TabEntregables({ socioId, entregables, lecturas = [] }: Props) {
     <div>
       {([1, 2, 3] as const).map(fase => {
         const faseItems = items.filter(e => e.fase === fase).sort((a, b) => a.orden - b.orden);
+
+        // Build hierarchy: items whose parent exists in this fase are children
+        const childrenMap = new Map<string, Entregable[]>();
+        const faseIds = new Set(faseItems.map(e => e.id));
+        const childIds = new Set<string>();
+
+        faseItems.forEach(e => {
+          if (e.parent_id && faseIds.has(e.parent_id)) {
+            childIds.add(e.id);
+            const arr = childrenMap.get(e.parent_id) ?? [];
+            arr.push(e);
+            childrenMap.set(e.parent_id, arr);
+          }
+        });
+
+        const roots = faseItems.filter(e => !childIds.has(e.id));
 
         return (
           <div key={fase} style={{ marginBottom: '32px' }}>
@@ -270,17 +366,31 @@ export function TabEntregables({ socioId, entregables, lecturas = [] }: Props) {
               </p>
             ) : (
               <DndContext sensors={sensors} onDragEnd={e => handleDragEnd(fase, e)}>
-                <SortableContext items={faseItems.map(e => e.id)} strategy={verticalListSortingStrategy}>
-                  {faseItems.map(e => (
-                    <SortableEntregableRow
-                      key={e.id}
-                      entregable={e}
-                      yaLeido={lecturas.some(l => l.entregable_id === e.id)}
-                      onEdit={openEdit}
-                      onDelete={setDeleteTarget}
-                      onEstadoChange={handleEstadoChange}
-                    />
-                  ))}
+                <SortableContext items={roots.map(e => e.id)} strategy={verticalListSortingStrategy}>
+                  {roots.map(root => {
+                    const hijos = childrenMap.get(root.id) ?? [];
+                    return (
+                      <div key={root.id} style={{ marginBottom: '6px' }}>
+                        <SortableEntregableRow
+                          entregable={root}
+                          yaLeido={lecturas.some(l => l.entregable_id === root.id)}
+                          onEdit={openEdit}
+                          onDelete={setDeleteTarget}
+                          onEstadoChange={handleEstadoChange}
+                        />
+                        {hijos.map(hijo => (
+                          <ChildEntregableRow
+                            key={hijo.id}
+                            entregable={hijo}
+                            yaLeido={lecturas.some(l => l.entregable_id === hijo.id)}
+                            onEdit={openEdit}
+                            onDelete={setDeleteTarget}
+                            onEstadoChange={handleEstadoChange}
+                          />
+                        ))}
+                      </div>
+                    );
+                  })}
                 </SortableContext>
               </DndContext>
             )}
