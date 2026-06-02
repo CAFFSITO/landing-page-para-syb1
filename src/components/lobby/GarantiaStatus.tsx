@@ -86,7 +86,7 @@ export default function GarantiaStatus({ garantia, garantiaActiva, nombreSocio }
               lineHeight: 1.6,
             }}
           >
-            {nombreSocio}, la garantía está temporalmente suspendida por incumplimiento de las
+            {nombreSocio}, la garantía está suspendida por incumplimiento de las
             condiciones del programa.
           </p>
 
