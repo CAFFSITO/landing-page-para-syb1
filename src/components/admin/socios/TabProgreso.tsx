@@ -300,49 +300,48 @@ export function TabProgreso({ socio }: Props) {
         })}
 
         {/* Barra de progreso del admin */}
-        <div
-          style={{
-            marginTop: 4,
-            borderTop: '1px solid var(--hairline)',
-            paddingTop: 16,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-          }}
-        >
-          <div
-            style={{
-              flex: 1,
-              height: 4,
-              borderRadius: 2,
-              backgroundColor: 'var(--hairline)',
-              overflow: 'hidden',
-            }}
-          >
+        {(() => {
+          const garantiaEjecutada = !!garantia.opcion_ejecutada;
+          const displayPct = garantiaEjecutada ? 100 : pct;
+          const barColor = garantiaEjecutada ? '#4ade80' : 'var(--color-secondary)';
+          return (
             <div
               style={{
-                height: '100%',
-                width: `${pct}%`,
-                backgroundColor: 'var(--color-secondary)',
-                borderRadius: 2,
-                transition: 'width 400ms ease',
+                marginTop: 4,
+                borderTop: '1px solid var(--hairline)',
+                paddingTop: 16,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
               }}
-            />
-          </div>
-          <span
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.72rem',
-              fontWeight: 600,
-              color: 'var(--foreground)',
-              flexShrink: 0,
-              minWidth: 36,
-              textAlign: 'right',
-            }}
-          >
-            {pct}%
-          </span>
-        </div>
+            >
+              <div style={{ flex: 1, height: 4, borderRadius: 2, backgroundColor: 'var(--hairline)', overflow: 'hidden' }}>
+                <div
+                  style={{
+                    height: '100%',
+                    width: `${displayPct}%`,
+                    backgroundColor: barColor,
+                    borderRadius: 2,
+                    transition: 'width 600ms ease, background-color 600ms ease',
+                  }}
+                />
+              </div>
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  color: garantiaEjecutada ? '#4ade80' : 'var(--foreground)',
+                  flexShrink: 0,
+                  minWidth: 36,
+                  textAlign: 'right',
+                }}
+              >
+                {garantiaEjecutada ? 'Garantía ejecutada' : `${displayPct}%`}
+              </span>
+            </div>
+          );
+        })()}
       </div>
 
       {/* ── Garantía ───────────────────────────────────────────────────────── */}

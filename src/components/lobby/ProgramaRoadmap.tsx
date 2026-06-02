@@ -124,6 +124,21 @@ function formatFechaCorta(fecha: string): string {
   }
 }
 
+function diasHasta(fecha: string): number {
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+  const target = new Date(fecha);
+  target.setHours(0, 0, 0, 0);
+  return Math.round((target.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
+}
+
+function etiquetaCuenta(dias: number): string {
+  if (dias === 0) return "Hoy";
+  if (dias === 1) return "Mañana";
+  if (dias < 0) return "Pasada";
+  return `en ${dias}d`;
+}
+
 export default function ProgramaRoadmap({
   nombreSocio,
   empresaNombre,
@@ -221,6 +236,23 @@ export default function ProgramaRoadmap({
                 | {formatFechaCorta(proximaReunion.fecha)}
               </span>
             </span>
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.65rem",
+                fontWeight: 700,
+                color: diasHasta(proximaReunion.fecha) === 0 ? "#4ade80" : "var(--color-secondary)",
+                backgroundColor: diasHasta(proximaReunion.fecha) === 0
+                  ? "rgba(74,222,128,0.1)"
+                  : "rgba(157,92,192,0.1)",
+                border: `1px solid ${diasHasta(proximaReunion.fecha) === 0 ? "rgba(74,222,128,0.3)" : "rgba(157,92,192,0.25)"}`,
+                borderRadius: "999px",
+                padding: "2px 8px",
+                flexShrink: 0,
+              }}
+            >
+              {etiquetaCuenta(diasHasta(proximaReunion.fecha))}
+            </span>
           </div>
         )}
         <p
@@ -293,9 +325,6 @@ export default function ProgramaRoadmap({
           gap: "20px",
         }}
       >
-        {/* Navegación arriba */}
-        <RoadmapNav faseActiva={faseActiva} onFaseChange={handleFaseChange} />
-
         {/* Carril de cards: horizontal (desktop) / vertical (mobile) */}
         <div
           ref={containerRef}
