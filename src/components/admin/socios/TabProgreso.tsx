@@ -115,6 +115,7 @@ export function TabProgreso({ socio }: Props) {
   // State para confirmar cláusula
   const [confirmandoClausula, setConfirmandoClausula] = useState(false);
   const [confirmandoOpcion, setConfirmandoOpcion] = useState<'A' | 'B' | null>(null);
+  const [confirmandoResetClausula, setConfirmandoResetClausula] = useState(false);
 
   const garantiaActiva = !!hitos['f3_r5'];
   const pct = calcularPorcentaje(hitos);
@@ -183,6 +184,12 @@ export function TabProgreso({ socio }: Props) {
     setConfirmandoOpcion(null);
     setConfirmandoClausula(false);
     await saveGarantia(next);
+  }
+
+  async function handleResetClausula() {
+    const { clausula_activa: _, opcion_ejecutada: __, opcion_ejecutada_at: ___, ...rest } = garantia;
+    setConfirmandoResetClausula(false);
+    await saveGarantia(rest);
   }
 
   // ─── Render ──────────────────────────────────────────────────────────────────
@@ -581,24 +588,110 @@ export function TabProgreso({ socio }: Props) {
           </p>
 
           {garantia.opcion_ejecutada ? (
-            <div
-              style={{
-                padding: '12px 16px',
-                backgroundColor: 'rgba(157,92,192,0.06)',
-                border: '1px solid rgba(157,92,192,0.2)',
-                borderRadius: 8,
-                fontSize: '0.82rem',
-                color: 'var(--foreground-muted)',
-              }}
-            >
-              Cláusula ejecutada:{' '}
-              <strong style={{ color: 'var(--foreground)' }}>
-                Opción {garantia.opcion_ejecutada}
-              </strong>
-              {garantia.opcion_ejecutada_at && (
-                <span style={{ marginLeft: 8, opacity: 0.6, fontSize: '0.75rem' }}>
-                  {new Date(garantia.opcion_ejecutada_at).toLocaleString('es-AR')}
-                </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div
+                style={{
+                  padding: '12px 16px',
+                  backgroundColor: 'rgba(157,92,192,0.06)',
+                  border: '1px solid rgba(157,92,192,0.2)',
+                  borderRadius: 8,
+                  fontSize: '0.82rem',
+                  color: 'var(--foreground-muted)',
+                }}
+              >
+                Cláusula ejecutada:{' '}
+                <strong style={{ color: 'var(--foreground)' }}>
+                  Opción {garantia.opcion_ejecutada}
+                </strong>
+                {garantia.opcion_ejecutada_at && (
+                  <span style={{ marginLeft: 8, opacity: 0.6, fontSize: '0.75rem' }}>
+                    {new Date(garantia.opcion_ejecutada_at).toLocaleString('es-AR')}
+                  </span>
+                )}
+              </div>
+
+              {!confirmandoResetClausula ? (
+                <button
+                  onClick={() => setConfirmandoResetClausula(true)}
+                  style={{
+                    alignSelf: 'flex-start',
+                    padding: '7px 14px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    backgroundColor: 'transparent',
+                    color: 'var(--foreground-subtle)',
+                    border: '1px solid var(--hairline)',
+                    borderRadius: 6,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Desactivar cláusula
+                </button>
+              ) : (
+                <div
+                  style={{
+                    padding: '14px 16px',
+                    backgroundColor: 'rgba(245,158,11,0.05)',
+                    border: '1px solid rgba(245,158,11,0.25)',
+                    borderRadius: 8,
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      color: '#f59e0b',
+                      margin: '0 0 4px 0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                    }}
+                  >
+                    <AlertTriangle size={13} color="#f59e0b" />
+                    Solo tocá este botón si activaste la garantía por equivocación.
+                  </p>
+                  <p
+                    style={{
+                      fontSize: '0.75rem',
+                      color: 'var(--foreground-muted)',
+                      margin: '0 0 12px 0',
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    Esto borrará la cláusula ejecutada y el socio volverá a ver el lobby como antes. ¿Confirmar?
+                  </p>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <button
+                      onClick={handleResetClausula}
+                      style={{
+                        padding: '7px 18px',
+                        fontSize: '0.78rem',
+                        fontWeight: 700,
+                        backgroundColor: '#f59e0b',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: 6,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Sí, desactivar
+                    </button>
+                    <button
+                      onClick={() => setConfirmandoResetClausula(false)}
+                      style={{
+                        padding: '7px 14px',
+                        fontSize: '0.78rem',
+                        color: 'var(--foreground-muted)',
+                        backgroundColor: 'transparent',
+                        border: '1px solid var(--hairline)',
+                        borderRadius: 6,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           ) : !confirmandoClausula ? (
