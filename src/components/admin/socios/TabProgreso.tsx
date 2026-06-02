@@ -604,20 +604,20 @@ export function TabProgreso({ socio }: Props) {
             </div>
           ) : !confirmandoClausula ? (
             <button
-              disabled={!hayIncumplimiento}
+              disabled={hayIncumplimiento}
               onClick={() => setConfirmandoClausula(true)}
               style={{
                 padding: '10px 20px',
                 fontSize: '0.85rem',
                 fontWeight: 700,
-                backgroundColor: hayIncumplimiento
-                  ? 'rgba(239,68,68,0.12)'
+                backgroundColor: !hayIncumplimiento
+                  ? 'rgba(157,92,192,0.1)'
                   : 'transparent',
-                color: hayIncumplimiento ? '#ef4444' : 'var(--foreground-subtle)',
-                border: `1px solid ${hayIncumplimiento ? 'rgba(239,68,68,0.4)' : 'var(--hairline)'}`,
+                color: !hayIncumplimiento ? 'var(--color-secondary)' : 'var(--foreground-subtle)',
+                border: `1px solid ${!hayIncumplimiento ? 'rgba(157,92,192,0.4)' : 'var(--hairline)'}`,
                 borderRadius: 8,
-                cursor: hayIncumplimiento ? 'pointer' : 'not-allowed',
-                opacity: hayIncumplimiento ? 1 : 0.5,
+                cursor: !hayIncumplimiento ? 'pointer' : 'not-allowed',
+                opacity: !hayIncumplimiento ? 1 : 0.4,
               }}
             >
               Ejecutar cláusula de protección total
