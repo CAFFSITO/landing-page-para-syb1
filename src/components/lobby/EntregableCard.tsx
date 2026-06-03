@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 function stripMarkdown(text: string): string {
@@ -31,7 +30,6 @@ import {
   FileSpreadsheet,
   File,
 } from "lucide-react";
-import { registrarLecturaAction } from "@/app/actions/lecturas";
 import type { Entregable } from "@/types";
 
 type EntregableCardProps = {
@@ -69,8 +67,6 @@ export default function EntregableCard({
   yaLeido,
   onOpen,
 }: EntregableCardProps) {
-  const [leido, setLeido] = useState(yaLeido);
-
   if (entregable.estado === "pendiente") return null;
 
   const esRechazado = entregable.estado === "rechazado";
@@ -90,12 +86,8 @@ export default function EntregableCard({
     ? 'rgba(34,197,94,0.04)'
     : undefined;
 
-  async function handleClick() {
+  function handleClick() {
     onOpen(entregable);
-    if (!leido && !esRechazado) {
-      setLeido(true);
-      registrarLecturaAction({ entregable_id: entregable.id });
-    }
   }
 
   return (
@@ -136,7 +128,7 @@ export default function EntregableCard({
           borderRadius: "var(--radius-sm)",
           cursor: "pointer",
           textAlign: "left",
-          opacity: leido && !esRechazado ? 0.7 : 1,
+          opacity: yaLeido && !esRechazado ? 0.7 : 1,
           width: "100%",
           transition: "border-color 180ms ease, background-color 180ms ease",
         }}
@@ -242,7 +234,7 @@ export default function EntregableCard({
           )}
           {!esRechazado && (
             <AnimatePresence>
-              {leido && (
+              {yaLeido && (
                 <motion.span
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
