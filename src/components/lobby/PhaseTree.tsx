@@ -22,10 +22,10 @@ type PhaseTreeProps = {
 type EstadoFase = "completada" | "activa" | "pendiente";
 
 type ModalState =
-  | { tipo: "video"; entregable: Entregable }
-  | { tipo: "reporte"; entregable: Entregable; item: Reporte | Reunion }
-  | { tipo: "agenda"; entregable: Entregable; reunion: Reunion }
-  | { tipo: "archivo"; entregable: Entregable }
+  | { tipo: "video"; entregable: Entregable; yaLeido: boolean }
+  | { tipo: "reporte"; entregable: Entregable; item: Reporte | Reunion; yaLeido: boolean }
+  | { tipo: "agenda"; entregable: Entregable; reunion: Reunion; yaLeido: boolean }
+  | { tipo: "archivo"; entregable: Entregable; yaLeido: boolean }
   | null;
 
 const FASES = [1, 2, 3] as const;
@@ -96,9 +96,11 @@ export default function PhaseTree({
   }
 
   function handleOpen(entregable: Entregable) {
+    const leido = lecturas.some((l) => l.entregable_id === entregable.id);
+
     // Si tiene archivo subido en Storage → visor universal
     if (entregable.storage_path) {
-      setModalState({ tipo: "archivo", entregable });
+      setModalState({ tipo: "archivo", entregable, yaLeido: leido });
       return;
     }
 
@@ -106,10 +108,10 @@ export default function PhaseTree({
     switch (entregable.tipo) {
       case "pdf":
         // PDF sin archivo subido: nada que mostrar o URL externa
-        setModalState({ tipo: "archivo", entregable });
+        setModalState({ tipo: "archivo", entregable, yaLeido: leido });
         break;
       case "video":
-        setModalState({ tipo: "video", entregable });
+        setModalState({ tipo: "video", entregable, yaLeido: leido });
         break;
       case "reporte": {
         const match =
@@ -117,7 +119,7 @@ export default function PhaseTree({
             (r) => r.fase === entregable.fase && r.numero === entregable.orden
           ) ?? reportes.find((r) => r.fase === entregable.fase);
         if (match) {
-          setModalState({ tipo: "reporte", entregable, item: match });
+          setModalState({ tipo: "reporte", entregable, item: match, yaLeido: leido });
         } else if (entregable.descripcion) {
           const syntheticReporte = {
             id: entregable.id,
@@ -129,7 +131,7 @@ export default function PhaseTree({
             visible: true,
             created_at: entregable.created_at,
           };
-          setModalState({ tipo: "reporte", entregable, item: syntheticReporte as Reporte });
+          setModalState({ tipo: "reporte", entregable, item: syntheticReporte as Reporte, yaLeido: leido });
         }
         break;
       }
@@ -139,7 +141,7 @@ export default function PhaseTree({
             (r) => r.fase === entregable.fase && r.numero === entregable.orden
           ) ?? reuniones.find((r) => r.fase === entregable.fase);
         if (match) {
-          setModalState({ tipo: "reporte", entregable, item: match });
+          setModalState({ tipo: "reporte", entregable, item: match, yaLeido: leido });
         } else if (entregable.descripcion) {
           const syntheticReporte = {
             id: entregable.id,
@@ -151,7 +153,7 @@ export default function PhaseTree({
             visible: true,
             created_at: entregable.created_at,
           };
-          setModalState({ tipo: "reporte", entregable, item: syntheticReporte as Reporte });
+          setModalState({ tipo: "reporte", entregable, item: syntheticReporte as Reporte, yaLeido: leido });
         }
         break;
       }
@@ -161,13 +163,13 @@ export default function PhaseTree({
             (r) => r.fase === entregable.fase && r.numero === entregable.orden
           ) ?? reuniones.find((r) => r.fase === entregable.fase);
         if (match) {
-          setModalState({ tipo: "agenda", entregable, reunion: match });
+          setModalState({ tipo: "agenda", entregable, reunion: match, yaLeido: leido });
         }
         break;
       }
       default:
         // audio, imagen, documento, archivo → visor universal
-        setModalState({ tipo: "archivo", entregable });
+        setModalState({ tipo: "archivo", entregable, yaLeido: leido });
         break;
     }
   }
@@ -359,6 +361,8 @@ export default function PhaseTree({
           isOpen
           onClose={cerrarModal}
           entregable={modalState.entregable}
+          entregableId={modalState.entregable.id}
+          yaLeido={modalState.yaLeido}
         />
       )}
       {modalState?.tipo === "reporte" && (
@@ -366,6 +370,8 @@ export default function PhaseTree({
           isOpen
           onClose={cerrarModal}
           item={modalState.item}
+          entregableId={modalState.entregable.id}
+          yaLeido={modalState.yaLeido}
         />
       )}
       {modalState?.tipo === "agenda" && (
@@ -373,6 +379,8 @@ export default function PhaseTree({
           isOpen
           onClose={cerrarModal}
           reunion={modalState.reunion}
+          entregableId={modalState.entregable.id}
+          yaLeido={modalState.yaLeido}
         />
       )}
       {modalState?.tipo === "archivo" && (
@@ -380,6 +388,8 @@ export default function PhaseTree({
           isOpen
           onClose={cerrarModal}
           entregable={modalState.entregable}
+          entregableId={modalState.entregable.id}
+          yaLeido={modalState.yaLeido}
         />
       )}
     </div>

@@ -2,19 +2,22 @@
 
 import Modal from "@/components/ui/Modal";
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
+import ConfirmacionLectura from "@/components/lobby/ConfirmacionLectura";
 import type { Reporte, Reunion } from "@/types";
 
 type ModalReporteProps = {
   isOpen: boolean;
   onClose: () => void;
   item: Reporte | Reunion;
+  entregableId: string;
+  yaLeido: boolean;
 };
 
 function esReporte(item: Reporte | Reunion): item is Reporte {
   return "contenido" in item;
 }
 
-export default function ModalReporte({ isOpen, onClose, item }: ModalReporteProps) {
+export default function ModalReporte({ isOpen, onClose, item, entregableId, yaLeido }: ModalReporteProps) {
   const titulo = esReporte(item) ? item.titulo : item.nombre;
   const contenido = esReporte(item) ? item.contenido : (item.notas ?? "");
   const grabacion = esReporte(item) ? null : item.grabacion_url;
@@ -49,6 +52,7 @@ export default function ModalReporte({ isOpen, onClose, item }: ModalReporteProp
           No hay contenido disponible aún.
         </p>
       )}
+      <ConfirmacionLectura entregableId={entregableId} yaLeido={yaLeido} />
     </Modal>
   );
 }

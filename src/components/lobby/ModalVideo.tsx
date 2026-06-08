@@ -1,12 +1,15 @@
 "use client";
 
 import Modal from "@/components/ui/Modal";
+import ConfirmacionLectura from "@/components/lobby/ConfirmacionLectura";
 import type { Entregable } from "@/types";
 
 type ModalVideoProps = {
   isOpen: boolean;
   onClose: () => void;
   entregable: Entregable;
+  entregableId: string;
+  yaLeido: boolean;
 };
 
 /** Convierte una URL de Vimeo a URL de embed. */
@@ -20,7 +23,7 @@ function toVimeoEmbed(url: string): string {
   return url;
 }
 
-export default function ModalVideo({ isOpen, onClose, entregable }: ModalVideoProps) {
+export default function ModalVideo({ isOpen, onClose, entregable, entregableId, yaLeido }: ModalVideoProps) {
   const embedUrl = entregable.url ? toVimeoEmbed(entregable.url) : null;
 
   return (
@@ -44,6 +47,7 @@ export default function ModalVideo({ isOpen, onClose, entregable }: ModalVideoPr
           Este entregable no tiene video disponible.
         </p>
       )}
+      <ConfirmacionLectura entregableId={entregableId} yaLeido={yaLeido} />
     </Modal>
   );
 }

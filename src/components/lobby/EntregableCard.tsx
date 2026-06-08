@@ -2,21 +2,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 
-function stripMarkdown(text: string): string {
-  return text
-    .replace(/^#{1,6}\s+/gm, "")           // headings
-    .replace(/\*\*(.+?)\*\*/g, "$1")         // bold
-    .replace(/\*(.+?)\*/g, "$1")             // italic
-    .replace(/__(.+?)__/g, "$1")
-    .replace(/_(.+?)_/g, "$1")
-    .replace(/`{1,3}[^`]*`{1,3}/g, "")      // code
-    .replace(/\[(.+?)\]\(.+?\)/g, "$1")     // links
-    .replace(/!\[.*?\]\(.+?\)/g, "")        // images
-    .replace(/^[-*>]\s+/gm, "")             // bullets/blockquotes
-    .replace(/\n+/g, " ")
-    .trim();
-}
-
 import {
   FileText,
   Play,
@@ -208,20 +193,6 @@ export default function EntregableCard({
               </span>
             )}
           </div>
-          {entregable.descripcion && (
-            <p
-              style={{
-                margin: "2px 0 0",
-                fontSize: "0.78rem",
-                color: "var(--foreground-muted)",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {stripMarkdown(entregable.descripcion)}
-            </p>
-          )}
         </div>
 
         {/* Estado: tag pastel desaturado */}

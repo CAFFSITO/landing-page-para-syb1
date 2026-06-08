@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Download, FileText, Film, Image as ImageIcon, File, Music, FileSpreadsheet } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
+import ConfirmacionLectura from "@/components/lobby/ConfirmacionLectura";
 import { obtenerSignedUrl } from "@/app/actions/storage";
 import type { Entregable } from "@/types";
 
@@ -11,6 +12,8 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
   entregable: Entregable;
+  entregableId: string;
+  yaLeido: boolean;
 };
 
 type TipoArchivo = "pdf" | "video" | "audio" | "imagen" | "office" | "otro";
@@ -62,7 +65,7 @@ const downloadBtnStyle: React.CSSProperties = {
   transition: "opacity 180ms ease",
 };
 
-export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
+export default function ModalArchivo({ isOpen, onClose, entregable, entregableId, yaLeido }: Props) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -306,6 +309,7 @@ export default function ModalArchivo({ isOpen, onClose, entregable }: Props) {
         </div>
       )}
       {renderContenido()}
+      <ConfirmacionLectura entregableId={entregableId} yaLeido={yaLeido} />
     </Modal>
   );
 }

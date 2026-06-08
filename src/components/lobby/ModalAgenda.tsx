@@ -1,12 +1,15 @@
 "use client";
 
 import Modal from "@/components/ui/Modal";
+import ConfirmacionLectura from "@/components/lobby/ConfirmacionLectura";
 import type { Reunion } from "@/types";
 
 type ModalAgendaProps = {
   isOpen: boolean;
   onClose: () => void;
   reunion: Reunion;
+  entregableId: string;
+  yaLeido: boolean;
 };
 
 function formatearFecha(fechaStr: string): string {
@@ -18,7 +21,7 @@ function formatearFecha(fechaStr: string): string {
   }).format(new Date(fechaStr));
 }
 
-export default function ModalAgenda({ isOpen, onClose, reunion }: ModalAgendaProps) {
+export default function ModalAgenda({ isOpen, onClose, reunion, entregableId, yaLeido }: ModalAgendaProps) {
   return (
     <Modal
       isOpen={isOpen}
@@ -102,6 +105,7 @@ export default function ModalAgenda({ isOpen, onClose, reunion }: ModalAgendaPro
           </p>
         )}
       </div>
+      <ConfirmacionLectura entregableId={entregableId} yaLeido={yaLeido} />
     </Modal>
   );
 }
