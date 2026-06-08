@@ -1,6 +1,7 @@
 "use client";
 
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type MarkdownRendererProps = {
   content: string;
@@ -14,6 +15,7 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
       style={{ fontFamily: "Merriweather, Georgia, serif" }}
     >
       <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ ...props }) => (
             <h1
@@ -141,6 +143,61 @@ export default function MarkdownRenderer({ content, className }: MarkdownRendere
                 borderTop: "1px solid rgba(157,92,192,0.25)",
                 margin: "1.5em 0",
               }}
+            />
+          ),
+          table: ({ ...props }) => (
+            <div style={{ overflowX: "auto", marginBottom: "1em" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  fontSize: "0.92em",
+                  lineHeight: 1.6,
+                }}
+                {...props}
+              />
+            </div>
+          ),
+          thead: ({ ...props }) => (
+            <thead
+              style={{
+                borderBottom: "2px solid rgba(157,92,192,0.4)",
+              }}
+              {...props}
+            />
+          ),
+          tbody: ({ ...props }) => <tbody {...props} />,
+          tr: ({ ...props }) => (
+            <tr
+              style={{
+                borderBottom: "1px solid rgba(157,92,192,0.15)",
+              }}
+              {...props}
+            />
+          ),
+          th: ({ ...props }) => (
+            <th
+              style={{
+                padding: "0.6em 1em",
+                textAlign: "left",
+                fontWeight: 700,
+                fontSize: "0.85em",
+                textTransform: "uppercase",
+                letterSpacing: "0.04em",
+                color: "rgba(157,92,192,0.9)",
+                whiteSpace: "nowrap",
+              }}
+              {...props}
+            />
+          ),
+          td: ({ ...props }) => (
+            <td
+              style={{
+                padding: "0.55em 1em",
+                color: "inherit",
+                verticalAlign: "top",
+              }}
+              {...props}
             />
           ),
         }}
