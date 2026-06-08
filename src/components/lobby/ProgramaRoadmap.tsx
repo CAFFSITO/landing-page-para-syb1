@@ -42,17 +42,17 @@ const FASES_DATA = [
         icono: <Search size={24} />,
         titulo: "Auditoría del negocio",
         descripcion:
-          "Revisamos cada proceso de [Empresa] para identificar cuellos de botella y oportunidades ocultas.",
+          "Revisamos cada proceso de [Empresa] para identificar cuellos de botella y puntos estrategicos potenciables.",
       },
       {
         icono: <FileText size={24} />,
-        titulo: "Mapeo de procesos (COM)",
+        titulo: "Mapeo de procesos (MOA)",
         descripcion:
-          "Construimos el Current Operating Model: un mapa visual de cómo opera [Empresa] hoy.",
+          "Entregamos el Modelo Operativo Actual: una estructura documentada de cómo opera [Empresa] hoy.",
       },
       {
         icono: <BarChart2 size={24} />,
-        titulo: "Roadmap de priorización",
+        titulo: "Hoja de ruta de priorización",
         descripcion:
           "Definimos qué resolver primero según impacto y viabilidad para [Empresa].",
       },
@@ -65,22 +65,25 @@ const FASES_DATA = [
     hitos: [
       {
         icono: <Settings size={24} />,
-        titulo: "Diseño del sistema ideal (TOM)",
+        titulo: "Primera automatización atómica",
         descripcion:
-          "Diseñamos el Target Operating Model: la arquitectura que [Empresa] necesita para escalar.",
+          "Entregamos la primera pieza estratégica y/o tecnológica del sistema para que [Empresa] la utilice en la vida real.",
       },
+
       {
         icono: <Rocket size={24} />,
         titulo: "Construcción iterativa",
         descripcion:
-          "Construimos el sistema con validaciones semanales. Nada se entrega sin tu aprobación.",
+          "Construimos el sistema semana tras semana. Nada se entrega sin tu aprobación.",
       },
+
       {
         icono: <Settings size={24} />,
-        titulo: "Primera automatización atómica",
+        titulo: "Diseño del sistema ideal (MOO)",
         descripcion:
-          "Entregamos la primera pieza funcional del sistema para que [Empresa] la pruebe en real.",
+          "Entregamos el Modelo Operativo Objetivo: la arquitectura tecnológica y estratégica diseñada para que [Empresa] escale definitivamente.",
       },
+      
     ],
   },
   {
@@ -90,21 +93,21 @@ const FASES_DATA = [
     hitos: [
       {
         icono: <Users size={24} />,
-        titulo: "Capacitaciones progresivas",
+        titulo: "Capacitaciones progresivas y Simulacro de autonomía",
         descripcion:
           "Tu equipo aprende a operar el sistema sin depender de nosotros.",
       },
       {
         icono: <ShieldCheck size={24} />,
-        titulo: "Simulacro de autonomía",
+        titulo: "Seguimiento",
         descripcion:
           "Durante 28 días, [Empresa] opera el sistema con nuestro seguimiento semanal.",
       },
       {
         icono: <Video size={24} />,
-        titulo: "Cierre y entrega formal",
+        titulo: "Cierre",
         descripcion:
-          "4 reuniones de seguimiento, documentación final y cierre del programa.",
+          "Te entregamos la documentación final para continuar y cerramos el programa.",
       },
     ],
   },
