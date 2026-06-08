@@ -2,25 +2,22 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import type { Socio, Entregable, Reunion, Reporte, Lectura } from '@/types';
+import type { Socio, Entregable, Reunion, Lectura } from '@/types';
 import { TabProgreso } from '@/components/admin/socios/TabProgreso';
 import { TabEntregables } from '@/components/admin/socios/TabEntregables';
 import { TabReuniones } from '@/components/admin/socios/TabReuniones';
-import { TabReportes } from '@/components/admin/socios/TabReportes';
-type Tab = 'progreso' | 'entregables' | 'reuniones' | 'reportes';
+type Tab = 'progreso' | 'entregables' | 'reuniones';
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'progreso', label: 'Progreso' },
   { key: 'entregables', label: 'Entregables' },
   { key: 'reuniones', label: 'Reuniones' },
-  { key: 'reportes', label: 'Reportes' },
 ];
 
 interface Props {
   socio: Socio;
   entregables: Entregable[];
   reuniones: Reunion[];
-  reportes: Reporte[];
   lecturas: Lectura[];
 }
 
@@ -28,7 +25,6 @@ export function SocioDetailShell({
   socio,
   entregables,
   reuniones,
-  reportes,
   lecturas,
 }: Props) {
   const [tabActiva, setTabActiva] = useState<Tab>('progreso');
@@ -89,9 +85,6 @@ export function SocioDetailShell({
       )}
       {tabActiva === 'reuniones' && (
         <TabReuniones socioId={socio.id} reuniones={reuniones} />
-      )}
-      {tabActiva === 'reportes' && (
-        <TabReportes socioId={socio.id} reportes={reportes} />
       )}
     </div>
   );

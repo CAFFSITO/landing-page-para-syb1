@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createAdminClient } from '@/lib/supabase/server';
 import { SocioDetailShell } from '@/components/admin/socios/SocioDetailShell';
-import type { Socio, Entregable, Reunion, Reporte, Lectura } from '@/types';
+import type { Socio, Entregable, Reunion, Lectura } from '@/types';
 
 export default async function SocioDetailPage({
   params,
@@ -16,7 +16,6 @@ export default async function SocioDetailPage({
     { data: socio },
     { data: entregables },
     { data: reuniones },
-    { data: reportes },
     { data: lecturas },
   ] = await Promise.all([
     supabase.from('socios').select('*').eq('id', id).single<Socio>(),
@@ -34,13 +33,7 @@ export default async function SocioDetailPage({
       .order('fase')
       .order('numero')
       .returns<Reunion[]>(),
-    supabase
-      .from('reportes')
-      .select('*')
-      .eq('socio_id', id)
-      .order('fase')
-      .order('numero')
-      .returns<Reporte[]>(),
+
     supabase
       .from('lecturas')
       .select('*')
@@ -163,7 +156,6 @@ export default async function SocioDetailPage({
         socio={socio}
         entregables={entregables ?? []}
         reuniones={reuniones ?? []}
-        reportes={reportes ?? []}
         lecturas={lecturas ?? []}
       />
     </div>
