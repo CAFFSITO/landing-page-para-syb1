@@ -25,6 +25,31 @@ const BLOCKED_MIMES = new Set([
 
 // ─── URL firmada para upload directo desde el cliente ─────────────────────────
 
+/**
+ * Sanitiza un nombre de archivo para que sea una clave válida en Supabase Storage.
+ * - Normaliza caracteres Unicode (NFD) y elimina diacríticos (tildes, etc.)
+ * - Reemplaza espacios y caracteres especiales por guiones
+ * - Preserva letras, números, puntos y guiones
+ */
+function sanitizeFilename(filename: string): string {
+  // Separar nombre y extensión
+  const lastDot = filename.lastIndexOf('.');
+  const name = lastDot !== -1 ? filename.slice(0, lastDot) : filename;
+  const ext  = lastDot !== -1 ? filename.slice(lastDot)    : '';
+
+  const clean = name
+    // Normalizar Unicode y eliminar diacríticos (á→a, é→e, ñ→n, etc.)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    // Reemplazar cualquier carácter que NO sea alfanumérico o guión por '-'
+    .replace(/[^a-zA-Z0-9\-_]/g, '-')
+    // Colapsar guiones consecutivos
+    .replace(/-{2,}/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return `${clean || 'archivo'}${ext}`;
+}
+
 type SignedUploadUrlResult =
   | { ok: true; signedUrl: string; token: string; path: string }
   | { ok: false; error: string };
@@ -49,7 +74,8 @@ export async function getSignedUploadUrlAction(
   }
 
   const supabase = createAdminClient();
-  const path = `${socioId}/fase-${fase}/${Date.now()}-${filename}`;
+  const safeFilename = sanitizeFilename(filename);
+  const path = `${socioId}/fase-${fase}/${Date.now()}-${safeFilename}`;
 
   const { data, error } = await supabase.storage
     .from(BUCKET)
