@@ -6,7 +6,11 @@ import type { EntregableTipo, EntregableEstado } from "@/types";
 
 const BUCKET = "entregables";
 
-const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
+const BLOCKED_EXTENSIONS = new Set([
+  'exe', 'sh', 'bat', 'cmd', 'msi', 'com', 'scr', 'pif',
+  'vbs', 'vbe', 'js', 'jse', 'ws', 'wsf', 'wsc', 'wsh',
+  'ps1', 'psm1', 'psd1', 'reg', 'inf', 'hta', 'cpl', 'msp',
+]);
 
 const BLOCKED_MIMES = new Set([
   'application/x-msdownload',
@@ -19,19 +23,43 @@ const BLOCKED_MIMES = new Set([
   'application/x-dosexec',
 ]);
 
-const BLOCKED_EXTENSIONS = new Set([
-  'exe', 'sh', 'bat', 'cmd', 'msi', 'com', 'scr', 'pif',
-  'vbs', 'vbe', 'js', 'jse', 'ws', 'wsf', 'wsc', 'wsh',
-  'ps1', 'psm1', 'psd1', 'reg', 'inf', 'hta', 'cpl', 'msp',
-]);
+// ─── URL firmada para upload directo desde el cliente ─────────────────────────
 
-function validateFile(file: { base64: string; filename: string; mimeType: string }): string | null {
-  const bytes = Buffer.from(file.base64, 'base64');
-  if (bytes.length > MAX_FILE_SIZE) return 'Archivo muy pesado (máx. 500 MB)';
-  const ext = file.filename.split('.').pop()?.toLowerCase() ?? '';
-  if (BLOCKED_EXTENSIONS.has(ext)) return 'Por seguridad, no se permiten archivos ejecutables';
-  if (BLOCKED_MIMES.has(file.mimeType)) return 'Por seguridad, no se permiten archivos ejecutables';
-  return null;
+type SignedUploadUrlResult =
+  | { ok: true; signedUrl: string; token: string; path: string }
+  | { ok: false; error: string };
+
+/**
+ * Genera una Signed Upload URL para que el cliente suba el archivo
+ * directamente a Supabase Storage sin pasar por Next.js.
+ * Solo se llama desde el servidor; el cliente recibe la URL y hace el PUT.
+ */
+export async function getSignedUploadUrlAction(
+  socioId: string,
+  fase: 1 | 2 | 3,
+  filename: string,
+  mimeType: string,
+): Promise<SignedUploadUrlResult> {
+  const ext = filename.split('.').pop()?.toLowerCase() ?? '';
+  if (BLOCKED_EXTENSIONS.has(ext)) {
+    return { ok: false, error: 'Por seguridad, no se permiten archivos ejecutables' };
+  }
+  if (BLOCKED_MIMES.has(mimeType)) {
+    return { ok: false, error: 'Por seguridad, no se permiten archivos ejecutables' };
+  }
+
+  const supabase = createAdminClient();
+  const path = `${socioId}/fase-${fase}/${Date.now()}-${filename}`;
+
+  const { data, error } = await supabase.storage
+    .from(BUCKET)
+    .createSignedUploadUrl(path);
+
+  if (error || !data) {
+    return { ok: false, error: error?.message ?? 'No se pudo generar la URL de subida' };
+  }
+
+  return { ok: true, signedUrl: data.signedUrl, token: data.token, path };
 }
 
 // ─── Crear entregable ─────────────────────────────────────────────────────────
@@ -47,7 +75,8 @@ type CreateEntregablePayload = {
   version_estado: 'vigente' | 'obsoleto';
   parent_id?: string | null;
   orden: number;
-  file?: { base64: string; filename: string; mimeType: string };
+  /** Path en Supabase Storage, si ya se subió el archivo con signed URL. */
+  storagePath?: string | null;
 };
 
 type EntregableResult = { ok: true } | { ok: false; error: string };
@@ -56,28 +85,6 @@ export async function createEntregableAction(
   payload: CreateEntregablePayload
 ): Promise<EntregableResult> {
   const supabase = createAdminClient();
-  let storagePath: string | null = null;
-
-  // Subir archivo si se proporcionó
-  if (payload.file) {
-    const validationError = validateFile(payload.file);
-    if (validationError) return { ok: false, error: validationError };
-
-    console.log('[Entregable:create] Subiendo archivo:', payload.file.filename, payload.file.mimeType);
-
-    const bytes = Buffer.from(payload.file.base64, "base64");
-    const path = `${payload.socioId}/fase-${payload.fase}/${Date.now()}-${payload.file.filename}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from(BUCKET)
-      .upload(path, bytes, {
-        contentType: payload.file.mimeType,
-        upsert: false,
-      });
-
-    if (uploadError) return { ok: false, error: uploadError.message };
-    storagePath = path;
-  }
 
   const { error } = await supabase.from("entregables").insert({
     socio_id: payload.socioId,
@@ -86,7 +93,7 @@ export async function createEntregableAction(
     titulo: payload.titulo,
     descripcion: payload.descripcion ?? null,
     url: payload.url ?? null,
-    storage_path: storagePath,
+    storage_path: payload.storagePath ?? null,
     estado: payload.estado,
     version_estado: payload.version_estado,
     parent_id: payload.parent_id ?? null,
@@ -113,32 +120,21 @@ type UpdateEntregablePayload = {
   version_estado: 'vigente' | 'obsoleto';
   parent_id?: string | null;
   orden: number;
-  file?: { base64: string; filename: string; mimeType: string };
-  existingStoragePath?: string;
+  /** Path nuevo en Storage (si se reemplazó el archivo). Si es null, conserva el path existente. */
+  newStoragePath?: string | null;
+  existingStoragePath?: string | null;
 };
 
 export async function updateEntregableAction(
   payload: UpdateEntregablePayload
 ): Promise<EntregableResult> {
   const supabase = createAdminClient();
-  let storagePath = payload.existingStoragePath ?? null;
 
-  if (payload.file) {
-    const validationError = validateFile(payload.file);
-    if (validationError) return { ok: false, error: validationError };
-
-    console.log('[Entregable:update] Subiendo archivo:', payload.file.filename, payload.file.mimeType);
-
-    const bytes = Buffer.from(payload.file.base64, "base64");
-    const path = `${payload.socioId}/fase-${payload.fase}/${Date.now()}-${payload.file.filename}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from(BUCKET)
-      .upload(path, bytes, { contentType: payload.file.mimeType, upsert: false });
-
-    if (uploadError) return { ok: false, error: uploadError.message };
-    storagePath = path;
-  }
+  // Si se subió un archivo nuevo, usar ese path; si no, conservar el existente.
+  const storagePath =
+    payload.newStoragePath !== undefined
+      ? payload.newStoragePath
+      : (payload.existingStoragePath ?? null);
 
   const { error } = await supabase
     .from("entregables")

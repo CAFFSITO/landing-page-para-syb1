@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminModal from '@/components/admin/socios/AdminModal';
 import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
-import { createEntregableAction, updateEntregableAction } from '@/app/actions/entregables-admin';
+import { createEntregableAction, updateEntregableAction, getSignedUploadUrlAction } from '@/app/actions/entregables-admin';
 import { toast } from 'sonner';
 import type { Entregable, EntregableTipo, EntregableEstado } from '@/types';
 
@@ -62,8 +62,6 @@ const TIPO_LABELS: Record<EntregableTipo, string> = {
 };
 const ESTADOS: EntregableEstado[] = ['pendiente', 'enviado', 'rechazado'];
 
-const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB
-
 const BLOCKED_EXTENSIONS = new Set([
   'exe', 'sh', 'bat', 'cmd', 'msi', 'com', 'scr', 'pif',
   'vbs', 'vbe', 'js', 'jse', 'ws', 'wsf', 'wsc', 'wsh',
@@ -90,9 +88,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
   const [parentId, setParentId] = useState<string>('');
   const [url, setUrl] = useState('');
   const [orden, setOrden] = useState(defaultOrden);
-  const [fileBase64, setFileBase64] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [fileMime, setFileMime] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -117,24 +113,15 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
       setUrl('');
       setOrden(defaultOrden);
     }
-    setFileBase64(null);
-    setFileName(null);
-    setFileMime(null);
+    setFile(null);
   }, [editTarget, fase, defaultOrden, isOpen]);
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // Validar tamaño
-    if (file.size > MAX_FILE_SIZE) {
-      toast.error('Archivo muy pesado (máx. 500 MB)');
-      e.target.value = '';
-      return;
-    }
+    const f = e.target.files?.[0];
+    if (!f) return;
 
     // Validar extensión
-    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    const ext = f.name.split('.').pop()?.toLowerCase() ?? '';
     if (BLOCKED_EXTENSIONS.has(ext)) {
       toast.error('Por seguridad, no se permiten archivos ejecutables');
       e.target.value = '';
@@ -142,22 +129,14 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
     }
 
     // Validar MIME
-    if (BLOCKED_MIMES.has(file.type)) {
+    if (BLOCKED_MIMES.has(f.type)) {
       toast.error('Por seguridad, no se permiten archivos ejecutables');
       e.target.value = '';
       return;
     }
 
-    console.log('[Entregable] Archivo seleccionado:', file.name, file.type, `${(file.size / 1024 / 1024).toFixed(2)} MB`);
-
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64 = (reader.result as string).split(',')[1];
-      setFileBase64(base64);
-      setFileName(file.name);
-      setFileMime(file.type);
-    };
+    console.log('[Entregable] Archivo seleccionado:', f.name, f.type, `${(f.size / 1024 / 1024).toFixed(2)} MB`);
+    setFile(f);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -165,9 +144,36 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
     if (!titulo.trim()) { toast.error('El título es requerido'); return; }
     setSubmitting(true);
 
-    const filePayload = fileBase64 && fileName && fileMime
-      ? { base64: fileBase64, filename: fileName, mimeType: fileMime }
-      : undefined;
+    let uploadedPath: string | null = null;
+
+    // Si hay un archivo nuevo, subirlo directo a Supabase Storage
+    if (file) {
+      console.log('[Entregable] Solicitando URL de subida para:', file.name);
+      const signedRes = await getSignedUploadUrlAction(socioId, faseVal, file.name, file.type);
+
+      if (!signedRes.ok) {
+        toast.error(signedRes.error);
+        setSubmitting(false);
+        return;
+      }
+
+      console.log('[Entregable] Subiendo archivo directamente al Storage...');
+      const uploadRes = await fetch(signedRes.signedUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+
+      if (!uploadRes.ok) {
+        const errText = await uploadRes.text().catch(() => uploadRes.statusText);
+        toast.error(`Error al subir el archivo: ${errText}`);
+        setSubmitting(false);
+        return;
+      }
+
+      uploadedPath = signedRes.path;
+      console.log('[Entregable] Archivo subido. Path:', uploadedPath);
+    }
 
     let res;
     if (editTarget) {
@@ -183,8 +189,8 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
         version_estado: versionEstado,
         parent_id: parentId || null,
         orden,
-        file: filePayload,
-        existingStoragePath: editTarget.storage_path ?? undefined,
+        newStoragePath: uploadedPath,
+        existingStoragePath: editTarget.storage_path ?? null,
       });
     } else {
       res = await createEntregableAction({
@@ -198,7 +204,7 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
         version_estado: versionEstado,
         parent_id: parentId || null,
         orden,
-        file: filePayload,
+        storagePath: uploadedPath,
       });
     }
 
@@ -357,14 +363,14 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
           <input style={inputStyle} type="text" placeholder="https://..." value={url} onChange={e => setUrl(e.target.value)} />
         </div>
         <div style={fieldStyle}>
-          <label style={labelStyle}>Archivo {fileName ? `— ${fileName}` : editTarget?.storage_path ? `— ${editTarget.storage_path.split('/').pop()}` : ''}</label>
+          <label style={labelStyle}>Archivo {file ? `— ${file.name}` : editTarget?.storage_path ? `— ${editTarget.storage_path.split('/').pop()}` : ''}</label>
           <input
             style={{ ...inputStyle, padding: '8px 14px', cursor: 'pointer' }}
             type="file"
             accept="*/*"
             onChange={handleFile}
           />
-          {editTarget?.storage_path && !fileName && (
+          {editTarget?.storage_path && !file && (
             <p style={{ margin: '4px 0 0', fontSize: '0.75rem', color: 'rgba(157,92,192,0.6)' }}>
               Archivo actual guardado. Subí uno nuevo para reemplazarlo.
             </p>
