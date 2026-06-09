@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import AdminModal from '@/components/admin/socios/AdminModal';
 import MarkdownRenderer from '@/components/ui/MarkdownRenderer';
 import { createEntregableAction, updateEntregableAction, getSignedUploadUrlAction } from '@/app/actions/entregables-admin';
+import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
 import type { Entregable, EntregableTipo, EntregableEstado } from '@/types';
 
@@ -158,15 +159,15 @@ export default function EntregableModal({ isOpen, onClose, socioId, fase, editTa
       }
 
       console.log('[Entregable] Subiendo archivo directamente al Storage...');
-      const uploadRes = await fetch(signedRes.signedUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': file.type },
-        body: file,
-      });
+      const supabase = createClient();
+      const { error: uploadError } = await supabase.storage
+        .from('entregables')
+        .uploadToSignedUrl(signedRes.path, signedRes.token, file, {
+          contentType: file.type,
+        });
 
-      if (!uploadRes.ok) {
-        const errText = await uploadRes.text().catch(() => uploadRes.statusText);
-        toast.error(`Error al subir el archivo: ${errText}`);
+      if (uploadError) {
+        toast.error(`Error al subir el archivo: ${uploadError.message}`);
         setSubmitting(false);
         return;
       }
